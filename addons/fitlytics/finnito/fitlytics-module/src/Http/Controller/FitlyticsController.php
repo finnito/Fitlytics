@@ -12,7 +12,6 @@ class FitlyticsController extends PublicController
 {
     public function home(ActivityModel $activities)
     {
-        app('debugbar')->disable();
         $activities = $activities->query()
             ->whereYear("start_date", "2021")
             ->orderBy("start_date", "desc")
@@ -167,6 +166,48 @@ class FitlyticsController extends PublicController
 
         }
         return $out;
+    }
+
+    public function plansICS(PlanModel $plans)
+    {
+        app("debugbar")->disable();
+        define('ICAL_FORMAT', 'Ymd\THis\Z');
+
+        $plans = $plans->all();
+
+        $icalObject = "BEGIN:VCALENDAR\n"
+            . "VERSION:2.0\n"
+            . "METHOD:PUBLISH\n"
+            . "PRODID:-//Finn Le Sueur//Training Plan//EN\n";
+
+        foreach ($plans as $plan) {
+            if (sizeof($plan->decorated->plan->lines()) == 1) {
+                $summary = "📝 " . $plan->plan;
+                $description = str_replace("\r\n", "\\n", $plan->plan);
+            } else {
+                $summary = "📝 " . $plan->decorated->plan->line(1) . " ⨁";
+                $description = str_replace("\r\n", "\\n", $plan->plan);
+            }
+            $icalObject .= ""
+                . "BEGIN:VEVENT\n"
+                . "TRANSP:TRANSPARENT\n"
+                . "DTSTART;VALUE=DATE:" . date("Ymd", strtotime($plan->date)) . "\n"
+                . "DTEND;VALUE=DATE:" . date("Ymd", strtotime($plan->date)) . "\n"
+                . "DTSTAMP:" . date(ICAL_FORMAT, strtotime($plan->date)) . "\n"
+                . "SUMMARY:" . $summary . "\n"
+                . "DESCRIPTION:" . $description . "\n"
+                . "UID:fitlytics" . $plan->id . "\n"
+                . "STATUS:CONFIRMED\n"
+                . "CREATED:" . date(ICAL_FORMAT, strtotime($plan->created_at)) . "\n"
+                . "LAST-MODIFIED:" . date(ICAL_FORMAT, strtotime($plan->updated_at)) . "\n"
+                . "LOCATION:\n"
+                . "END:VEVENT\n";
+        }
+        $icalObject .= "END:VCALENDAR";
+
+        header('Content-type: text/calendar; charset=utf-8');
+        header('Content-Disposition: attachment; filename="activities.ics"');
+        return $icalObject;
     }
 
     public function activitiesICS(ActivityModel $activities)
