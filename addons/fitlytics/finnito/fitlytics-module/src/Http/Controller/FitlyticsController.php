@@ -327,7 +327,7 @@ class FitlyticsController extends PublicController
                 . "DTSTART:" . $start_time->format(ICAL_FORMAT) . "\n"
                 . "DTEND:" . $activity_end->format(ICAL_FORMAT) . "\n"
                 . "DTSTAMP:" . date(ICAL_FORMAT, strtotime($activity->updated_at)) . "\n"
-                . "SUMMARY:" . $activity->getEmojiType() . " " . $activity->name . "\n"
+                . "SUMMARY:" . $activity->activityTypeEmoji() . " " . $activity->name . "\n"
                 . "DESCRIPTION:" . $description . "\n"
                 . "UID:fitlytics-activity-" . $activity->strava_id . "\n"
                 . "STATUS:CONFIRMED\n"
