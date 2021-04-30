@@ -280,9 +280,15 @@ class FitlyticsController extends PublicController
 
         // loop over events
         foreach ($activities as $activity) {
+            // dd($activity->start_date);
+            $start_time = \Carbon\Carbon::parse($activity->start_date);
+            $activity_end = \Carbon\Carbon::parse($activity->start_date)->addSeconds($activity->elapsed_time);
+            // dd($start_time, $activity_end);
+            // $activity_end = $activity_end->add(\DateInterval::createFromDateString($activity->elapsed_time . " seconds"));
+            // $activity_end = \Carbon\Carbon::parse($activity_end)->toISOString();
 
-            $activity_end = new \DateTime($activity->start_date);
-            $activity_end = $activity_end->add(\DateInterval::createFromDateString($activity->elapsed_time . " seconds"));
+            // $activity_end = new \DateTime($activity->start_date);
+            // $activity_end = $activity_end->add(\DateInterval::createFromDateString($activity->elapsed_time . " seconds"));
 
             $dist = $activity->metersToKilometers($activity->distance, 2);
             $moving_time = $activity->secondsToHours($activity->moving_time);
@@ -317,9 +323,10 @@ class FitlyticsController extends PublicController
 
             $icalObject .= ""
                 . "BEGIN:VEVENT\n"
-                . "DTSTART:" . date(ICAL_FORMAT, strtotime($activity->start_date)) . "\n"
+                . "TRANSP:OPAQUE\n"
+                . "DTSTART:" . $start_time->format(ICAL_FORMAT) . "\n"
                 . "DTEND:" . $activity_end->format(ICAL_FORMAT) . "\n"
-                . "DTSTAMP:" . date(ICAL_FORMAT, strtotime($activity->start_date)) . "\n"
+                . "DTSTAMP:" . date(ICAL_FORMAT, strtotime($activity->updated_at)) . "\n"
                 . "SUMMARY:" . $activity->name . "\n"
                 . "DESCRIPTION:" . $description . "\n"
                 . "UID:fitlytics-activity-" . $activity->strava_id . "\n"
@@ -335,7 +342,7 @@ class FitlyticsController extends PublicController
 
         // Set the headers
         header('Content-type: text/calendar; charset=utf-8');
-        header('Content-Disposition: attachment; filename="activities.ics"');
+        header('Content-Disposition: attachment; filename="fitlytics-training-activities.ics"');
 
         echo $icalObject;
     }
