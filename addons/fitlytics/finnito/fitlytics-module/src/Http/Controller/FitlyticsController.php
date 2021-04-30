@@ -273,26 +273,61 @@ class FitlyticsController extends PublicController
 
         define('ICAL_FORMAT', 'Ymd\THis\Z');
 
-        $icalObject = "BEGIN:VCALENDAR
-        VERSION:2.0
-        METHOD:PUBLISH
-        PRODID:-//Finn Le Sueur//Activities//EN\n";
+        $icalObject = "BEGIN:VCALENDAR\n"
+            . "VERSION:2.0\n"
+            . "METHOD:PUBLISH\n"
+            . "PRODID:-//Finn Le Sueur//Activities//EN\n";
 
         // loop over events
         foreach ($activities as $activity) {
+
             $activity_end = new \DateTime($activity->start_date);
             $activity_end = $activity_end->add(\DateInterval::createFromDateString($activity->elapsed_time . " seconds"));
-            $icalObject .=
-            "BEGIN:VEVENT
-            DTSTART:" . date(ICAL_FORMAT, strtotime($activity->start_date)) . "
-            DTEND:" . $activity_end->format(ICAL_FORMAT) . "
-            DTSTAMP:" . date(ICAL_FORMAT, strtotime($activity->start_date)) . "
-            SUMMARY:" . $activity->name . "
-            UID:" . $activity->strava_id . "
-            STATUS:CONFIRMED
-            LAST-MODIFIED:" . date(ICAL_FORMAT, strtotime($activity->start_date)) . "
-            LOCATION:
-            END:VEVENT\n";
+
+            $dist = $activity->metersToKilometers($activity->distance, 2);
+            $moving_time = $activity->secondsToHours($activity->moving_time);
+            $elapsed_time = $activity->secondsToHours($activity->elapsed_time);
+            $elevation = $activity->total_elevation_gain;
+
+            if (isset($activity->activity_json->average_heartrate)) {
+                $avg_hr = $activity->activity_json->average_heartrate;
+                $max_hr = $activity->activity_json->max_heartrate;
+                $hr_string = "Heart Rate: {$avg_hr}bpm ($max_hr max)";
+            } else {
+                $hr_string = "Not Recorded";
+            }
+            
+
+            if ($activity->type == "Run") {
+                $avg_speed = $activity->metersPerSecondToMinPerKilometer($activity->activity_json->average_speed);
+                $max_speed = $activity->metersPerSecondToMinPerKilometer($activity->activity_json->max_speed);
+                $speed_unit = "min/km";
+            } else {
+                $avg_speed = $activity->metersPerSecondToKilometersPerHour($activity->activity_json->average_speed);
+                $max_speed = $activity->metersPerSecondToKilometersPerHour($activity->activity_json->max_speed);
+                $speed_unit = "km/hr";
+            }
+
+            $description = ""
+                . "Distance: {$dist}km\\n"
+                . "Time: {$moving_time} (Elapsed: {$elapsed_time})\\n"
+                . "Elevation: {$elevation}m\\n"
+                . "{$hr_string}\\n"
+                . "Speed: {$avg_speed}{$speed_unit} ($max_speed max)";
+
+            $icalObject .= ""
+                . "BEGIN:VEVENT\n"
+                . "DTSTART:" . date(ICAL_FORMAT, strtotime($activity->start_date)) . "\n"
+                . "DTEND:" . $activity_end->format(ICAL_FORMAT) . "\n"
+                . "DTSTAMP:" . date(ICAL_FORMAT, strtotime($activity->start_date)) . "\n"
+                . "SUMMARY:" . $activity->name . "\n"
+                . "DESCRIPTION:" . $description . "\n"
+                . "UID:fitlytics-activity-" . $activity->strava_id . "\n"
+                . "STATUS:CONFIRMED\n"
+                . "CREATED:" . date(ICAL_FORMAT, strtotime($activity->created_at)) . "\n"
+                . "LAST-MODIFIED:" . date(ICAL_FORMAT, strtotime($activity->updated_at)) . "\n"
+                . "LOCATION:\n"
+                . "END:VEVENT\n";
         }
 
         // close calendar
@@ -301,8 +336,6 @@ class FitlyticsController extends PublicController
         // Set the headers
         header('Content-type: text/calendar; charset=utf-8');
         header('Content-Disposition: attachment; filename="activities.ics"');
-
-        $icalObject = str_replace(' ', '', $icalObject);
 
         echo $icalObject;
     }
