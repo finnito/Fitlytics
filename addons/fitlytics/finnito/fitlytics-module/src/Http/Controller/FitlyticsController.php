@@ -195,7 +195,7 @@ class FitlyticsController extends PublicController
                 . "DTSTAMP:" . date(ICAL_FORMAT, strtotime($plan->date)) . "\n"
                 . "SUMMARY:" . $summary . "\n"
                 . "DESCRIPTION:" . $description . "\n"
-                . "UID:fitlytics" . $plan->id . "\n"
+                . "UID:fitlytics-plan-" . $plan->id . "\n"
                 . "STATUS:CONFIRMED\n"
                 . "CREATED:" . date(ICAL_FORMAT, strtotime($plan->created_at)) . "\n"
                 . "LAST-MODIFIED:" . date(ICAL_FORMAT, strtotime($plan->updated_at)) . "\n"
@@ -205,7 +205,65 @@ class FitlyticsController extends PublicController
         $icalObject .= "END:VCALENDAR";
 
         header('Content-type: text/calendar; charset=utf-8');
-        header('Content-Disposition: attachment; filename="activities.ics"');
+        header('Content-Disposition: attachment; filename="fitlytics-planning.ics"');
+        return $icalObject;
+    }
+
+    public function notesICS(NoteModel $notes)
+    {
+        define('ICAL_FORMAT', 'Ymd\THis\Z');
+
+        $notes = $notes->all();
+
+        $icalObject = "BEGIN:VCALENDAR\n"
+            . "VERSION:2.0\n"
+            . "METHOD:PUBLISH\n"
+            . "PRODID:-//Finn Le Sueur//Training Plan//EN\n";
+
+        foreach ($notes as $note) {
+            $summary = "✍️ Training Journal";
+
+            if ($note->injured) {
+                $injured = "Yes";
+            } else {
+                $injured = "No";
+            }
+
+            if ($note->sick) {
+                $sick = "Yes";
+            } else {
+                $sick = "No";
+            }
+
+            $noteText = str_replace("\r\n", "\\n", $note->note);
+
+            $description =  "{$noteText}\\n"
+                . "---" . "\\n"
+                . "Sick: {$sick}" . "\\n"
+                . "Injured: {$injured}" . "\\n"
+                . "Sleep Quality: {$note->sleep_quality}" . "\\n"
+                . "Stress Level: {$note->stress_level}" . "\\n"
+                . "Weight: {$note->weight}";
+
+            $icalObject .= ""
+                . "BEGIN:VEVENT\n"
+                . "TRANSP:TRANSPARENT\n"
+                . "DTSTART;VALUE=DATE:" . date("Ymd", strtotime($note->date)) . "\n"
+                . "DTEND;VALUE=DATE:" . date("Ymd", strtotime($note->date)) . "\n"
+                . "DTSTAMP:" . date(ICAL_FORMAT, strtotime($note->date)) . "\n"
+                . "SUMMARY:" . $summary . "\n"
+                . "DESCRIPTION:" . $description . "\n"
+                . "UID:fitlytics-note-" . $note->id . "\n"
+                . "STATUS:CONFIRMED\n"
+                . "CREATED:" . date(ICAL_FORMAT, strtotime($note->created_at)) . "\n"
+                . "LAST-MODIFIED:" . date(ICAL_FORMAT, strtotime($note->updated_at)) . "\n"
+                . "LOCATION:\n"
+                . "END:VEVENT\n";
+        }
+        $icalObject .= "END:VCALENDAR";
+
+        header('Content-type: text/calendar; charset=utf-8');
+        header('Content-Disposition: attachment; filename="fitlytics-training-journal.ics"');
         return $icalObject;
     }
 
