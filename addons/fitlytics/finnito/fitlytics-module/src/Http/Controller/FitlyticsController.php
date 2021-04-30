@@ -170,7 +170,6 @@ class FitlyticsController extends PublicController
 
     public function plansICS(PlanModel $plans)
     {
-        app("debugbar")->disable();
         define('ICAL_FORMAT', 'Ymd\THis\Z');
 
         $plans = $plans->all();
