@@ -1,0 +1,68 @@
+{% extends "finnito.theme.fitlytics::layouts.default" %}
+
+{% block content %}
+
+    <div class="pure-g">
+        <div class="pure-u-2 pure-u-md-1-2">
+            {{ form("note_form") }}
+        </div>
+        <div class="pure-u-2 pure-u-md-1-2">
+            {{ form("plan_form") }}
+        </div>
+    </div>
+
+    <div id="calendar"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js" integrity="sha256-ekrJn2FeZaiUFq99QswpQCUTME/HxaDfX7R8INzKJGE=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.css" integrity="sha256-ejA/z0dc7D+StbJL/0HAnRG/Xae3yS2gzg0OAnIURC4=" crossorigin="anonymous">
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            eventDisplay: "block",
+            height: "75vh",
+            stickyHeaderDates: true,
+            firstDay: 1,
+            stickyFooterScrollbar: true,
+            showNonCurrentDates: true,
+            fixedWeekCount: false,
+            navLinks: true,
+            weekNumbers: true,
+            eventSources: [
+                {
+                  url: '/activities-calendar-feed/'
+                },
+                {
+                  url: '/notes-calendar-feed/'
+                },
+                {
+                  url: '/weekly-summary-feed/'
+                },
+                {
+                  url: '/plans-calendar-feed/'
+                },
+            ],
+            eventDidMount: function(info) {
+                var tooltip = tippy(info.el, {
+                    content: info.event.extendedProps.description,
+                    allowHTML: true,
+                });
+            },
+            eventContent: function(arg) {
+                return {
+                    html: arg.event.title.replace(/\n/g, '<br>')
+                }
+            },
+            headerToolbar: {
+                left: 'prev, next, today',
+                center: 'title',
+                right: 'dayGridWeek, dayGridMonth, listWeek'  
+            },
+        });
+        calendar.render();
+    });
+    </script>
+{% endblock %}

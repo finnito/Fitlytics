@@ -1,0 +1,46 @@
+<h2>Daily Note</h2>
+<div class="pure-g pure-form">
+    <div class="pure-u-1-2 pure-u-md-1-3">
+        {{ form.fields.date|raw }}
+    </div>
+    <div class="pure-u-1-2 pure-u-md-1-3">
+        {{ form.fields.weight|raw }}
+    </div>
+    <div class="pure-u-1-2 pure-u-md-1-3">
+        {{ form.fields.sick|raw }}
+    </div>
+    <div class="pure-u-1-2 pure-u-md-1-3">
+        {{ form.fields.injured|raw }}
+    </div>
+    <div class="pure-u-1-2 pure-u-md-1-3">
+        {{ form.fields.stress_level|raw }}
+    </div>
+    <div class="pure-u-1-2 pure-u-md-1-3">
+        {{ form.fields.sleep_quality|raw }}
+    </div>
+    <div class="pure-u-1-1">
+        {{ form.fields.note|raw }}
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("input[name='date']").forEach(function(el) {
+        if (el.value.length == 0) {
+            var dte = new Date();
+            console.log(dte);
+            var year = dte.getFullYear();
+            var month;
+            if (dte.getMonth() < 10) {
+                month = ("0" + (dte.getMonth() + 1));
+            } else {
+                month = dte.getMonth() + 1;
+            }
+            var day = dte.getDate();
+            var str = year + "-" + month + "-" + day;
+            console.log(str);
+            el.value = str;
+        }
+    });
+});
+</script>

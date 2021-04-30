@@ -1,0 +1,100 @@
+.fc .fc-event-time, .fc .fc-event-title {
+    padding: 0 1px;
+    white-space: normal;
+}
+
+html {
+    
+}
+
+body {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+body .pure-g {
+    letter-spacing: normal;
+}
+
+form {
+    margin: 0 0.5rem;
+    width: auto;
+    background-color: #f1f2f6;
+    display: inline-block;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+}
+
+.pure-g > div:not(:last-of-type) {
+    margin-bottom: 0.5rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    box-sizing: border-box;
+}
+
+.fc-toolbar-chunk > div,
+.fc-toolbar-chunk > button { margin: 0.25rem auto; }
+
+input, textarea { width: 100%; }
+
+.fc-direction-ltr .fc-button-group > .fc-button:not(:last-child) {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
+    margin: 0.25rem 0;
+}
+
+.fc-toolbar-chunk { 
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+
+.fc-button-group button:not(:first-of-type) { display: none; }
+
+@media screen and (min-width: 48em) {
+    .fc-toolbar-chunk { display: block; }
+}
+
+.fc table{
+    table-layout: auto;
+}
+.fc-view > table{  
+    min-width: 0;
+    width: auto;
+}
+.fc-axis{
+    min-width:100px; /*the width of times column*/
+    width:100px; /*the width of times column*/
+}
+.fc-day,.fc-resource-cell,.fc-content-col{
+    min-width:200px;
+    width:200px;
+}
+.calendar-container .fc-view {
+    overflow-x: scroll;
+}
+
+.fc .fc-daygrid-body { overflow-x: auto; }
+
+.calendar-container .fc-view > table {
+    width: 200%;
+}
+
+.fc-view-container { 
+  overflow-x: scroll; 
+}
+.fc-view.fc-agendaDay-view.fc-agenda-view{
+  width: 500%;
+}
+/* **For 2 day view** */
+.fc-view.fc-agendaTwoDay-view.fc-agenda-view{
+  width: 500%;
+} 

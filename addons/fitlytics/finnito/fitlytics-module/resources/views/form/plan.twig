@@ -1,0 +1,28 @@
+<h2>New Plan</h2>
+<div class="pure-form">
+    <div class="pure-g">
+        <div class="pure-u-1-1">
+            {{ form.fields|raw }}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    if (document.querySelector("input[name='date']").value.length == 0) {
+        var dte = new Date();
+        console.log(dte);
+        var year = dte.getFullYear();
+        var month;
+        if (dte.getMonth() < 10) {
+            month = ("0" + (dte.getMonth() + 1));
+        } else {
+            month = dte.getMonth() + 1;
+        }
+        var day = dte.getDate();
+        var str = year + "-" + month + "-" + day;
+        console.log(str);
+        document.querySelector("input[name='date']").value = str;
+    }
+});
+</script>

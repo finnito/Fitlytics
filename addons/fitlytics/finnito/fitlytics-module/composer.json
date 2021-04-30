@@ -1,0 +1,9 @@
+{
+    "name": "finnito/fitlytics-module",
+    "type": "streams-addon",
+    "autoload": {
+        "psr-4": {
+            "Finnito\\FitlyticsModule\\": "src/"
+        }
+    }
+}
