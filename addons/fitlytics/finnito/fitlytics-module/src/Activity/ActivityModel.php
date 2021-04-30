@@ -177,6 +177,11 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
     public function description()
     {
+        $start_time = \Carbon\Carbon::parse($this->start_date)->toISOString();
+        $activity_end = new \DateTime($this->start_date);
+        $activity_end = $activity_end->add(\DateInterval::createFromDateString($this->elapsed_time . " seconds"));
+        $activity_end = \Carbon\Carbon::parse($activity_end)->toISOString();
+
         // dd($this->getAttribute("distance"));
         $dist = $this->metersToKilometers($this->distance, 2);
         // dd($dist);
@@ -200,7 +205,9 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
         // $avg_cadence = $this->activity_json->average_cadence;
 
-        return "Distance: {$dist}km<br>
+        return "Start: {$start_time}<br>
+        End: {$activity_end}<br>
+        Distance: {$dist}km<br>
         Time: {$moving_time} (Elapsed: {$elapsed_time})<br>
         Elevation: {$elevation}m<br>
         Heart Rate: {$avg_hr}bpm ($max_hr max)<br>
