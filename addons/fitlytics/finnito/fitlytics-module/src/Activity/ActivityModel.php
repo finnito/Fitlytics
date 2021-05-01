@@ -99,7 +99,7 @@ class ActivityModel extends EntryModel implements ActivityInterface
             "Handcycle" => "🚲",
             "Ice Skate" => "⛸",
             "Inline Skate" => "⛸",
-            "Kayak" => "🛶",
+            "Kayaking" => "🛶",
             "Kitesurf Session" => "🪁",
             "Nordic Ski" => "🎿",
             "Rock Climb" => "🧗",
