@@ -14,6 +14,11 @@ class ActivityModel extends EntryModel implements ActivityInterface
         "activity_json" => "object",
     ];
 
+    public function localStartDate()
+    {
+        return \Carbon\Carbon::parse($this->start_date)->timezone(env("APP_TIMEZONE"));
+    }
+
     public function start_date()
     {
         return $this->start_date->toDateTimeString();
