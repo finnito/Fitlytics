@@ -2,6 +2,7 @@
 
 use Anomaly\Streams\Platform\Http\Controller\PublicController;
 use Finnito\FitlyticsModule\Activity\ActivityModel;
+use Finnito\FitlyticsModule\Activity\Contract\ActivityRepositoryInterface;
 use Finnito\FitlyticsModule\Plan\PlanModel;
 use Finnito\FitlyticsModule\Note\NoteModel;
 use Illuminate\Support\Facades\DB;
@@ -10,19 +11,43 @@ use Illuminate\Http\Request;
 
 class FitlyticsController extends PublicController
 {
-    public function home(ActivityModel $activities)
+    public function home(ActivityRepositoryInterface $activitiesRepository)
     {
-        $activities = $activities->query()
-            ->whereYear("start_date", "2021")
-            ->orderBy("start_date", "desc")
-            ->get();
+        // $now = \Carbon\Carbon::now("UTC");
+        // dd($now);
+        // dd($now->startOfWeek()->format("Y-m-d"),$now->endOfWeek()->format("Y-m-d"));
+        // $offset = Carbon::createFromTimestamp(0, config('app.timezone'))->getTimezone()->toOffsetName();
+        // dd(\Carbon\CarbonTimeZone(config('app.timezone'));
+        // $tz = new \CarbonTimeZone(env("APP_TIMEZONE"));
+        // $activities_this_week = $activities->query()
+        //     ->selectRaw("type, SUM(distance), SUM(total_elevation_gain)")
+        //     ->whereRaw(
+        //         "CONVERT_TZ(STR_TO_DATE(start_date, '%Y-%m-%dT%H:%i:%sZ'), '+00:00','"
+        //         . $offset
+        //         . "') BETWEEN '"
+        //         . $now->startOfWeek()->format("Y-m-d H:i:s")
+        //         . "' AND '"
+        //         . $now->endOfWeek()->format("Y-m-d H:i:s")
+        //         . "'")
+        //     ->groupBy("type")
+        //     ->orderBy("start_date", "desc")
+        //     ->get();
+        // $currentWeekStatistics = $activities->currentWeekStatistics();
+        // dd($activities->currentWeekStatistics());
+        // $activities = $activitiesRepository->newQuery()
+        //     ->whereYear("start_date", date("Y"))
+        //     ->orderBy("start_date", "desc")
+        //     ->get();
 
         $this->template->set("meta_title", "Home");
 
         return view(
             'finnito.module.fitlytics::pages/home',
             [
-                'activities' => $activities
+                'activities' => $activitiesRepository->thisWeek(),
+                "currentWeekStatisticsByType" => $activitiesRepository->currentWeekStatisticsByType(),
+                "currentWeekStatistics" => $activitiesRepository->currentWeekStatistics(),
+                "weekBoundaries" => $activitiesRepository->weekBoundaries(),
             ]
         );
     }

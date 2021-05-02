@@ -2,6 +2,63 @@
 
 {% block content %}
 
+    <h2>{{ weekBoundaries[0] }} - {{ weekBoundaries[1] }}, {{ "now"|date("Y") }}</h2>
+
+    <table class="pure-table pure-table-horizontal pure-table-striped last-row-emphasised">
+        <thead>
+            <tr>
+                <th>Sport</th>
+                <th>Distance</th>
+                <th>Elevation</th>
+                <th>Moving Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in currentWeekStatisticsByType %}
+            <tr>
+                <td>{{ stat.type }}</td>
+                <td>{{ stat.metersToKilometers(stat.distance, 2) }}km</td>
+                <td>{{ stat.metersToKilometers(stat.elevation, 2) }}km</td>
+                <td>{{ stat.secondsToHours(stat.moving_time) }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.distance, 2) }}km</td>
+                <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.elevation, 2) }}km</td>
+                <td>{{ currentWeekStatisticsByType[0].secondsToHours(currentWeekStatistics.moving_time, 2) }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <table class="pure-table pure-table-horizontal pure-table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Distance</th>
+                <th>Elevation</th>
+                <th>Moving Time</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for activity in activities %}
+            <tr>
+                <td>{{ activity.start_date|date("D jS") }}</td>
+                <td>{{ activity.name }}</td>
+                <td>{{ activity.metersToKilometers(activity.distance, 2) }}km</td>
+                <td>{{ activity.total_elevation_gain }}m</td>
+                <td>{{ activity.secondsToHours(activity.moving_time) }}</td>
+                <td><a href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
     <div class="pure-g">
         <div class="pure-u-2 pure-u-md-1-2">
             {{ form("note_form") }}
