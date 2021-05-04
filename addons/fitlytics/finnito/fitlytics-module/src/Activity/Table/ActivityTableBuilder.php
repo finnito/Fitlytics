@@ -24,9 +24,7 @@ class ActivityTableBuilder extends TableBuilder
      *
      * @var array|string
      */
-    protected $columns = [
-        "start_date",
-    ];
+    protected $columns = [];
 
     /**
      * The table buttons.
