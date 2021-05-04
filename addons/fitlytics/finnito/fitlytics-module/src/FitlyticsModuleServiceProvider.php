@@ -66,9 +66,9 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "home",
-            "middleware" => [
-                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
-            ]
+            // "middleware" => [
+            //     \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            // ]
         ],
         "activities.ics" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@activitiesICS",
