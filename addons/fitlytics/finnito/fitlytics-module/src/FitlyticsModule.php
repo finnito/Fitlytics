@@ -25,11 +25,7 @@ class FitlyticsModule extends Module
      * @var array
      */
     protected $sections = [
-        'activities' => [
-            'buttons' => [
-                'new_activity',
-            ],
-        ],
+        'activities' => [],
         'plans' => [
             'buttons' => [
                 'new_plan',
