@@ -193,29 +193,44 @@ class ActivityModel extends EntryModel implements ActivityInterface
         $elapsed_time = $this->secondsToHours($this->elapsed_time);
         $elevation = $this->total_elevation_gain;
         // dd($this->activity_json->average_heartrate);
-        $avg_hr = $this->activity_json->average_heartrate;
-        $max_hr = $this->activity_json->max_heartrate;
 
-        if ($this->type == "Run") {
-            $avg_speed = $this->metersPerSecondToMinPerKilometer($this->activity_json->average_speed);
-            $max_speed = $this->metersPerSecondToMinPerKilometer($this->activity_json->max_speed);
-            $speed_unit = "min/km";
-        } else {
-            $avg_speed = $this->metersPerSecondToKilometersPerHour($this->activity_json->average_speed);
-            $max_speed = $this->metersPerSecondToKilometersPerHour($this->activity_json->max_speed);
-            $speed_unit = "km/hr";
+        if (isset($this->activity_json->average_heartrate)) {
+            $avg_hr = $this->activity_json->average_heartrate;
+            $max_hr = $this->activity_json->max_heartrate;
         }
+        
+
+        if (isset($this->activity_json->average_speed)) {
+            if ($this->type == "Run") {
+                $avg_speed = $this->metersPerSecondToMinPerKilometer($this->activity_json->average_speed);
+                $max_speed = $this->metersPerSecondToMinPerKilometer($this->activity_json->max_speed);
+                $speed_unit = "min/km";
+            } else {
+                $avg_speed = $this->metersPerSecondToKilometersPerHour($this->activity_json->average_speed);
+                $max_speed = $this->metersPerSecondToKilometersPerHour($this->activity_json->max_speed);
+                $speed_unit = "km/hr";
+            }
+        }
+        
         
 
         // $avg_cadence = $this->activity_json->average_cadence;
 
-        return "Start: {$start_time}<br>
+        $out = "Start: {$start_time}<br>
         End: {$activity_end}<br>
         Distance: {$dist}km<br>
         Time: {$moving_time} (Elapsed: {$elapsed_time})<br>
-        Elevation: {$elevation}m<br>
-        Heart Rate: {$avg_hr}bpm ($max_hr max)<br>
-        Speed: {$avg_speed}{$speed_unit} ($max_speed max)<br>";
+        Elevation: {$elevation}m<br>";
+
+        if (isset($this->activity_json->average_heartrate)) {
+            $out .= "Heart Rate: {$avg_hr}bpm ($max_hr max)<br>";
+        }
+        
+        if (isset($this->activity_json->average_speed)) {
+            $out .= "Speed: {$avg_speed}{$speed_unit} ($max_speed max)<br>";
+        }
+
+        return $out;
         // Cadence: $avg_cadence";
     }
 }
