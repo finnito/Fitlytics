@@ -187,7 +187,7 @@ table.blank td {
 .grid-container {
   display: grid;
   grid-template-columns: minmax(300px, 1fr);
-  grid-template-rows: auto 1fr 1fr;
+  grid-template-rows: auto auto auto;
   gap: 0;
   grid-template-areas:
     "Date"
