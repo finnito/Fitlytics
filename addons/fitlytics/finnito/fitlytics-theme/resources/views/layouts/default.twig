@@ -70,6 +70,10 @@
 
     {{ template.includes.render('head')|raw }}
 
+    <style>
+        {{ asset_inline("public::css/style.css", ["version", "live"]) }}
+    </style>
+
 </head>
 
 <body>
@@ -151,9 +155,6 @@
 
     </div>
 </footer>
-{{ asset_style("public::css/style.css", ["version", "live"]) }}
-
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/2.0.5/pure-min.css" integrity="sha512-zGyYxJ4OrTxpKh6piIz2WcdSrGTDUEe3lDNhuFf0hPQzU3evbD4LKDD5GKjdlbSiFQ/vrkSFpHMc6RLgaKNWrA==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.5/build/grids-responsive-min.css">
 </body>
