@@ -15,4 +15,9 @@ class PlanModel extends FitlyticsPlansEntryModel implements PlanInterface
     {
         return PlanFactory::new();
     }
+
+    public function htmlPlan()
+    {
+        return str_replace("\r\n", "<br>", $this->plan);
+    }
 }

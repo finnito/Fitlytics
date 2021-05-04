@@ -16,6 +16,11 @@ class NoteModel extends FitlyticsNotesEntryModel implements NoteInterface
         return NoteFactory::new();
     }
 
+    public function htmlNote()
+    {
+        return str_replace("\r\n", "<br>", $this->note);
+    }
+
     public function description()
     {
         if ($this->injured) {
