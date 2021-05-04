@@ -11,33 +11,70 @@ use Illuminate\Http\Request;
 
 class FitlyticsController extends PublicController
 {
-    public function home(ActivityRepositoryInterface $activitiesRepository)
+    public function home(ActivityRepositoryInterface $activitiesRepository, NoteModel $notes, PlanModel $plans)
     {
-        // $now = \Carbon\Carbon::now("UTC");
-        // dd($now);
-        // dd($now->startOfWeek()->format("Y-m-d"),$now->endOfWeek()->format("Y-m-d"));
-        // $offset = Carbon::createFromTimestamp(0, config('app.timezone'))->getTimezone()->toOffsetName();
-        // dd(\Carbon\CarbonTimeZone(config('app.timezone'));
-        // $tz = new \CarbonTimeZone(env("APP_TIMEZONE"));
-        // $activities_this_week = $activities->query()
-        //     ->selectRaw("type, SUM(distance), SUM(total_elevation_gain)")
-        //     ->whereRaw(
-        //         "CONVERT_TZ(STR_TO_DATE(start_date, '%Y-%m-%dT%H:%i:%sZ'), '+00:00','"
-        //         . $offset
-        //         . "') BETWEEN '"
-        //         . $now->startOfWeek()->format("Y-m-d H:i:s")
-        //         . "' AND '"
-        //         . $now->endOfWeek()->format("Y-m-d H:i:s")
-        //         . "'")
-        //     ->groupBy("type")
-        //     ->orderBy("start_date", "desc")
-        //     ->get();
-        // $currentWeekStatistics = $activities->currentWeekStatistics();
-        // dd($activities->currentWeekStatistics());
-        // $activities = $activitiesRepository->newQuery()
-        //     ->whereYear("start_date", date("Y"))
-        //     ->orderBy("start_date", "desc")
-        //     ->get();
+        // dd(\Carbon\Carbon::parse("now"));
+        $now = \Carbon\CarbonImmutable::now()->timezone("Pacific/Auckland");
+        $week = [
+            [
+                "date" => $now->startOfWeek(),
+                "note" => $notes->query()->whereDate("date", $now->startOfWeek()->toDateString())->first(),
+                "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->toDateString())->first(),
+                "activities" => $activitiesRepository->newQuery()
+                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->toDateString())
+                    ->get(),
+            ],
+            [
+                "date" => $now->startOfWeek()->add(1, "day"),
+                "note" => $notes->query()->whereDate("date", $now->startOfWeek()->add(1, "day")->toDateString())->first(),
+                "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(1, "day")->toDateString())->first(),
+                "activities" => $activitiesRepository->newQuery()
+                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
+                    ->get(),
+            ],
+            [
+                "date" => $now->startOfWeek()->add(2, "day"),
+                "note" => $notes->query()->whereDate("date", $now->startOfWeek()->add(2, "day")->toDateString())->first(),
+                "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(2, "day")->toDateString())->first(),
+                "activities" => $activitiesRepository->newQuery()
+                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
+                    ->get(),
+            ],
+            [
+                "date" => $now->startOfWeek()->add(3, "day"),
+                "note" => $notes->query()->whereDate("date", $now->startOfWeek()->add(3, "day")->toDateString())->first(),
+                "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(3, "day")->toDateString())->first(),
+                "activities" => $activitiesRepository->newQuery()
+                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
+                    ->get(),
+            ],
+            [
+                "date" => $now->startOfWeek()->add(4, "day"),
+                "note" => $notes->query()->whereDate("date", $now->startOfWeek()->add(4, "day")->toDateString())->first(),
+                "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(4, "day")->toDateString())->first(),
+                "activities" => $activitiesRepository->newQuery()
+                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
+                    ->get(),
+            ],
+            [
+                "date" => $now->startOfWeek()->add(5, "day"),
+                "note" => $notes->query()->whereDate("date", $now->startOfWeek()->add(5, "day")->toDateString())->first(),
+                "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(5, "day")->toDateString())->first(),
+                "activities" => $activitiesRepository->newQuery()
+                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
+                    ->get(),
+            ],
+            [
+                "date" => $now->startOfWeek()->add(6, "day"),
+                "note" => $notes->query()->whereDate("date", $now->startOfWeek()->add(6, "day")->toDateString())->first(),
+                "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(6, "day")->toDateString())->first(),
+                "activities" => $activitiesRepository->newQuery()
+                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
+                    ->get(),
+            ],
+        ];
+
+        // dd($week);
 
         $this->template->set("meta_title", "Home");
 
@@ -48,6 +85,7 @@ class FitlyticsController extends PublicController
                 "currentWeekStatisticsByType" => $activitiesRepository->currentWeekStatisticsByType(),
                 "currentWeekStatistics" => $activitiesRepository->currentWeekStatistics(),
                 "weekBoundaries" => $activitiesRepository->weekBoundaries(),
+                "week" => $week,
             ]
         );
     }

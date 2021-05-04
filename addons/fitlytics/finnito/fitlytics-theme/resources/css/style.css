@@ -9,7 +9,78 @@ html,body {
   min-height: 100vh;
 }
 
-body {
+h3,
+h4 {
+    margin-bottom: 0.25rem;
+    margin-top: 0;
+}
+
+textarea {
+    width: 100%;
+}
+
+header h1 {
+    color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: #DCE35B;  /* fallback for old browsers */
+    background-image: -webkit-linear-gradient(to bottom, #45B649, #DCE35B);  /* Chrome 10-25, Safari 5.1-6 */
+    background-image: linear-gradient(to bottom, #45B649, #DCE35B); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    text-transform: uppercase;
+    font-size: 4rem;
+}
+
+body h2 {
+    color: #e67e22;
+    font-size: 2rem;
+}
+
+form h2 {
+    margin-top: 0;
+}
+
+.red {color: #e74c3c;}
+.green {color: #2ecc71;}
+
+h2 + p {
+    font-style: italic;
+    margin-top: -2rem;
+}
+
+h3 { color: #16a085 }
+
+a {
+    color: #00a8ff;
+    text-decoration: none;
+}
+
+.pure-button.button-success {
+    background: rgb(28, 184, 65);
+    /* this is a green */
+}
+
+.pure-button.button-error {
+    background: rgb(202, 60, 60);
+    /* this is a maroon */
+}
+
+.pure-button.button-warning {
+    background: rgb(223, 117, 20);
+    /* this is an orange */
+}
+
+.pure-button.button-secondary {
+    background: rgb(66, 184, 221);
+    /* this is a light blue */
+}
+
+.pure-button.button-xsmall {
+    padding: 0.25rem 0.5rem;
+    color: white;
+}
+
+html body {
     padding: 0.5rem;
     /*display: flex;*/
     /*flex-direction: column;*/
@@ -17,24 +88,38 @@ body {
     /*justify-content: space-between;*/
     min-height: 100vh;
     box-sizing: border-box;
-    max-width: 100%;
+    /*max-width: 100%;*/
+    max-width: 900px;
+    margin: auto;
 }
 
 body .pure-g {
     letter-spacing: normal;
 }
 
+.forms {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+main hr {
+    border: 0;
+    height: 2px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(230, 126, 34,1.0), rgba(0, 0, 0, 0));
+}
+
 form {
-    margin: 0 0.5rem;
+    margin: 0.25rem;
     width: auto;
     background-color: #f1f2f6;
     display: inline-block;
-    border-radius: 0.25rem;
     padding: 0.5rem;
+    border: 1px solid #dcdde1;
 }
 
 table {
-    margin: 1rem auto;
+    /*margin: 1rem auto;*/
     white-space: nowrap;
     max-width: 100%;
     overflow-x: auto;
@@ -42,6 +127,20 @@ table {
     box-sizing: border-box;
     display: inline-block;
     vertical-align: top;
+    background-color: white;
+    /*text-align: center;*/
+}
+
+table.blank {
+    background-color: transparent;
+}
+
+table.left {
+    text-align: left;
+}
+
+table.blank td {
+    padding-right: 1rem;
 }
 
 .pure-g > div:not(:last-of-type) {
@@ -54,4 +153,76 @@ table {
 .last-row-emphasised tbody tr:last-of-type {
     border-top: 2px solid black;
     font-weight: 700;
+}
+
+.training-log {
+    /*background-color: #ecf0f1;*/
+    /*border-radius: 0.25rem;*/
+    /*padding: 0.5rem;*/
+    /*box-sizing: content-box;*/
+    max-width: 1000px;
+    margin: 1rem auto;
+    border: 1px solid #dcdde1;
+    /*margin: auto;*/
+}
+
+.training-log > div:nth-child(odd) {
+    background-color: #f5f6fa;
+}
+
+.training-log > div:not(:last-child):not(:first-child) {
+    border-top: 1px solid #CAD3C8;
+}
+
+.training-log > div {
+    padding: 1rem 0.25rem;
+}
+
+.flex-apart {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr);
+  grid-template-rows: auto 1fr 1fr;
+  gap: 0;
+  grid-template-areas:
+    "Date"
+    "Sidebar"
+    "Activities";
+}
+.Date { grid-area: Date; }
+.Sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.5fr 1.5fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "Plan"
+    "Note";
+  grid-area: Sidebar;
+}
+.Plan { grid-area: Plan; }
+.Note { grid-area: Note; margin-top: 0.5rem;}
+.Activities { grid-area: Activities; overflow-x: auto; }
+
+@media (min-width: 800px) {
+    .grid-container {
+      display: grid;
+      grid-template-columns: 0.5fr 1.5fr;
+      grid-template-rows: 0.2fr 1.8fr;
+      gap: 0 2rem;
+      grid-template-areas:
+        "Date Date"
+        "Sidebar Activities";
+    }
+
+    .forms {
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
 }

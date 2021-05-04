@@ -1,8 +1,7 @@
 {% extends "finnito.theme.fitlytics::layouts.default" %}
 
 {% block content %}
-
-    <h2>{{ weekBoundaries[0] }} - {{ weekBoundaries[1] }}, {{ "now"|date("Y") }}</h2>
+    <h2>{{ week[0].date|date("D jS \\o\\f F") }} - {{ week[6].date|date("D jS \\o\\f F") }}</h2>
 
     <table class="pure-table pure-table-horizontal pure-table-striped last-row-emphasised">
         <thead>
@@ -31,38 +30,81 @@
         </tbody>
     </table>
 
+    <div class="training-log">
+        
+        {% for day in week %}
+        <div class="grid-container">
+            <div class="Date"><h3>{{ day.date|date("D jS F") }}</h3></div>
+            <div class="Sidebar">
+                <div class="Plan">
+                    <div class="flex-apart">
+                        <span><strong>Plan</strong></span>
+                        {% if day.plan %}<span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/plans/edit/{{ day.plan.id }}">Edit</a></span>{% endif %}
+                    </div>
+                    {{ day.plan.htmlPlan()|raw }}
+                </div>
+                <div class="Note">
+                    <div class="flex-apart">
+                        <span><strong>Note</strong></span>
+                        {% if day.note %}<span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/notes/edit/{{ day.note.id }}">Edit</a></span>{%  endif %}
+                    </div>
+                    <table class="blank left">
+                        <tbody>
+                            <tr>
+                                <td><strong>Injured:</strong> <span class="{% if day.note.injured.isTrue() %}red{% else %}green{% endif %}">{{ day.note.injured.text() }}</span></td>
+                                <td><strong>Sick:</strong> <span class="{% if day.note.sick.isTrue() %}red{% else %}green{% endif %}">{{ day.note.sick.text() }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sleep Quality:</strong> {% if day.note.sleep_quality %}{{ day.note.sleep_quality }}/5{% endif %}</td>
+                                <td><strong>Stress Level:</strong> {% if day.note.stress_level %}{{ day.note.stress_level }}/5{% endif %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>{{ day.note.htmlNote()|raw }}</p>
+                </div>
+            </div>
+            <div class="Activities">
+                <h4>Activities</h4>
+                {% if day.activities|length > 0 %}
+                <table class="pure-table pure-table-horizontal pure-table-striped">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Name</th>
+                            <th>Distance</th>
+                            <th>Elevation</th>
+                            <th>Moving Time</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for activity in day.activities %}
+                        <tr>
+                            <td>{{ activity.localStartDate()|date("g:ia") }}</td>
+                            <td>{{ activity.name }}</td>
+                            <td>{{ activity.metersToKilometers(activity.distance, 2) }}km</td>
+                            <td>{{ activity.total_elevation_gain }}m</td>
+                            <td>{{ activity.secondsToHours(activity.moving_time) }}</td>
+                            <td><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No activities - had a rest instead!</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
-    <table class="pure-table pure-table-horizontal pure-table-striped">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Distance</th>
-                <th>Elevation</th>
-                <th>Moving Time</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for activity in activities %}
-            <tr>
-                <td>{{ activity.start_date|date("D jS") }}</td>
-                <td>{{ activity.name }}</td>
-                <td>{{ activity.metersToKilometers(activity.distance, 2) }}km</td>
-                <td>{{ activity.total_elevation_gain }}m</td>
-                <td>{{ activity.secondsToHours(activity.moving_time) }}</td>
-                <td><a href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-
+    <hr/>
 
     <div class="forms">
         {{ form("note_form") }}
         {{ form("plan_form") }}
     </div>
+
 
     <div id="calendar"></div>
 
@@ -70,6 +112,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.css" integrity="sha256-ejA/z0dc7D+StbJL/0HAnRG/Xae3yS2gzg0OAnIURC4=" crossorigin="anonymous">
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.0/dist/chart.min.js" integrity="sha256-ovnFmAOngtHmlhZzPyGrofexz4Kdik4kEobc8B9r1Yk=" crossorigin="anonymous"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
