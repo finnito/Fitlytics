@@ -20,7 +20,7 @@ class ActivityModel extends EntryModel implements ActivityInterface
         return \Carbon\Carbon::parse($this->start_date)->timezone(env("APP_TIMEZONE"));
     }
 
-    public function start_date()
+    public function startDate()
     {
         return $this->start_date->toDateTimeString();
     }
