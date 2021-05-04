@@ -55,7 +55,11 @@ return [
     'debug_blacklist' => [
         '_ENV' => [
             'APP_KEY',
+            "DB_USERNAME",
             'DB_PASSWORD',
+            "ADMIN_EMAIL",
+            "ADMIN_USERNAME",
+            "ADMIN_PASSWORD",
         ],
 
         '_SERVER' => [
