@@ -8,8 +8,6 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
     protected $table = "fitlytics_activities";
 
-    protected $fields = ["*"];
-
     protected $casts = [
         "start_date" => "datetime",
         "activity_json" => "json",
