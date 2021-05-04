@@ -24,7 +24,19 @@ class PlanTableBuilder extends TableBuilder
      *
      * @var array|string
      */
-    protected $columns = [];
+    protected $columns = [
+        'note'          => [
+            'sort_column' => 'date',
+            'wrapper'     => '
+                    <strong>{value.date}</strong>
+                    <br>
+                    <span>{value.plan}</span>',
+            'value'       => [
+                'date'     => 'entry.date',
+                'plan'   => 'entry.plan',
+            ],
+        ],
+    ];
 
     /**
      * The table buttons.
@@ -49,7 +61,11 @@ class PlanTableBuilder extends TableBuilder
      *
      * @var array
      */
-    protected $options = [];
+    protected $options = [
+        "order_by" => [
+            "date" => "desc",
+        ],
+    ];
 
     /**
      * The table assets.
