@@ -65,8 +65,31 @@
             </div>
             <div class="Activities">
                 <h4>Activities</h4>
-                {% if day.activities|length > 0 %}
-                <table class="pure-table pure-table-horizontal pure-table-striped">
+                {% set renderActivities = false %}
+
+                {% if day.date|date("Y-m-d", "Pacific/Auckland") < "now"|date("Y-m-d", "Pacific/Auckland") %}
+                    {% if day.activities|length > 0 %}
+                        {% set renderActivities = true %}
+                    {% else %}
+                        <p>No activities; took a rest day.</p>
+                    {% endif %}
+
+                {% elseif day.date|date("Y-m-d") == "now"|date("Y-m-d", "Pacific/Auckland") %}
+                    {% if day.activities|length > 0 %}
+                        {% set renderActivities = true %}
+                    {% else %}
+                        <p>No activities yet!</p>
+                    {% endif %}
+
+                {% else %}
+                    <p>Wait and see..</p>
+
+                {% endif %}
+
+                {% if renderActivities == true %}
+                {# {% if day.activities|length > 0 %} #}
+                <div class="table-wrapper">
+                <table class="pure-table shadow">
                     <thead>
                         <tr>
                             <th>Time</th>
@@ -90,9 +113,11 @@
                     {% endfor %}
                     </tbody>
                 </table>
-                {% else %}
-                <p>No activities - had a rest instead!</p>
+                </div>
                 {% endif %}
+                {# {% else %} #}
+                {# <p>No activities - had a rest instead!</p> #}
+                {# {% endif %} #}
             </div>
         </div>
         {% endfor %}
