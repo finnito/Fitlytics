@@ -33,20 +33,29 @@
     <div class="training-log">
         
         {% for day in week %}
+        <details {% if day.date|date("Y-m-d", "Pacific/Auckland") <= "now"|date("Y-m-d", "Pacific/Auckland") %}open{% endif %}>
+            <summary><h3>{{ day.date|date("D jS F", "Pacific/Auckland") }}</h3></summary>
         <div class="grid-container">
-            <div class="Date"><h3>{{ day.date|date("D jS F") }}</h3></div>
             <div class="Sidebar">
                 <div class="Plan">
                     <div class="flex-apart">
                         <span><strong>Plan</strong></span>
-                        {% if day.plan %}<span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/plans/edit/{{ day.plan.id }}">Edit</a></span>{% endif %}
+                        {% if day.plan %}
+                            <span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/plans/edit/{{ day.plan.id }}">Edit Plan</a></span>
+                        {% else %}
+                            <span><a class="pure-button button-xsmall button-success" href="/admin/fitlytics/plans/create?date={{day.date|date("Y-m-d")}}">Add Plan</a></span>
+                        {% endif %}
                     </div>
                     {{ day.plan.htmlPlan()|raw }}
                 </div>
                 <div class="Note">
                     <div class="flex-apart">
                         <span><strong>Note</strong></span>
-                        {% if day.note %}<span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/notes/edit/{{ day.note.id }}">Edit</a></span>{%  endif %}
+                        {% if day.note %}
+                            <span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/notes/edit/{{ day.note.id }}">Edit Note</a></span>
+                        {% else %}
+                            <span><a class="pure-button button-xsmall button-success" href="/admin/fitlytics/notes/create?date={{day.date|date("Y-m-d")}}">Add Note</a></span>
+                        {%  endif %}
                     </div>
                     <table class="blank left">
                         <tbody>
@@ -120,6 +129,7 @@
                 {# {% endif %} #}
             </div>
         </div>
+        </details>
         {% endfor %}
     </div>
 
