@@ -67,6 +67,10 @@ class PlanFormBuilder extends FormBuilder
      *
      * @var array
      */
-    protected $assets = [];
+    protected $assets = [
+        'scripts.js' => [
+            "finnito.module.fitlytics::js/form-helpers.js",
+        ],
+    ];
 
 }
