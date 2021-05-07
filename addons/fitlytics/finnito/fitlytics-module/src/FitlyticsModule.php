@@ -36,6 +36,11 @@ class FitlyticsModule extends Module
                 'new_note',
             ],
         ],
+        'strava_credentials' => [
+            'buttons' => [
+                'new_strava_credential',
+            ],
+        ],
     ];
 
 }

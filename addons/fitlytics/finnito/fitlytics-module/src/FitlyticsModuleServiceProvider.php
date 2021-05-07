@@ -1,6 +1,10 @@
 <?php namespace Finnito\FitlyticsModule;
 
 use Anomaly\Streams\Platform\Addon\AddonServiceProvider;
+use Finnito\FitlyticsModule\StravaCredential\Contract\StravaCredentialRepositoryInterface;
+use Finnito\FitlyticsModule\StravaCredential\StravaCredentialRepository;
+use Anomaly\Streams\Platform\Model\Fitlytics\FitlyticsStravaCredentialsEntryModel;
+use Finnito\FitlyticsModule\StravaCredential\StravaCredentialModel;
 use Finnito\FitlyticsModule\Note\Contract\NoteRepositoryInterface;
 use Finnito\FitlyticsModule\Note\NoteRepository;
 use Anomaly\Streams\Platform\Model\Fitlytics\FitlyticsNotesEntryModel;
@@ -52,6 +56,9 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      * @type array|null
      */
     protected $routes = [
+        'admin/fitlytics/strava_credentials'           => 'Finnito\FitlyticsModule\Http\Controller\Admin\StravaCredentialsController@index',
+        'admin/fitlytics/strava_credentials/create'    => 'Finnito\FitlyticsModule\Http\Controller\Admin\StravaCredentialsController@create',
+        'admin/fitlytics/strava_credentials/edit/{id}' => 'Finnito\FitlyticsModule\Http\Controller\Admin\StravaCredentialsController@edit',
         'admin/fitlytics/notes'           => 'Finnito\FitlyticsModule\Http\Controller\Admin\NotesController@index',
         'admin/fitlytics/notes/create'    => 'Finnito\FitlyticsModule\Http\Controller\Admin\NotesController@create',
         'admin/fitlytics/notes/edit/{id}' => 'Finnito\FitlyticsModule\Http\Controller\Admin\NotesController@edit',
@@ -165,6 +172,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      * @type array|null
      */
     protected $bindings = [
+        FitlyticsStravaCredentialsEntryModel::class => StravaCredentialModel::class,
         FitlyticsNotesEntryModel::class => NoteModel::class,
         FitlyticsPlansEntryModel::class => PlanModel::class,
         FitlyticsActivitiesEntryModel::class => ActivityModel::class,
@@ -178,6 +186,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      * @type array|null
      */
     protected $singletons = [
+        StravaCredentialRepositoryInterface::class => StravaCredentialRepository::class,
         NoteRepositoryInterface::class => NoteRepository::class,
         PlanRepositoryInterface::class => PlanRepository::class,
         ActivityRepositoryInterface::class => ActivityRepository::class,

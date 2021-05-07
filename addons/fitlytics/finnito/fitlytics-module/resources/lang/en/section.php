@@ -10,4 +10,7 @@ return [
     'notes' => [
         'title' => 'Notes',
     ],
+    'strava_credentials' => [
+        'title' => 'Strava credentials',
+    ],
 ];

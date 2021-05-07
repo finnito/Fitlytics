@@ -25,4 +25,12 @@ return [
             'delete' => 'Can delete notes?',
         ],
     ],
+    'strava_credentials' => [
+        'name'   => 'Strava credentials',
+        'option' => [
+            'read'   => 'Can read strava credentials?',
+            'write'  => 'Can create/edit strava credentials?',
+            'delete' => 'Can delete strava credentials?',
+        ],
+    ],
 ];

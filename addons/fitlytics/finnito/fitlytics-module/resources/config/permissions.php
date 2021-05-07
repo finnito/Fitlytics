@@ -16,4 +16,9 @@ return [
         'write',
         'delete',
     ],
+    'strava_credentials' => [
+        'read',
+        'write',
+        'delete',
+    ],
 ];
