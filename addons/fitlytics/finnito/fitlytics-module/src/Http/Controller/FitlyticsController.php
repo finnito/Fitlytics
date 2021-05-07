@@ -22,6 +22,7 @@ class FitlyticsController extends PublicController
                 "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->toDateString())->first(),
                 "activities" => $activitiesRepository->newQuery()
                     ->whereDate("activity_json->start_date_local", $now->startOfWeek()->toDateString())
+                    ->orderBy("activity_json->start_date_local", "asc")
                     ->get(),
             ],
             [
@@ -30,6 +31,7 @@ class FitlyticsController extends PublicController
                 "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(1, "day")->toDateString())->first(),
                 "activities" => $activitiesRepository->newQuery()
                     ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
+                    ->orderBy("activity_json->start_date_local", "asc")
                     ->get(),
             ],
             [
@@ -38,6 +40,7 @@ class FitlyticsController extends PublicController
                 "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(2, "day")->toDateString())->first(),
                 "activities" => $activitiesRepository->newQuery()
                     ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
+                    ->orderBy("activity_json->start_date_local", "asc")
                     ->get(),
             ],
             [
@@ -46,6 +49,7 @@ class FitlyticsController extends PublicController
                 "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(3, "day")->toDateString())->first(),
                 "activities" => $activitiesRepository->newQuery()
                     ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
+                    ->orderBy("activity_json->start_date_local", "asc")
                     ->get(),
             ],
             [
@@ -54,6 +58,7 @@ class FitlyticsController extends PublicController
                 "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(4, "day")->toDateString())->first(),
                 "activities" => $activitiesRepository->newQuery()
                     ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
+                    ->orderBy("activity_json->start_date_local", "asc")
                     ->get(),
             ],
             [
@@ -62,6 +67,7 @@ class FitlyticsController extends PublicController
                 "plan" => $plans->query()->whereDate("date", $now->startOfWeek()->add(5, "day")->toDateString())->first(),
                 "activities" => $activitiesRepository->newQuery()
                     ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
+                    ->orderBy("activity_json->start_date_local", "asc")
                     ->get(),
             ],
             [
