@@ -20,8 +20,8 @@ class FinnitoModuleFitlyticsCreateActivitiesStream extends Migration
      */
     protected $stream = [
         'slug' => 'activities',
-        'title_column' => 'name',
-        'translatable' => true,
+        'title_column' => 'strava_id',
+        'translatable' => false,
         'versionable' => false,
         'trashable' => false,
         'searchable' => true,
@@ -34,9 +34,7 @@ class FinnitoModuleFitlyticsCreateActivitiesStream extends Migration
      * @var array
      */
     protected $assignments = [
-        "strava_id" => [
-            "unique" => true,
-        ],
+        "strava_id",
         "name",
         "distance",
         "elapsed_time",

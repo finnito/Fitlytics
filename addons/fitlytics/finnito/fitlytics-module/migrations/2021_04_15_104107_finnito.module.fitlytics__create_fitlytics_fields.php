@@ -49,14 +49,8 @@ class FinnitoModuleFitlyticsCreateFitlyticsFields extends Migration
         /**
          * Activity Fields
          */
-        "strava_id" => [
-            "type" => "anomaly.field_type.text",
-            "config" => [],
-        ],
-        "name" => [
-            "type" => "anomaly.field_type.textarea",
-            "config" => []
-        ],
+        "strava_id" => "anomaly.field_type.text",
+        "name" => "anomaly.field_type.text",
         "distance" => [
             "type" => "anomaly.field_type.decimal",
             "config" => [
@@ -82,21 +76,13 @@ class FinnitoModuleFitlyticsCreateFitlyticsFields extends Migration
                 "separator" => null,
             ],
         ],
-        "type" => [
-            "type" => "anomaly.field_type.text",
-            "config" => []
-        ],
-        "start_date" => [
-            "type" => "anomaly.field_type.text",
-            "config" => []
-        ],
+        "type" => "anomaly.field_type.text",
+        "start_date" => "anomaly.field_type.text",
         "polyline" => [
             "type" => "anomaly.field_type.textarea",
-            "config" => []
         ],
         "activity_json" => [
             "type" => "anomaly.field_type.textarea",
-            "config" => []
         ],
 
         /**
