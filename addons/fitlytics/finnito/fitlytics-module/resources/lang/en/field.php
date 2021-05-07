@@ -33,4 +33,24 @@ return [
         "name" => "Name",
         "instructions" => "",
     ],
+    "name" => [
+        "name" => "Name",
+        "instructions" => "",
+    ],
+    "type" => [
+        "name" => "Type",
+        "instructions" => "",
+    ],
+    "distance" => [
+        "name" => "Distance",
+        "instructions" => "",
+    ],
+    "moving_time" => [
+        "name" => "Moving Time",
+        "instructions" => "",
+    ],
+    "elevation" => [
+        "name" => "Elevation",
+        "instructions" => "",
+    ],
 ];

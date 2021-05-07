@@ -112,7 +112,7 @@
                     <tbody>
                     {% for activity in day.activities %}
                         <tr>
-                            <td>{{ activity.localStartDate()|date("g:ia") }}</td>
+                            <td>{{ activity.start_date|date("g:ia", "Pacific/Auckland") }}</td>
                             <td>{{ activity.name }}</td>
                             <td>{{ activity.metersToKilometers(activity.distance, 2) }}km</td>
                             <td>{{ activity.total_elevation_gain }}m</td>
