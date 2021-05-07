@@ -81,7 +81,11 @@ class ActivityTableBuilder extends TableBuilder
      *
      * @var array
      */
-    protected $options = [];
+    protected $options = [
+        "order_by" => [
+            "activity_json->start_date_local" => "desc"
+        ]
+    ];
 
     /**
      * The table assets.
