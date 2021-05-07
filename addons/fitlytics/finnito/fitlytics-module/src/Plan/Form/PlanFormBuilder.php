@@ -49,6 +49,7 @@ class PlanFormBuilder extends FormBuilder
      */
     protected $options = [
         "class" => "pure-form",
+        "redirect" => "/",
     ];
 
     /**
