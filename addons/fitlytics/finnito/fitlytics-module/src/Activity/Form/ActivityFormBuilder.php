@@ -10,7 +10,20 @@ class ActivityFormBuilder extends FormBuilder
      *
      * @var array|string
      */
-    protected $fields = [];
+    protected $fields = [
+        "name" => [
+            "type" => "anomaly.field_type.text",
+            "label" => "Name",
+        ],
+        "type" => [
+            "type" => "anomaly.field_type.text",
+            "label" => "Type",
+        ],
+        "distance" => [
+            "type" => "anomaly.field_type.text",
+            "label" => "Distance",
+        ],
+    ];
 
     /**
      * Additional validation rules.

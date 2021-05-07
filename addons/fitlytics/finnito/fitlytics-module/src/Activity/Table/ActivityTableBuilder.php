@@ -24,7 +24,39 @@ class ActivityTableBuilder extends TableBuilder
      *
      * @var array|string
      */
-    protected $columns = [];
+    protected $columns = [
+        "type" => [
+            "wrapper" => "{value.type}",
+            "value" => [
+                "type" => "entry.activityTypeEmoji()",
+            ],
+        ],
+        "date" => [
+            "value" => "entry.activity_json.start_date_local|date('D jS F, g:ia')",
+        ],
+        "name" => [
+            "value" => "entry.name",
+        ],
+        "distance" => [
+            "wrapper" => "{value.distance}km",
+            "value" => [
+                "distance" => "entry.metersToKilometers(entry.distance,2)",
+            ],
+        ],
+        "moving_time" => [
+            "wrapper" => "{value.moving_time}m",
+            "value" => [
+                "moving_time" => "entry.secondsToHours(entry.moving_time)",
+            ],
+        ],
+        "elevation" => [
+            "wrapper" => "{value.elevation}m",
+            "value" => [
+                "elevation" => "entry.total_elevation_gain",
+            ],
+        ],
+
+    ];
 
     /**
      * The table buttons.
