@@ -60,7 +60,9 @@ class ActivityFormBuilder extends FormBuilder
      *
      * @var array
      */
-    protected $options = [];
+    protected $options = [
+        'redirect' => '/'
+    ];
 
     /**
      * The form sections.
