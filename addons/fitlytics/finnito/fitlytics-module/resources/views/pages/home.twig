@@ -83,7 +83,7 @@
                         <p>No activities; took a rest day.</p>
                     {% endif %}
 
-                {% elseif day.date|date("Y-m-d") == "now"|date("Y-m-d", "Pacific/Auckland") %}
+                {% elseif day.date|date("Y-m-d", "Pacific/Auckland") == "now"|date("Y-m-d", "Pacific/Auckland") %}
                     {% if day.activities|length > 0 %}
                         {% set renderActivities = true %}
                     {% else %}
