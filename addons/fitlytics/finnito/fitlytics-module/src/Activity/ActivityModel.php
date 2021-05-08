@@ -10,7 +10,6 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
     protected $casts = [
         "start_date" => "datetime",
-        "activity_json" => "json",
     ];
 
     public function localStartDate()
