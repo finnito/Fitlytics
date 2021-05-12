@@ -43,7 +43,7 @@
                         {% if day.plan %}
                             <span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/plans/edit/{{ day.plan.id }}">Edit Plan</a></span>
                         {% else %}
-                            <span><a class="pure-button button-xsmall button-success" href="/admin/fitlytics/plans/create?date={{day.date|date("Y-m-d")}}">Add Plan</a></span>
+                            <span><a class="pure-button button-xsmall button-success" href="/admin/fitlytics/plans/create?date={{day.date|date("Y-m-d", "Pacific/Auckland")}}">Add Plan</a></span>
                         {% endif %}
                     </div>
                     {{ day.plan.htmlPlan()|raw }}
@@ -54,7 +54,7 @@
                         {% if day.note %}
                             <span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/notes/edit/{{ day.note.id }}">Edit Note</a></span>
                         {% else %}
-                            <span><a class="pure-button button-xsmall button-success" href="/admin/fitlytics/notes/create?date={{day.date|date("Y-m-d")}}">Add Note</a></span>
+                            <span><a class="pure-button button-xsmall button-success" href="/admin/fitlytics/notes/create?date={{day.date|date("Y-m-d", "Pacific/Auckland")}}">Add Note</a></span>
                         {%  endif %}
                     </div>
                     <table class="blank left">
