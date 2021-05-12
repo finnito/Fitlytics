@@ -37,8 +37,8 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
 
     public function currentWeekStatistics()
     {
-        $now = \Carbon\Carbon::now("UTC");
-        $offset = \Carbon\Carbon::createFromTimestamp(0, config('app.timezone'))->getTimezone()->toOffsetName();
+        $now = \Carbon\Carbon::now("Pacific/Auckland");
+        $offset = \Carbon\Carbon::createFromTimestamp(0, "Pacific/Auckland")->getTimezone()->toOffsetName();
         return $this->model->query()
             ->selectRaw("SUM(distance) AS distance, SUM(total_elevation_gain) as elevation, SUM(moving_time) as moving_time")
             ->whereRaw(
@@ -55,8 +55,8 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
 
     public function currentWeekStatisticsByType()
     {
-        $now = \Carbon\Carbon::now("UTC");
-        $offset = \Carbon\Carbon::createFromTimestamp(0, config('app.timezone'))->getTimezone()->toOffsetName();
+        $now = \Carbon\Carbon::now("Pacific/Auckland");
+        $offset = \Carbon\Carbon::createFromTimestamp(0, "Pacific/Auckland")->getTimezone()->toOffsetName();
         return $this->model->query()
             ->selectRaw("type, SUM(distance) AS distance, SUM(total_elevation_gain) as elevation, SUM(moving_time) as moving_time")
             ->whereRaw(
