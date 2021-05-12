@@ -119,6 +119,22 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             "verb" => "get",
             "as" => "weeklySummaryFeed",
         ],
+        "weekly-summary-chart-data" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@weeklySummaryChartData",
+            "streams::addon" => "finnito.module.fitlytics",
+            "verb" => "get",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ]
+        ],
+        "weekly-run-data" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@weeklyRunData",
+            "streams::addon" => "finnito.module.fitlytics",
+            "verb" => "get",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ]
+        ],
     ];
 
     /**

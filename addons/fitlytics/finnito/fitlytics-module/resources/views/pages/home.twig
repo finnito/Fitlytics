@@ -3,32 +3,38 @@
 {% block content %}
     <h2>{{ week[0].date|date("D jS \\o\\f F") }} - {{ week[6].date|date("D jS \\o\\f F") }}</h2>
 
-    <table class="pure-table pure-table-horizontal pure-table-striped last-row-emphasised">
-        <thead>
-            <tr>
-                <th>Sport</th>
-                <th>Distance</th>
-                <th>Elevation</th>
-                <th>Moving Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for stat in currentWeekStatisticsByType %}
-            <tr>
-                <td>{{ stat.type }}</td>
-                <td>{{ stat.metersToKilometers(stat.distance, 2) }}km</td>
-                <td>{{ stat.metersToKilometers(stat.elevation, 2) }}km</td>
-                <td>{{ stat.secondsToHours(stat.moving_time) }}</td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td></td>
-                <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.distance, 2) }}km</td>
-                <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.elevation, 2) }}km</td>
-                <td>{{ currentWeekStatisticsByType[0].secondsToHours(currentWeekStatistics.moving_time, 2) }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="pure-g">
+        <div class="pure-u-1-1 pure-u-md-1-2">
+            <table class="pure-table pure-table-horizontal pure-table-striped last-row-emphasised">
+                <thead>
+                    <tr>
+                        <th>Sport</th>
+                        <th>Distance</th>
+                        <th>Elevation</th>
+                        <th>Moving Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in currentWeekStatisticsByType %}
+                    <tr>
+                        <td>{{ stat.type }}</td>
+                        <td>{{ stat.metersToKilometers(stat.distance, 2) }}km</td>
+                        <td>{{ stat.metersToKilometers(stat.elevation, 2) }}km</td>
+                        <td>{{ stat.secondsToHours(stat.moving_time) }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.distance, 2) }}km</td>
+                        <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.elevation, 2) }}km</td>
+                        <td>{{ currentWeekStatisticsByType[0].secondsToHours(currentWeekStatistics.moving_time, 2) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pure-u-1-1 pure-u-md-1-2"><canvas id="currentWeekChart"></canvas></div>
+
+    </div>
 
     <div class="training-log">
         
@@ -140,8 +146,99 @@
         {{ form("plan_form") }}
     </div>
 
-
     <div id="calendar"></div>
+
+    <canvas id="weeklySummaryChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js" integrity="sha256-uVEHWRIr846/vAdLJeybWxjPNStREzOlqLMXjW/Saeo=" crossorigin="anonymous"></script>
+    <script>
+    function getRemoteData(chart, url)
+    {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log("Updating", chart);
+                chart.data = JSON.parse(request.responseText);
+                chart.update();
+                console.log(chart);
+                console.log(chart.data);
+            }
+        };
+        request.open("GET", url, true);
+        request.send();
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var ctx = document.getElementById('weeklySummaryChart').getContext('2d');
+        var config = { type: 'line',
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    "y1": {
+                        display: true,
+                        position: 'left',
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: "Distance",
+                        },
+                    },
+                    "y2": {
+                        display: true,
+                        position: 'right',
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: "Elevation",
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                }
+            }
+        };
+        var weeklySummaryChart = new Chart(ctx, config);
+        getRemoteData(weeklySummaryChart, "/weekly-summary-chart-data");
+
+        var currentWeekChartEl = document.getElementById('currentWeekChart').getContext('2d');
+        var currentWeekChart = new Chart(currentWeekChartEl, { 
+            type: 'bar',
+            options: {
+                interaction: {
+                    mode: 'null'
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Week Breakdown'
+                    }
+                },
+                responsive: true,
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+            },
+        });
+        getRemoteData(currentWeekChart, "/weekly-run-data");
+    });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js" integrity="sha256-ekrJn2FeZaiUFq99QswpQCUTME/HxaDfX7R8INzKJGE=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.css" integrity="sha256-ejA/z0dc7D+StbJL/0HAnRG/Xae3yS2gzg0OAnIURC4=" crossorigin="anonymous">
