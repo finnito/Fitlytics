@@ -17,8 +17,8 @@ class FitlyticsController extends PublicController
 
         if ($request->has("week-of")) {
             if (str_starts_with($request->query("week-of"), "a")) {
-                $activity = $activities->newQuery()->where("id", substr($request->query("week-of"), 1))->first();
-                $this->week_of = \Carbon\Carbon::parse($activity->activity_json()->start_date_local)->format("Y-m-d");
+                $activity = $activities->newQuery()->select("activity_json->start_date_local")->where("id", substr($request->query("week-of"), 1))->first();
+                $this->week_of = \Carbon\Carbon::parse($activity->start_date_local)->format("Y-m-d");
             }
 
             elseif (str_starts_with($request->query("week-of"), "p")) {
