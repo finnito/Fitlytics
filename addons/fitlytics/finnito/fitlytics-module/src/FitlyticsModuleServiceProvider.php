@@ -131,6 +131,29 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
             ],
         ],
+        "strava" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\StravaController@connections",
+            "streams::addon" => "finnito.module.fitlytics",
+            "verb" => "get",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
+        ],
+        "strava/create-subscription" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\StravaController@create_subscription",
+            "streams::addon" => "finnito.module.fitlytics",
+            "verb" => "get",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
+        ],
+        "authorization-code/callback" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\StravaController@callback",
+            "streams::addon" => "finnito.module.fitlytics",
+            "verb" => "get",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
         ],
         "weekly-summary-chart-data" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@weeklySummaryChartData",
@@ -138,7 +161,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             "verb" => "get",
             "middleware" => [
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
-            ]
+            ],
         ],
         "weekly-run-data" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@weeklyRunData",
@@ -146,7 +169,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             "verb" => "get",
             "middleware" => [
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
-            ]
+            ],
         ],
 
         "/api/currentWeekChart" => [
