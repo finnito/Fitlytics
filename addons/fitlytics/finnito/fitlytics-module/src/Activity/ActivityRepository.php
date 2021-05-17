@@ -99,7 +99,8 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
             ->get();
 
         $weeks = $runs->groupBy(function ($run) {
-            $date = \Carbon\Carbon::parse($run->activity_json->start_date_local);
+            // dd($run->activity_json);
+            $date = \Carbon\Carbon::parse($run->activity_json()->start_date_local);
             $week = $date->format("W");
             $year = $date->format("Y");
             return "$year-$week";
@@ -126,7 +127,7 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
                 $moving_time += $run->moving_time;
             }
 
-            $start_date = \Carbon\Carbon::parse($week[0]->activity_json->start_date_local)->format("d-m-Y");
+            $start_date = \Carbon\Carbon::parse($week[0]->activity_json()->start_date_local)->format("d-m-Y");
 
             $distance = $this->model->metersToKilometers($distance, 2);
             $elevation = $this->model->metersToKilometers($elevation, 2);

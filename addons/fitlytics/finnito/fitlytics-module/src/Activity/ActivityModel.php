@@ -10,7 +10,6 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
     protected $casts = [
         "start_date" => "datetime",
-        "activity_json" => "object",
     ];
 
     public function localStartDate()
@@ -21,6 +20,12 @@ class ActivityModel extends EntryModel implements ActivityInterface
     public function startDate()
     {
         return $this->start_date->toDateTimeString();
+    }
+
+    public function activity_json()
+    {
+        // dd(json_decode($this->activity_json, JSON_FORCE_OBJECT));
+        return json_decode($this->activity_json, false);
     }
 
     /**
@@ -192,29 +197,29 @@ class ActivityModel extends EntryModel implements ActivityInterface
         $moving_time = $this->secondsToHours($this->moving_time);
         $elapsed_time = $this->secondsToHours($this->elapsed_time);
         $elevation = $this->total_elevation_gain;
-        // dd($this->activity_json->average_heartrate);
+        // dd($this->activity_json()->average_heartrate);
 
-        if (isset($this->activity_json->average_heartrate)) {
-            $avg_hr = $this->activity_json->average_heartrate;
-            $max_hr = $this->activity_json->max_heartrate;
+        if (isset($this->activity_json()->average_heartrate)) {
+            $avg_hr = $this->activity_json()->average_heartrate;
+            $max_hr = $this->activity_json()->max_heartrate;
         }
         
 
-        if (isset($this->activity_json->average_speed)) {
+        if (isset($this->activity_json()->average_speed)) {
             if ($this->type == "Run") {
-                $avg_speed = $this->metersPerSecondToMinPerKilometer($this->activity_json->average_speed);
-                $max_speed = $this->metersPerSecondToMinPerKilometer($this->activity_json->max_speed);
+                $avg_speed = $this->metersPerSecondToMinPerKilometer($this->activity_json()->average_speed);
+                $max_speed = $this->metersPerSecondToMinPerKilometer($this->activity_json()->max_speed);
                 $speed_unit = "min/km";
             } else {
-                $avg_speed = $this->metersPerSecondToKilometersPerHour($this->activity_json->average_speed);
-                $max_speed = $this->metersPerSecondToKilometersPerHour($this->activity_json->max_speed);
+                $avg_speed = $this->metersPerSecondToKilometersPerHour($this->activity_json()->average_speed);
+                $max_speed = $this->metersPerSecondToKilometersPerHour($this->activity_json()->max_speed);
                 $speed_unit = "km/hr";
             }
         }
         
         
 
-        // $avg_cadence = $this->activity_json->average_cadence;
+        // $avg_cadence = $this->activity_json()->average_cadence;
 
         $out = "Start: {$start_time}<br>
         End: {$activity_end}<br>
@@ -222,11 +227,11 @@ class ActivityModel extends EntryModel implements ActivityInterface
         Time: {$moving_time} (Elapsed: {$elapsed_time})<br>
         Elevation: {$elevation}m<br>";
 
-        if (isset($this->activity_json->average_heartrate)) {
+        if (isset($this->activity_json()->average_heartrate)) {
             $out .= "Heart Rate: {$avg_hr}bpm ($max_hr max)<br>";
         }
         
-        if (isset($this->activity_json->average_speed)) {
+        if (isset($this->activity_json()->average_speed)) {
             $out .= "Speed: {$avg_speed}{$speed_unit} ($max_speed max)<br>";
         }
 

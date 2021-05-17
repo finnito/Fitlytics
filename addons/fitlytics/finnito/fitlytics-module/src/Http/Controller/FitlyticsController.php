@@ -134,43 +134,43 @@ class FitlyticsController extends PublicController
         // $now = $now->sub(1, "week");
         $runWeek = [
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->toDateString())
                 ->where("type", "Run")
                 ->sum("distance"),
                 "x" => "Mon",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
                 ->where("type", "Run")
                 ->sum("distance"),
             "x" => "Tues",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
                 ->where("type", "Run")
                 ->sum("distance"),
                 "x" => "Wed",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
                 ->where("type", "Run")
                 ->sum("distance"),
                 "x" => "Thur",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
                 ->where("type", "Run")
                 ->sum("distance"),
                 "x" => "Fri",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
                 ->where("type", "Run")
                 ->sum("distance"),
                 "x" => "Sat",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
                 ->where("type", "Run")
                 ->sum("distance"),
                 "x" => "Sun",
@@ -179,43 +179,43 @@ class FitlyticsController extends PublicController
 
         $bikeWeek = [
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->toDateString())
                 ->where("type", "Ride")
                 ->sum("distance"),
                 "x" => "Mon",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
                 ->where("type", "Ride")
                 ->sum("distance"),
             "x" => "Tues",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
                 ->where("type", "Ride")
                 ->sum("distance"),
                 "x" => "Wed",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
                 ->where("type", "Ride")
                 ->sum("distance"),
                 "x" => "Thur",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
                 ->where("type", "Ride")
                 ->sum("distance"),
                 "x" => "Fri",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
                 ->where("type", "Ride")
                 ->sum("distance"),
                 "x" => "Sat",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
                 ->where("type", "Ride")
                 ->sum("distance"),
                 "x" => "Sun",
@@ -224,43 +224,43 @@ class FitlyticsController extends PublicController
 
         $kayakWeek = [
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->toDateString())
                 ->where("type", "Kayaking")
                 ->sum("distance"),
                 "x" => "Mon",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
                 ->where("type", "Kayaking")
                 ->sum("distance"),
             "x" => "Tues",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
                 ->where("type", "Kayaking")
                 ->sum("distance"),
                 "x" => "Wed",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
                 ->where("type", "Kayaking")
                 ->sum("distance"),
                 "x" => "Thur",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
                 ->where("type", "Kayaking")
                 ->sum("distance"),
                 "x" => "Fri",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
                 ->where("type", "Kayaking")
                 ->sum("distance"),
                 "x" => "Sat",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
                 ->where("type", "Kayaking")
                 ->sum("distance"),
                 "x" => "Sun",
@@ -269,43 +269,43 @@ class FitlyticsController extends PublicController
 
         $swimWeek = [
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->toDateString())
                 ->where("type", "Swim")
                 ->sum("distance"),
                 "x" => "Mon",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
                 ->where("type", "Swim")
                 ->sum("distance"),
             "x" => "Tues",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
                 ->where("type", "Swim")
                 ->sum("distance"),
                 "x" => "Wed",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
                 ->where("type", "Swim")
                 ->sum("distance"),
                 "x" => "Thur",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
                 ->where("type", "Swim")
                 ->sum("distance"),
                 "x" => "Fri",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
                 ->where("type", "Swim")
                 ->sum("distance"),
                 "x" => "Sat",
             ],
             ["y" => $activitiesRepository->newQuery()
-                ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
+                ->whereDate("activity_json()->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
                 ->where("type", "Swim")
                 ->sum("distance"),
                 "x" => "Sun",
@@ -587,9 +587,9 @@ class FitlyticsController extends PublicController
             $elapsed_time = $activity->secondsToHours($activity->elapsed_time);
             $elevation = $activity->total_elevation_gain;
 
-            if (isset($activity->activity_json->average_heartrate)) {
-                $avg_hr = $activity->activity_json->average_heartrate;
-                $max_hr = $activity->activity_json->max_heartrate;
+            if (isset($activity->activity_json()->average_heartrate)) {
+                $avg_hr = $activity->activity_json()->average_heartrate;
+                $max_hr = $activity->activity_json()->max_heartrate;
                 $hr_string = "Heart Rate: {$avg_hr}bpm ($max_hr max)";
             } else {
                 $hr_string = "Not Recorded";
@@ -597,12 +597,12 @@ class FitlyticsController extends PublicController
             
 
             if ($activity->type == "Run") {
-                $avg_speed = $activity->metersPerSecondToMinPerKilometer($activity->activity_json->average_speed);
-                $max_speed = $activity->metersPerSecondToMinPerKilometer($activity->activity_json->max_speed);
+                $avg_speed = $activity->metersPerSecondToMinPerKilometer($activity->activity_json()->average_speed);
+                $max_speed = $activity->metersPerSecondToMinPerKilometer($activity->activity_json()->max_speed);
                 $speed_unit = "min/km";
             } else {
-                $avg_speed = $activity->metersPerSecondToKilometersPerHour($activity->activity_json->average_speed);
-                $max_speed = $activity->metersPerSecondToKilometersPerHour($activity->activity_json->max_speed);
+                $avg_speed = $activity->metersPerSecondToKilometersPerHour($activity->activity_json()->average_speed);
+                $max_speed = $activity->metersPerSecondToKilometersPerHour($activity->activity_json()->max_speed);
                 $speed_unit = "km/hr";
             }
 
