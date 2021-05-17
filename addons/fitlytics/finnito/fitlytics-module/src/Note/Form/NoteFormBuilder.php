@@ -32,7 +32,9 @@ class NoteFormBuilder extends FormBuilder
      * @var array|string
      */
     protected $actions = [
-        "save",
+        'save' => [
+            'redirect' => '/?week-of=n{entry.id}'
+        ],
     ];
 
     /**

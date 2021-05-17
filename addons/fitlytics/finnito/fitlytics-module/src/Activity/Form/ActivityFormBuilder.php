@@ -44,7 +44,11 @@ class ActivityFormBuilder extends FormBuilder
      *
      * @var array|string
      */
-    protected $actions = [];
+    protected $actions = [
+        'save' => [
+            'redirect' => '/?week-of=a{entry.id}'
+        ],
+    ];
 
     /**
      * The form buttons.
@@ -61,7 +65,7 @@ class ActivityFormBuilder extends FormBuilder
      * @var array
      */
     protected $options = [
-        'redirect' => '/'
+        // "redirect" => "/?week-of={entry.activity_json.start_date_local|date('Y-m-d')",
     ];
 
     /**
