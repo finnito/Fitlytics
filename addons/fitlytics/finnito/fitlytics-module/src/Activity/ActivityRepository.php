@@ -194,18 +194,7 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
             "yAxisID" => 'y1',
             "pointRadius" => 0,
         ]);
-        // array_push($out, $elevationDataset);
-        // array_push($out, $durationDataset);
-
-        // $runs = $runs->sum(function ($week) {
-        //     $d = 0;
-        //     foreach ($week as $run) {
-        //         $d += $run->distance;
-        //     }
-        //     // return $d;
-        // });
-
-        // return $runs;
+        
         return json_encode($out);
     }
 }
