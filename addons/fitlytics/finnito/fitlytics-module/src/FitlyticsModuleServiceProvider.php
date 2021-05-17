@@ -73,9 +73,9 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "home",
-            // "middleware" => [
-            //     \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
-            // ]
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
         ],
         "activities.ics" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@activitiesICS",
@@ -100,24 +100,37 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "activitiesCalendarFeed",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
         ],
         "notes-calendar-feed" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@notesCalendarFeed",
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "notesCalendarFeed",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
         ],
         "plans-calendar-feed" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@plansCalendarFeed",
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "plansCalendarFeed",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
         ],
         "weekly-summary-feed" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@weeklySummaryFeed",
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "weeklySummaryFeed",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
+        ],
         ],
         "weekly-summary-chart-data" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@weeklySummaryChartData",
@@ -135,6 +148,13 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
             ]
         ],
+
+        "/api/currentWeekChart" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\APIController@currentWeekChart",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
+        ]
     ];
 
     /**
