@@ -114,7 +114,7 @@ class FitlyticsController extends PublicController
 
         // dd($week);
 
-        $this->template->set("meta_title", "Home");
+        // $this->template->set("meta_title", "Home");
 
         return view(
             'finnito.module.fitlytics::pages/home',
