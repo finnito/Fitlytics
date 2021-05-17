@@ -32,7 +32,7 @@ class ActivityTableBuilder extends TableBuilder
             ],
         ],
         "date" => [
-            "value" => "entry.activity_json.start_date_local|date('D jS F, g:ia')",
+            "value" => "entry.start_date|date('D jS F, g:ia', 'Pacific/Auckland')",
         ],
         "name" => [
             "value" => "entry.name",
