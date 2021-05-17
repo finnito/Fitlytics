@@ -203,11 +203,8 @@
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                console.log("Updating", chart);
                 chart.data = JSON.parse(request.responseText);
                 chart.update();
-                console.log(chart);
-                console.log(chart.data);
             }
         };
         request.open("GET", url, true);
@@ -216,10 +213,15 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
-        var ctx = document.getElementById('weeklySummaryChart').getContext('2d');
+        var chartEl = document.getElementById('weeklySummaryChart');
+        var ctx = chartEl.getContext('2d');
         var config = { type: 'line',
             options: {
                 responsive: true,
+                onClick: (evt, item) => {
+                    let week_of = evt.chart.data.datasets[0].data[item[0].index].x;
+                    window.location.href = ("/?week-of=" + week_of);
+                },
                 interaction: {
                     mode: 'index',
                     intersect: false,
@@ -257,32 +259,9 @@
         };
         var weeklySummaryChart = new Chart(ctx, config);
         getRemoteData(weeklySummaryChart, "/weekly-summary-chart-data");
+        
 
-        var currentWeekChartEl = document.getElementById('currentWeekChart').getContext('2d');
-        var currentWeekChart = new Chart(currentWeekChartEl, { 
-            type: 'bar',
-            options: {
-                interaction: {
-                    mode: 'null'
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Week Breakdown'
-                    }
-                },
-                responsive: true,
-                scales: {
-                  y: {
-                    beginAtZero: true
-                  }
-                }
-            },
-        });
-        getRemoteData(currentWeekChart, "/weekly-run-data");
+        
     });
     </script>
 
@@ -290,7 +269,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.css" integrity="sha256-ejA/z0dc7D+StbJL/0HAnRG/Xae3yS2gzg0OAnIURC4=" crossorigin="anonymous">
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.0/dist/chart.min.js" integrity="sha256-ovnFmAOngtHmlhZzPyGrofexz4Kdik4kEobc8B9r1Yk=" crossorigin="anonymous"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
