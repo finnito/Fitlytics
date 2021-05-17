@@ -15,8 +15,6 @@ class FitlyticsController extends PublicController
     {
         $this->request = $request;
 
-        // dd($request->query("week-of"));
-
         if ($request->has("week-of")) {
             if (str_starts_with($request->query("week-of"), "a")) {
                 $activity = $activities->newQuery()->where("id", substr($request->query("week-of"), 1))->first();
