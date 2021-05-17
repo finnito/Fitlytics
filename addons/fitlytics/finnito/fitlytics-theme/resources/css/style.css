@@ -21,6 +21,10 @@ h3 {
     margin-bottom: 0;
 }
 
+.navigation-controls {
+    margin-bottom: 1.5rem;
+}
+
 .alert {
     display: block;
     max-width: 100%;

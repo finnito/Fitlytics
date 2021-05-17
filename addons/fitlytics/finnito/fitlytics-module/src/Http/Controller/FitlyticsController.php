@@ -11,10 +11,42 @@ use Illuminate\Http\Request;
 
 class FitlyticsController extends PublicController
 {
+    public function __construct(Request $request, ActivityRepositoryInterface $activities, PlanModel $planModel, NoteModel $noteModel)
+    {
+        $this->request = $request;
+
+        // dd($request->query("week-of"));
+
+        if ($request->has("week-of")) {
+            if (str_starts_with($request->query("week-of"), "a")) {
+                $activity = $activities->newQuery()->where("id", substr($request->query("week-of"), 1))->first();
+                $this->week_of = \Carbon\Carbon::parse($activity->activity_json()->start_date_local)->format("Y-m-d");
+            }
+
+            elseif (str_starts_with($request->query("week-of"), "p")) {
+                $plan = $planModel->query()->where("id", substr($request->query("week-of"), 1))->first();
+                $this->week_of = \Carbon\Carbon::parse($plan->date)->format("Y-m-d");
+            }
+
+            elseif (str_starts_with($request->query("week-of"), "n")) {
+                $note = $noteModel->query()->where("id", substr($request->query("week-of"), 1))->first();
+                // dd($note);
+                $this->week_of = \Carbon\Carbon::parse($note->date)->format("Y-m-d");
+            }
+
+            else {
+                $this->week_of = \Carbon\Carbon::parse($request->query("week-of"))->format("Y-m-d");
+            }
+        } else {
+            $this->week_of = "now";
+        }
+    }
+
     public function home(ActivityRepositoryInterface $activitiesRepository, NoteModel $notes, PlanModel $plans)
     {
         // dd(\Carbon\Carbon::parse("now"));
-        $now = \Carbon\CarbonImmutable::now()->timezone("Pacific/Auckland");
+        $now = \Carbon\CarbonImmutable::parse($this->week_of)->timezone("Pacific/Auckland");
+        // dd($now);
         $week = [
             [
                 "date" => $now->startOfWeek(),
@@ -88,11 +120,13 @@ class FitlyticsController extends PublicController
             'finnito.module.fitlytics::pages/home',
             [
                 'activities' => $activitiesRepository->thisWeek(),
-                "currentWeekStatisticsByType" => $activitiesRepository->currentWeekStatisticsByType(),
-                "currentWeekStatistics" => $activitiesRepository->currentWeekStatistics(),
+                "currentWeekStatisticsByType" => $activitiesRepository->currentWeekStatisticsByType($this->week_of),
+                "currentWeekStatistics" => $activitiesRepository->currentWeekStatistics($this->week_of),
                 "weekBoundaries" => $activitiesRepository->weekBoundaries(),
                 "week" => $week,
-                "weeklyRunStats" => $activitiesRepository->weeklyRunStats()
+                "weeklyRunStats" => $activitiesRepository->weeklyRunStats(),
+                "week_of" => $this->week_of,
+                "weeks" => $activitiesRepository->getSelectWeeks(),
             ]
         );
     }

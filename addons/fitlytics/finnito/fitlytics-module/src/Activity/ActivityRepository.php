@@ -35,9 +35,10 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
         ];
     }
 
-    public function currentWeekStatistics()
+    public function currentWeekStatistics($week_of)
     {
-        $now = \Carbon\Carbon::now("Pacific/Auckland");
+        // $now = \Carbon\Carbon::now("Pacific/Auckland");
+        $now = \Carbon\Carbon::parse($week_of, "Pacific/Auckland");
         $offset = \Carbon\Carbon::createFromTimestamp(0, "Pacific/Auckland")->getTimezone()->toOffsetName();
         return $this->model->query()
             ->selectRaw("SUM(distance) AS distance, SUM(total_elevation_gain) as elevation, SUM(moving_time) as moving_time")
@@ -53,9 +54,9 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
             ->first();
     }
 
-    public function currentWeekStatisticsByType()
+    public function currentWeekStatisticsByType($week_of)
     {
-        $now = \Carbon\Carbon::now("Pacific/Auckland");
+        $now = \Carbon\Carbon::parse($week_of, "Pacific/Auckland");
         $offset = \Carbon\Carbon::createFromTimestamp(0, "Pacific/Auckland")->getTimezone()->toOffsetName();
         return $this->model->query()
             ->selectRaw("type, SUM(distance) AS distance, SUM(total_elevation_gain) as elevation, SUM(moving_time) as moving_time")
@@ -90,6 +91,38 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
             )
             ->orderBy("start_date", "asc")
             ->get();
+    }
+
+    public function getSelectWeeks()
+    {
+        $weeks = $this->model->query()
+            ->get()
+            ->groupBy(function ($activity) {
+                $dte = \Carbon\Carbon::parse($activity->activity_json()->start_date_local)->startOfWeek();
+                return $dte->year . "-" . $dte->week;
+                // return $dte->isoWeekYear() . "-" . $dte->isoWeek();
+            });
+            // ->keys()
+            // ->sortDesc();
+        // dd($weeks);
+            // ->first();
+            // ;
+        // return $weeks;
+        $out = [];
+        foreach ($weeks as $week => $activities) {
+            $date = \Carbon\Carbon::now();
+            // dd($date);
+            // dd($week);
+            $date->setISODate(explode("-", $week)[0], explode("-", $week)[1]);
+            // dd($date);
+            // $start = $date;
+            // $end = $date->endOfWeek();
+            // dd($date);
+            // dd($start, $end);
+            array_push($out, $date);
+        }
+
+        return collect($out)->sortDesc();
     }
 
     public function weeklyRunStats()
