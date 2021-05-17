@@ -40,7 +40,7 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
         // $now = \Carbon\Carbon::now("Pacific/Auckland");
         $now = \Carbon\Carbon::parse($week_of, "Pacific/Auckland");
         $offset = \Carbon\Carbon::createFromTimestamp(0, "Pacific/Auckland")->getTimezone()->toOffsetName();
-        return $this->model->query()
+        return $this->model->newQuery()
             ->selectRaw("SUM(distance) AS distance, SUM(total_elevation_gain) as elevation, SUM(moving_time) as moving_time")
             ->whereRaw(
                 "CONVERT_TZ(STR_TO_DATE(start_date, '%Y-%m-%dT%H:%i:%sZ'), '+00:00','"
