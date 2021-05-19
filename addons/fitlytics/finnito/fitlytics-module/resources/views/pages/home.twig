@@ -1,54 +1,55 @@
 {% extends "finnito.theme.fitlytics::layouts.default" %}
 
 {% block content %}
-    <h2>{{ week_of|date_modify('monday this week')|date("D jS \\o\\f F") }} - {{ week_of|date_modify('sunday this week')|date("D jS \\o\\f F Y") }}</h2>
+    <div class="navigation flex-apart">
+        <h2 class="heading ~urge !low">{{ week_of|date_modify('monday this week')|date("D jS")}} - {{ week_of|date_modify('sunday this week')|date("D jS \\o\\f F Y") }}</h2>
 
-    <div class="navigation-controls">
-        <a class="pure-button button-secondary" href="/?week-of={{ week_of|date_modify('-1 week')|date('Y-m-d', 'Pacific/Auckland') }}">Previous Week</a>
-        <a class="pure-button button-secondary" href="/?week-of={{ 'now'|date('Y-m-d', 'Pacific/Auckland') }}">Today</a>
-        <a class="pure-button button-secondary" href="/?week-of={{ week_of|date_modify('+1 week')|date('Y-m-d', 'Pacific/Auckland') }}">Next Week</a>
-        <select name="week-selector" id="week-selector">
-        {% for item in weeks %}
-            <option value="{{ item|date("Y-m-d", "Pacific/Auckland") }}" {% if week_of|date_modify('monday this week')|date("Y-m-d") == item|date("Y-m-d", "Pacific/Auckland") %} selected {% endif %}> {{ item|date("Y-m-d", "Pacific/Auckland") }}</option>
-        {% endfor %}
-        </select>
-        <script>
-        document.querySelector("select#week-selector").addEventListener("change", function(event) {
-            window.location.href = ("/?week-of=" + event.target.selectedOptions[0].value);
-        });
-        </script>
-    </div>
-
-    <div class="pure-g">
-        <div class="pure-u-1-1 pure-u-md-1-2">
-            <table class="pure-table pure-table-horizontal pure-table-striped last-row-emphasised">
-                <thead>
-                    <tr>
-                        <th>Sport</th>
-                        <th>Distance</th>
-                        <th>Elevation</th>
-                        <th>Moving Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for stat in currentWeekStatisticsByType %}
-                    <tr>
-                        <td>{{ stat.type }}</td>
-                        <td>{{ stat.metersToKilometers(stat.distance, 2) }}km</td>
-                        <td>{{ stat.metersToKilometers(stat.elevation, 2) }}km</td>
-                        <td>{{ stat.secondsToHours(stat.moving_time) }}</td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td></td>
-                        <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.distance, 2) }}km</td>
-                        <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.elevation, 2) }}km</td>
-                        <td>{{ currentWeekStatisticsByType[0].secondsToHours(currentWeekStatistics.moving_time, 2) }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="navigation-controls">
+            <a class="button ~info !normal" href="/?week-of={{ week_of|date_modify('-1 week')|date('Y-m-d', 'Pacific/Auckland') }}">Week ⬅</a>
+            <a class="button ~urge !normal" href="/?week-of={{ 'now'|date('Y-m-d', 'Pacific/Auckland') }}">Today</a>
+            <a class="button ~info !normal" href="/?week-of={{ week_of|date_modify('+1 week')|date('Y-m-d', 'Pacific/Auckland') }}">➡ Week</a>
+            
+            <div class="select ~urge !low">
+                <select name="week-selector" id="week-selector" autocomplete="off">
+                {% for item in weeks %}
+                    <option value="{{ item|date("Y-m-d", "Pacific/Auckland") }}" {% if week_of|date_modify('monday this week')|date("Y-m-d") == item|date("Y-m-d", "Pacific/Auckland") %} selected {% endif %}>Week of {{ item|date("D jS M, Y", "Pacific/Auckland") }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <script>
+            document.querySelector("select#week-selector").addEventListener("change", function(event) {
+                window.location.href = ("/?week-of=" + event.target.selectedOptions[0].value);
+            });
+            </script>
         </div>
-        <div class="pure-u-1-1 pure-u-md-1-2">
+    </div>
+    <div class="flex-apart">
+        <table class="table last-row-emphasised card">
+            <thead>
+                <tr>
+                    <th>Sport</th>
+                    <th>Distance</th>
+                    <th>Elevation</th>
+                    <th>Moving Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in currentWeekStatisticsByType %}
+                <tr>
+                    <td>{{ stat.type }}</td>
+                    <td>{{ stat.metersToKilometers(stat.distance, 2) }}km</td>
+                    <td>{{ stat.metersToKilometers(stat.elevation, 2) }}km</td>
+                    <td>{{ stat.secondsToHours(stat.moving_time) }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.distance, 2) }}km</td>
+                    <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.elevation, 2) }}km</td>
+                    <td>{{ currentWeekStatisticsByType[0].secondsToHours(currentWeekStatistics.moving_time, 2) }}</td>
+                </tr>
+            </tbody>
+        </table>
             <canvas id="currentWeekChart"></canvas>
             <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -82,50 +83,77 @@
         </div>
     </div>
 
-    <div class="training-log">
+    <div class="training-log content">
         
         {% for day in week %}
-        <details {% if day.date|date("Y-m-d", "Pacific/Auckland") <= "now"|date("Y-m-d", "Pacific/Auckland") %}open{% endif %}>
-            <summary><h3>{{ day.date|date("D jS F", "Pacific/Auckland") }}</h3></summary>
+        <details class="card ~neutral !low" {% if day.date|date("Y-m-d", "Pacific/Auckland") <= "now"|date("Y-m-d", "Pacific/Auckland") %}open{% endif %}>
+            <summary><h3 class="heading">{{ day.date|date("D jS F", "Pacific/Auckland") }}</h3></summary>
         <div class="grid-container">
             <div class="Sidebar">
                 <div class="Plan">
-                    <div class="flex-apart">
-                        <span><strong>Plan</strong></span>
+                    <div class="flex-apart card ~neutral !normal">
+                        <div><span class="subheading">Plan</span><br>{{ day.plan.htmlPlan()|raw }}</div>
                         {% if day.plan %}
-                            <span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/plans/edit/{{ day.plan.id }}">Edit Plan</a></span>
+                            <span><a class="button ~warning !normal" href="/admin/fitlytics/plans/edit/{{ day.plan.id }}">Edit Plan</a></span>
                         {% else %}
-                            <span><a class="pure-button button-xsmall button-success" href="/admin/fitlytics/plans/create?date={{day.date|date("Y-m-d", "Pacific/Auckland")}}">Add Plan</a></span>
+                            <span><a class="button ~positive !high" href="/admin/fitlytics/plans/create?date={{day.date|date("Y-m-d", "Pacific/Auckland")}}">Add Plan</a></span>
                         {% endif %}
                     </div>
-                    {{ day.plan.htmlPlan()|raw }}
+                    
                 </div>
-                <div class="Note">
+                <div class="Note card ~info !normal">
                     <div class="flex-apart">
-                        <span><strong>Note</strong></span>
+                        <span class="subheading">Note</span>
                         {% if day.note %}
-                            <span><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/notes/edit/{{ day.note.id }}">Edit Note</a></span>
+                            <span><a class="button ~warning !normal" href="/admin/fitlytics/notes/edit/{{ day.note.id }}">Edit Note</a></span>
                         {% else %}
-                            <span><a class="pure-button button-xsmall button-success" href="/admin/fitlytics/notes/create?date={{day.date|date("Y-m-d", "Pacific/Auckland")}}">Add Note</a></span>
+                            <span><a class="button ~positive !high" href="/admin/fitlytics/notes/create?date={{day.date|date("Y-m-d", "Pacific/Auckland")}}">Add Note</a></span>
                         {%  endif %}
                     </div>
-                    <table class="blank left">
-                        <tbody>
-                            <tr>
-                                <td><strong>Injured:</strong> <span class="{% if day.note.injured.isTrue() %}red{% else %}green{% endif %}">{{ day.note.injured.text() }}</span></td>
-                                <td><strong>Sick:</strong> <span class="{% if day.note.sick.isTrue() %}red{% else %}green{% endif %}">{{ day.note.sick.text() }}</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Sleep Quality:</strong> {% if day.note.sleep_quality %}{{ day.note.sleep_quality }}/5{% endif %}</td>
-                                <td><strong>Stress Level:</strong> {% if day.note.stress_level %}{{ day.note.stress_level }}/5{% endif %}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    {% if day.note %}
+                    <p>
+                    {% if day.note.injured.isTrue() %}
+                        <span class="chip ~critical">Injured</span>
+                    {% else %}
+                        <span class="chip ~positive">Not Injured</span>
+                    {% endif %}
+
+                    {% if day.note.sleep_quality == "5" %}
+                        {% set sleepType = "~urge" %}
+                    {% elseif day.note.sleep_quality == "4" %}
+                        {% set sleepType = "~urge" %}
+                    {% elseif day.note.sleep_quality == "3" %}
+                        {% set sleepType = "~info" %}
+                    {% elseif day.note.sleep_quality == "2" %}
+                        {% set sleepType = "~warning" %}
+                    {% elseif day.note.sleep_quality == "1" %}
+                        {% set sleepType = "~critical" %}
+                    {% else %}
+                        {% set sleepType = "~neutral" %}
+                    {% endif %}
+
+                    {% if day.note.stress_level == "1" %}
+                        {% set stressType = "~urge" %}
+                    {% elseif day.note.stress_level == "2" %}
+                        {% set stressType = "~urge" %}
+                    {% elseif day.note.stress_level == "3" %}
+                        {% set stressType = "~info" %}
+                    {% elseif day.note.stress_level == "4" %}
+                        {% set stressType = "~warning" %}
+                    {% elseif day.note.stress_level == "5" %}
+                        {% set stressType = "~critical" %}
+                    {% else %}
+                        {% set stressType= "~neutral" %}
+                    {% endif %}
+                    <span class="chip {{ sleepType }}">Sleep {{ day.note.sleep_quality }}/5</span>
+                    <span class="chip {{ stressType }}">Stress {{ day.note.stress_level}}/5</span>
+                    </p>
                     <p>{{ day.note.htmlNote()|raw }}</p>
+                    {% endif%}
                 </div>
             </div>
             <div class="Activities">
-                <h4>Activities</h4>
+                <h4 class="subheading">Activities</h4>
                 {% set renderActivities = false %}
 
                 {% if day.date|date("Y-m-d", "Pacific/Auckland") < "now"|date("Y-m-d", "Pacific/Auckland") %}
@@ -150,26 +178,22 @@
                 {% if renderActivities == true %}
                 {# {% if day.activities|length > 0 %} #}
                 <div class="table-wrapper">
-                <table class="pure-table shadow">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th>Time</th>
-                            <th>Name</th>
-                            <th>Distance</th>
-                            <th>Elevation</th>
-                            <th>Moving Time</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for activity in day.activities %}
                         <tr>
-                            <td>{{ activity.start_date|date("g:ia", "Pacific/Auckland") }}</td>
-                            <td>{{ activity.name }}</td>
-                            <td>{{ activity.metersToKilometers(activity.distance, 2) }}km</td>
-                            <td>{{ activity.total_elevation_gain }}m</td>
-                            <td>{{ activity.secondsToHours(activity.moving_time) }}</td>
-                            <td><a class="pure-button button-xsmall button-secondary" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
+                            <td><small>{{ activity.start_date|date("g:ia", "Pacific/Auckland") }}</small><br>{{ activity.activityTypeEmoji() }} {{ activity.name }}</td>
+                            <td>{{ activity.secondsToHours(activity.moving_time) }}<br>{{ activity.metersToKilometers(activity.distance, 2) }}km</td>
+                            <td>{{ activity.total_elevation_gain }}m ⬆️</td>
+                            <td><a class="button ~warning !normal" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
