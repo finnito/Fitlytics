@@ -50,15 +50,19 @@
                 </tr>
             </tbody>
         </table>
+        <div class="chartContainer card">
             <canvas id="currentWeekChart"></canvas>
             <script>
             document.addEventListener("DOMContentLoaded", function() {
                 var currentWeekChartEl = document.getElementById('currentWeekChart').getContext('2d');
                 var currentWeekChart = new Chart(currentWeekChartEl, { 
                     type: 'bar',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1,
                     options: {
                         interaction: {
-                            mode: 'null'
+                            
                         },
                         plugins: {
                             legend: {
@@ -71,9 +75,27 @@
                         },
                         responsive: true,
                         scales: {
-                          y: {
-                            beginAtZero: true
-                          }
+                            "y": {
+                                display: "auto",
+                                position: 'left',
+                                type: 'linear',
+                                title: {
+                                    display: true,
+                                    text: "Distance (km)",
+                                },
+                            },
+                            "y2": {
+                                display: "auto",
+                                position: 'right',
+                                type: 'linear',
+                                title: {
+                                    display: true,
+                                    text: "Duration (min)",
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                            }
                         }
                     }
                 });
