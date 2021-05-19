@@ -10,6 +10,8 @@
 
 .table-wrapper {
     overflow-x: scroll;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .table {
@@ -19,6 +21,8 @@
 
 .chartContainer {
     width: 100%;
+    box-sizing: border-box;
+    margin-top: 1rem;
 }
 
 select {
@@ -366,6 +370,7 @@ table.pure-table thead th {
 
     .chartContainer {
         width: 50%;
+        margin-top: 0;
     }
 
     .flex-apart {
