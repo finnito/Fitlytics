@@ -39,14 +39,14 @@
                     <tr>
                         <td>{{ stat.type }}</td>
                         <td>{{ stat.metersToKilometers(stat.distance, 2) }}km</td>
-                        <td>{{ stat.metersToKilometers(stat.elevation, 2) }}km</td>
+                        <td>{{ stat.elevation }}m</td>
                         <td>{{ stat.secondsToHours(stat.moving_time) }}</td>
                     </tr>
                     {% endfor %}
                     <tr>
                         <td></td>
                         <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.distance, 2) }}km</td>
-                        <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.elevation, 2) }}km</td>
+                        <td>{{ currentWeekStatistics.elevation }}m</td>
                         <td>{{ currentWeekStatisticsByType[0].secondsToHours(currentWeekStatistics.moving_time, 2) }}</td>
                     </tr>
                 </tbody>
