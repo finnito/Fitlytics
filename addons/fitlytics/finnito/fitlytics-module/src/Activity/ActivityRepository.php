@@ -119,7 +119,7 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
             // $end = $date->endOfWeek();
             // dd($date);
             // dd($start, $end);
-            array_push($out, $date);
+            array_push($out, $date->startOfWeek());
         }
 
         return collect($out)->sortDesc();
