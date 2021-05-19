@@ -1,7 +1,7 @@
 {% extends "finnito.theme.fitlytics::layouts.default" %}
 
 {% block content %}
-    <div class="navigation flex-apart">
+    <div class="navigation flex-apart change">
         <h2 class="heading ~urge !low">{{ week_of|date_modify('monday this week')|date("D jS")}} - {{ week_of|date_modify('sunday this week')|date("D jS \\o\\f F Y") }}</h2>
 
         <div class="navigation-controls">
@@ -9,7 +9,7 @@
             <a class="button ~urge !normal" href="/?week-of={{ 'now'|date('Y-m-d', 'Pacific/Auckland') }}">Today</a>
             <a class="button ~info !normal" href="/?week-of={{ week_of|date_modify('+1 week')|date('Y-m-d', 'Pacific/Auckland') }}">➡ Week</a>
             
-            <div class="select ~urge !low">
+            <div class="select !normal">
                 <select name="week-selector" id="week-selector" autocomplete="off">
                 {% for item in weeks %}
                     <option value="{{ item|date("Y-m-d", "Pacific/Auckland") }}" {% if week_of|date_modify('monday this week')|date("Y-m-d") == item|date("Y-m-d", "Pacific/Auckland") %} selected {% endif %}>Week of {{ item|date("D jS M, Y", "Pacific/Auckland") }}</option>
@@ -23,7 +23,7 @@
             </script>
         </div>
     </div>
-    <div class="flex-apart">
+    <div class="flex-apart change">
         <div class="table-wrapper card ~info !normal">
             <table class="table last-row-emphasised">
                 <thead>
@@ -114,8 +114,8 @@
             <summary><h3 class="heading">{{ day.date|date("D jS F", "Pacific/Auckland") }}</h3></summary>
         <div class="grid-container">
             <div class="Sidebar">
-                <div class="Plan">
-                    <div class="flex-apart card ~neutral !normal">
+                <div class="Plan card ~positive !normal">
+                    <div class="flex-apart">
                         <div><span class="subheading">Plan</span><br>{{ day.plan.htmlPlan()|raw }}</div>
                         {% if day.plan %}
                             <span><a class="button ~warning !normal" href="/admin/fitlytics/plans/edit/{{ day.plan.id }}">Edit Plan</a></span>
@@ -123,10 +123,9 @@
                             <span><a class="button ~positive !high" href="/admin/fitlytics/plans/create?date={{day.date|date("Y-m-d", "Pacific/Auckland")}}">Add Plan</a></span>
                         {% endif %}
                     </div>
-                    
                 </div>
-                <div class="Note card ~info !normal">
-                    <div class="flex-apart">
+                <div class="Note card p0">
+                    <div class="flex-apart section ~warning !normal p1">
                         <span class="subheading">Note</span>
                         {% if day.note %}
                             <span><a class="button ~warning !normal" href="/admin/fitlytics/notes/edit/{{ day.note.id }}">Edit Note</a></span>
@@ -135,44 +134,46 @@
                         {%  endif %}
                     </div>
                     {% if day.note %}
-                    <p>
-                    {% if day.note.injured.isTrue() %}
-                        <span class="chip ~critical">Injured</span>
-                    {% else %}
-                        <span class="chip ~positive">Not Injured</span>
-                    {% endif %}
+                    <div class="p1">
+                        <p>
+                        {% if day.note.injured.isTrue() %}
+                            <span class="chip ~critical">Injured</span>
+                        {% else %}
+                            <span class="chip ~positive">Not Injured</span>
+                        {% endif %}
 
-                    {% if day.note.sleep_quality == "5" %}
-                        {% set sleepType = "~urge" %}
-                    {% elseif day.note.sleep_quality == "4" %}
-                        {% set sleepType = "~urge" %}
-                    {% elseif day.note.sleep_quality == "3" %}
-                        {% set sleepType = "~info" %}
-                    {% elseif day.note.sleep_quality == "2" %}
-                        {% set sleepType = "~warning" %}
-                    {% elseif day.note.sleep_quality == "1" %}
-                        {% set sleepType = "~critical" %}
-                    {% else %}
-                        {% set sleepType = "~neutral" %}
-                    {% endif %}
+                        {% if day.note.sleep_quality == "5" %}
+                            {% set sleepType = "~urge" %}
+                        {% elseif day.note.sleep_quality == "4" %}
+                            {% set sleepType = "~urge" %}
+                        {% elseif day.note.sleep_quality == "3" %}
+                            {% set sleepType = "~info" %}
+                        {% elseif day.note.sleep_quality == "2" %}
+                            {% set sleepType = "~warning" %}
+                        {% elseif day.note.sleep_quality == "1" %}
+                            {% set sleepType = "~critical" %}
+                        {% else %}
+                            {% set sleepType = "~neutral" %}
+                        {% endif %}
 
-                    {% if day.note.stress_level == "1" %}
-                        {% set stressType = "~urge" %}
-                    {% elseif day.note.stress_level == "2" %}
-                        {% set stressType = "~urge" %}
-                    {% elseif day.note.stress_level == "3" %}
-                        {% set stressType = "~info" %}
-                    {% elseif day.note.stress_level == "4" %}
-                        {% set stressType = "~warning" %}
-                    {% elseif day.note.stress_level == "5" %}
-                        {% set stressType = "~critical" %}
-                    {% else %}
-                        {% set stressType= "~neutral" %}
-                    {% endif %}
-                    <span class="chip {{ sleepType }}">Sleep {{ day.note.sleep_quality }}/5</span>
-                    <span class="chip {{ stressType }}">Stress {{ day.note.stress_level}}/5</span>
-                    </p>
-                    <p>{{ day.note.htmlNote()|raw }}</p>
+                        {% if day.note.stress_level == "1" %}
+                            {% set stressType = "~urge" %}
+                        {% elseif day.note.stress_level == "2" %}
+                            {% set stressType = "~urge" %}
+                        {% elseif day.note.stress_level == "3" %}
+                            {% set stressType = "~info" %}
+                        {% elseif day.note.stress_level == "4" %}
+                            {% set stressType = "~warning" %}
+                        {% elseif day.note.stress_level == "5" %}
+                            {% set stressType = "~critical" %}
+                        {% else %}
+                            {% set stressType= "~neutral" %}
+                        {% endif %}
+                        <span class="chip {{ sleepType }}">Sleep {{ day.note.sleep_quality }}/5</span>
+                        <span class="chip {{ stressType }}">Stress {{ day.note.stress_level}}/5</span>
+                        </p>
+                        <p>{{ day.note.htmlNote()|raw }}</p>
+                    </div>
                     {% endif%}
                 </div>
             </div>
@@ -203,14 +204,6 @@
                 {# {% if day.activities|length > 0 %} #}
                 <div class="table-wrapper">
                 <table class="table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
                     <tbody>
                     {% for activity in day.activities %}
                         <tr>

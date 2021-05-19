@@ -1576,9 +1576,13 @@ template {
 }
 
 .table-wrapper {
-    overflow-x: scroll;
+    overflow-x: auto;
     max-width: 100%;
     box-sizing: border-box;
+}
+
+.table-wrapper.card {
+    overflow-x: auto;
 }
 
 .table {
@@ -1597,8 +1601,36 @@ select {
 }
 
 .navigation-controls {
-    margin-top: 1rem;
+    margin: 1rem auto;
     text-align: center;
+}
+
+.p0 {
+    padding: 0;
+}
+
+.p1 {
+    padding: 1rem;
+}
+
+.p1 > p {
+    margin-top: 0;
+}
+
+.p1 p:last-of-type {
+    margin-bottom: 0;
+}
+
+.select select {
+    padding-right: 2.5rem;
+}
+
+.select::after {
+    top: 0.8rem;
+}
+
+h4 {
+    margin-bottom: 0;
 }
 
 /* ^^^ NEW ^^^ */
@@ -1670,9 +1702,14 @@ textarea {
     width: 100%;
 }
 
+details,
+.Note,
+.Plan {
+    border: 1px solid #f5f6fa;
+}
+
 details {
     padding: 0.5rem;
-    border: 1px solid #dfe6e9;
 }
 
 details:nth-child(even) {
@@ -1867,10 +1904,14 @@ table.pure-table thead th {
 
 .flex-apart {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: flex-start;
+}
+
+.flex-apart.change {
+    flex-direction: column;
 }
 
 .grid-container {
@@ -1889,6 +1930,10 @@ table.pure-table thead th {
 
 .Date {
     grid-area: Date;
+}
+
+.card {
+    overflow: visible;
 }
 
 .Sidebar {
@@ -1941,6 +1986,9 @@ table.pure-table thead th {
     }
 
     .flex-apart {
+        flex-direction: row;
+    }
+    .flex-apart.change {
         flex-direction: row;
     }
 
