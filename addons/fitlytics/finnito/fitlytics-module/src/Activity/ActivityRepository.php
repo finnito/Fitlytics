@@ -43,7 +43,7 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
         return $this->model->newQuery()
             ->selectRaw("SUM(distance) AS distance, SUM(total_elevation_gain) as elevation, SUM(moving_time) as moving_time")
             ->whereRaw(
-                "CONVERT_TZ(STR_TO_DATE(start_date, '%Y-%m-%dT%H:%i:%sZ'), '+00:00','"
+                "CONVERT_TZ(strftime(start_date, '%Y-%m-%dT%H:%i:%sZ'), '+00:00','"
                 . $offset
                 . "') BETWEEN '"
                 . $now->startOfWeek()->format("Y-m-d H:i:s")
@@ -61,7 +61,7 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
         return $this->model->query()
             ->selectRaw("type, SUM(distance) AS distance, SUM(total_elevation_gain) as elevation, SUM(moving_time) as moving_time")
             ->whereRaw(
-                "CONVERT_TZ(STR_TO_DATE(start_date, '%Y-%m-%dT%H:%i:%sZ'), '+00:00','"
+                "CONVERT_TZ(strftime(start_date, '%Y-%m-%dT%H:%i:%sZ'), '+00:00','"
                 . $offset
                 . "') BETWEEN '"
                 . $now->startOfWeek()->format("Y-m-d H:i:s")
@@ -81,7 +81,7 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
         
         return $this->model->query()
             ->whereRaw(
-                "CONVERT_TZ(STR_TO_DATE(start_date, '%Y-%m-%dT%H:%i:%sZ'), '+00:00','"
+                "CONVERT_TZ(strftime(start_date, '%Y-%m-%dT%H:%i:%sZ'), '+00:00','"
                 . $offset
                 . "') BETWEEN '"
                 . $now->startOfWeek()->format("Y-m-d H:i:s")
