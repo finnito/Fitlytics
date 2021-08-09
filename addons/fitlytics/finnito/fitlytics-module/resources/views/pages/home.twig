@@ -1,21 +1,23 @@
 {% extends "finnito.theme.fitlytics::layouts.default" %}
 
-{% block content %}
-    <div class="navigation flex-apart change">
-        <h2 class="heading ~urge !low">{{ week_of|date_modify('monday this week')|date("D jS")}} - {{ week_of|date_modify('sunday this week')|date("D jS \\o\\f F Y") }}</h2>
+{% block subtitle %}
+    {{ week_of|date_modify('monday this week')|date("D jS")}} - {{ week_of|date_modify('sunday this week')|date("D jS \\o\\f F Y") }}
+{% endblock %}
 
+{% block week %}
+    <div>
         <div class="navigation-controls">
-            <a class="button ~info !normal" href="/?week-of={{ week_of|date_modify('-1 week')|date('Y-m-d', 'Pacific/Auckland') }}">Week ⬅</a>
-            <a class="button ~urge !normal" href="/?week-of={{ 'now'|date('Y-m-d', 'Pacific/Auckland') }}">Today</a>
-            <a class="button ~info !normal" href="/?week-of={{ week_of|date_modify('+1 week')|date('Y-m-d', 'Pacific/Auckland') }}">➡ Week</a>
-            
             <div class="select !normal">
                 <select name="week-selector" id="week-selector" autocomplete="off">
                 {% for item in weeks %}
-                    <option value="{{ item|date("Y-m-d", "Pacific/Auckland") }}" {% if week_of|date_modify('monday this week')|date("Y-m-d") == item|date("Y-m-d", "Pacific/Auckland") %} selected {% endif %}>Week of {{ item|date("D jS M, Y", "Pacific/Auckland") }}</option>
+                    {{ item|date('Y-m-d', "Pacific/Auckland") }}, {{ week_of|date_modify('monday this week')|date("Y-m-d", "Pacific/Auckland") }}
+                    <option value="{{ item|date('Y-m-d', "Pacific/Auckland") }}" {% if week_of|date_modify('monday this week')|date("Y-m-d", "Pacific/Auckland") == item|date("Y-m-d", "Pacific/Auckland") %} selected {% endif %}>Week of {{ item|date("D jS M, Y", "Pacific/Auckland") }}</option>
                 {% endfor %}
                 </select>
             </div>
+            <a class="button light-blue" href="/?week-of={{ week_of|date_modify('-1 week')|date('Y-m-d', 'Pacific/Auckland') }}">Week ⬅️</a>
+            <a class="button light-yellow" href="/?week-of={{ 'now'|date('Y-m-d', 'Pacific/Auckland') }}">Today</a>
+            <a class="button light-blue" href="/?week-of={{ week_of|date_modify('+1 week')|date('Y-m-d', 'Pacific/Auckland') }}">➡️ Week</a>
             <script>
             document.querySelector("select#week-selector").addEventListener("change", function(event) {
                 window.location.href = ("/?week-of=" + event.target.selectedOptions[0].value);
@@ -23,8 +25,11 @@
             </script>
         </div>
     </div>
-    <div class="flex-apart change">
-        <div class="table-wrapper card ~info !normal">
+{% endblock %}
+
+{% block content %}
+    <div class="column-to-row">
+        <div class="table-wrapper">
             <table class="table last-row-emphasised">
                 <thead>
                     <tr>
@@ -35,7 +40,15 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% set time = 0 %}
+                    {% set distance = 0 %}
+                    {% set elevation = 0 %}
+
+                    {% if currentWeekStatisticsByType|length > 0 %}
                     {% for stat in currentWeekStatisticsByType %}
+                    {% set time = time + stat.moving_time %}
+                    {% set distance = distance + stat.distance %}
+                    {% set elevation = elevation + stat.elevation %}
                     <tr>
                         <td>{{ stat.type }}</td>
                         <td>{{ stat.metersToKilometers(stat.distance, 2) }}km</td>
@@ -43,16 +56,18 @@
                         <td>{{ stat.secondsToHours(stat.moving_time) }}</td>
                     </tr>
                     {% endfor %}
+                    {% endif %}
+
                     <tr>
                         <td></td>
-                        <td>{{ currentWeekStatisticsByType[0].metersToKilometers(currentWeekStatistics.distance, 2) }}km</td>
-                        <td>{{ currentWeekStatistics.elevation }}m</td>
-                        <td>{{ currentWeekStatisticsByType[0].secondsToHours(currentWeekStatistics.moving_time, 2) }}</td>
+                        <td>{{ currentWeekStatisticsByType[0].metersToKilometers(distance, 2) }}</td>
+                        <td>{{ elevation }}m</td>
+                        <td>{{ currentWeekStatisticsByType[0].secondsToHours(time, 2) }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="chartContainer card ~urge !normal">
+        <div class="chartContainer">
             <canvas id="currentWeekChart"></canvas>
             <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -107,130 +122,133 @@
         </div>
     </div>
 
-    <div class="training-log content">
-        
-        {% for day in week %}
-        <details class="card ~neutral !low" {% if day.date|date("Y-m-d", "Pacific/Auckland") <= "now"|date("Y-m-d", "Pacific/Auckland") %}open{% endif %}>
-            <summary><h3 class="heading">{{ day.date|date("D jS F", "Pacific/Auckland") }}</h3></summary>
-        <div class="grid-container">
-            <div class="Sidebar">
-                <div class="Plan card ~positive !normal">
-                    <div class="flex-apart">
-                        <div><span class="subheading">Plan</span><br>{{ day.plan.htmlPlan()|raw }}</div>
-                        {% if day.plan %}
-                            <span><a class="button ~warning !normal" href="/admin/fitlytics/plans/edit/{{ day.plan.id }}">Edit Plan</a></span>
+    <table class="outer-table">
+    {% for num, day in period %}
+        <thead>
+            <th colspan="3">{{ day|date("D jS F") }}</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="v-top plan">
+                    <div class="flex-apart static">
+                        <div>
+                            <strong>Plan</strong>
+                        </div>
+                        <div>
+                        {% if plans[num+1] %}
+                            <span><a class="button yellow button-xsmall" href="/admin/fitlytics/plans/edit/{{ plans[num+1][0].id }}">Edit Plan</a></span>
                         {% else %}
-                            <span><a class="button ~positive !high" href="/admin/fitlytics/plans/create?date={{day.date|date("Y-m-d", "Pacific/Auckland")}}">Add Plan</a></span>
+                            <span><a class="button green button-xsmall" href="/admin/fitlytics/plans/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add Plan</a></span>
                         {% endif %}
+                        </div>
                     </div>
-                </div>
-                <div class="Note card p0">
-                    <div class="flex-apart section ~warning !normal p1">
-                        <span class="subheading">Note</span>
-                        {% if day.note %}
-                            <span><a class="button ~warning !normal" href="/admin/fitlytics/notes/edit/{{ day.note.id }}">Edit Note</a></span>
-                        {% else %}
-                            <span><a class="button ~positive !high" href="/admin/fitlytics/notes/create?date={{day.date|date("Y-m-d", "Pacific/Auckland")}}">Add Note</a></span>
-                        {%  endif %}
-                    </div>
-                    {% if day.note %}
-                    <div class="p1">
-                        <p>
-                        {% if day.note.injured.isTrue() %}
-                            <span class="chip ~critical">Injured</span>
-                        {% else %}
-                            <span class="chip ~positive">Not Injured</span>
-                        {% endif %}
+                    {% if plans[num+1] %}<p>{{ plans[num+1][0].htmlPlan()|raw }}</p>{% endif %}
+                </td>
 
-                        {% if day.note.sleep_quality == "5" %}
-                            {% set sleepType = "~urge" %}
-                        {% elseif day.note.sleep_quality == "4" %}
-                            {% set sleepType = "~urge" %}
-                        {% elseif day.note.sleep_quality == "3" %}
-                            {% set sleepType = "~info" %}
-                        {% elseif day.note.sleep_quality == "2" %}
-                            {% set sleepType = "~warning" %}
-                        {% elseif day.note.sleep_quality == "1" %}
-                            {% set sleepType = "~critical" %}
-                        {% else %}
-                            {% set sleepType = "~neutral" %}
-                        {% endif %}
-
-                        {% if day.note.stress_level == "1" %}
-                            {% set stressType = "~urge" %}
-                        {% elseif day.note.stress_level == "2" %}
-                            {% set stressType = "~urge" %}
-                        {% elseif day.note.stress_level == "3" %}
-                            {% set stressType = "~info" %}
-                        {% elseif day.note.stress_level == "4" %}
-                            {% set stressType = "~warning" %}
-                        {% elseif day.note.stress_level == "5" %}
-                            {% set stressType = "~critical" %}
-                        {% else %}
-                            {% set stressType= "~neutral" %}
-                        {% endif %}
-                        <span class="chip {{ sleepType }}">Sleep {{ day.note.sleep_quality }}/5</span>
-                        <span class="chip {{ stressType }}">Stress {{ day.note.stress_level}}/5</span>
-                        </p>
-                        <p>{{ day.note.htmlNote()|raw }}</p>
-                    </div>
-                    {% endif%}
-                </div>
-            </div>
-            <div class="Activities">
-                <h4 class="subheading">Activities</h4>
-                {% set renderActivities = false %}
-
-                {% if day.date|date("Y-m-d", "Pacific/Auckland") < "now"|date("Y-m-d", "Pacific/Auckland") %}
-                    {% if day.activities|length > 0 %}
-                        {% set renderActivities = true %}
-                    {% else %}
-                        <p>No activities; took a rest day.</p>
-                    {% endif %}
-
-                {% elseif day.date|date("Y-m-d", "Pacific/Auckland") == "now"|date("Y-m-d", "Pacific/Auckland") %}
-                    {% if day.activities|length > 0 %}
-                        {% set renderActivities = true %}
-                    {% else %}
-                        <p>No activities yet!</p>
-                    {% endif %}
-
-                {% else %}
-                    <p>Wait and see..</p>
-
-                {% endif %}
-
-                {% if renderActivities == true %}
-                {# {% if day.activities|length > 0 %} #}
-                <div class="table-wrapper">
-                <table class="table">
-                    <tbody>
-                    {% for activity in day.activities %}
+                <td rowspan="2" class="activities">
+                {% if activities[num+1] %}
+                    <table>
+                    {% for activity in activities[num+1] %}
                         <tr>
-                            <td><small>{{ activity.start_date|date("g:ia", "Pacific/Auckland") }}</small><br>{{ activity.activityTypeEmoji() }} {{ activity.name }}</td>
+                            <td><small>{{ activity.start_date|date("g:ia", "Pacific/Auckland") }} {{ activity.activityTypeEmoji() }}</small><br><a href="/activity/{{ activity.id }}">{{ activity.name() }}</a></td>
                             <td>{{ activity.secondsToHours(activity.moving_time) }}<br>{{ activity.metersToKilometers(activity.distance, 2) }}km</td>
                             <td>{{ activity.total_elevation_gain }}m ⬆️</td>
-                            <td><a class="button ~warning !normal" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
+
+                            {% if activity.activity_json().has_heartrate %}
+                            <td>{{ activity.activity_json().average_heartrate|round }}bpm<br>({{ activity.activity_json().max_heartrate|round }})</td>
+                            {% endif %}
+                            
+                            <td>
+                            {% if activity.activity_json().average_cadence %}
+                            {{ (activity.activity_json().average_cadence * 2)|round }}spm<br>
+                            {% endif %}
+                            {% if activity.activity_json().average_watts %}
+                                {{ activity.activity_json().average_watts|round }}W
+                            {% endif %}
+                            </td>
+                            
+                            {% if activity.activity_json().kilojoules %}<td>{{ activity.activity_json().kilojoules|round }}kJ</td>{% endif %}
+                            
+                            
+                            <td><a class="button orange button-xsmall" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
                         </tr>
                     {% endfor %}
-                    </tbody>
-                </table>
-                </div>
+                    </table>
                 {% endif %}
-                {# {% else %} #}
-                {# <p>No activities - had a rest instead!</p> #}
-                {# {% endif %} #}
-            </div>
-        </div>
-        </details>
-        {% endfor %}
-    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="v-top note">
+                
+                <div class="flex-apart">
+                    <div>
+                        <strong>Note</strong>
+                    </div>
+                    <div>
+                        {% if notes[num+1][0].note %}
+                            <span><a class="button yellow button-xsmall" href="/admin/fitlytics/notes/edit/{{ notes[num+1][0].id }}">Edit Note</a></span>
+                        {% else %}
+                            <span><a class="button green button-xsmall" href="/admin/fitlytics/notes/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add Note</a></span>
+                        {% endif %}
+                    </div>
+                </div>
+                        {% if notes[num+1] %}
+                        <p>
+                        {% if notes[num+1][0].injured.isTrue() %}
+                            <span class="tag t5">Injured</span>
+                        {% else %}
+                            <span class="tag t1">Not Injured</span>
+                        {% endif %}
 
-    <div id="calendar"></div>
+                        {% if notes[num+1][0].sick.isTrue() %}
+                            <span class="tag t5">Sick</span>
+                        {% else %}
+                            <span class="tag t1">Not Sick</span>
+                        {% endif %}
 
-    <canvas id="weeklySummaryChart"></canvas>
+                        {% if notes[num+1][0].sleep_quality == "5" %}
+                            {% set sleepType = "t1" %}
+                        {% elseif notes[num+1][0].sleep_quality == "4" %}
+                            {% set sleepType = "t2" %}
+                        {% elseif notes[num+1][0].sleep_quality == "3" %}
+                            {% set sleepType = "t3" %}
+                        {% elseif notes[num+1][0].sleep_quality == "2" %}
+                            {% set sleepType = "t4" %}
+                        {% elseif notes[num+1][0].sleep_quality == "1" %}
+                            {% set sleepType = "t5" %}
+                        {% else %}
+                            {% set sleepType = "t3" %}
+                        {% endif %}
+
+                        {% if notes[num+1][0].stress_level == "1" %}
+                            {% set stressType = "t1" %}
+                        {% elseif notes[num+1][0].stress_level == "2" %}
+                            {% set stressType = "t2" %}
+                        {% elseif notes[num+1][0].stress_level == "3" %}
+                            {% set stressType = "t3" %}
+                        {% elseif notes[num+1][0].stress_level == "4" %}
+                            {% set stressType = "t4" %}
+                        {% elseif notes[num+1][0].stress_level == "5" %}
+                            {% set stressType = "t5" %}
+                        {% else %}
+                            {% set stressType= "t3" %}
+                        {% endif %}
+
+                        <span class="tag {{ sleepType }}">Sleep {{ notes[num+1][0].sleep_quality }}/5</span>
+                        <span class="tag {{ stressType }}">Stress {{ notes[num+1][0].stress_level}}/5</span>
+                        <br>
+                        {{ notes[num+1][0].htmlNote()|raw }}</p>
+                    {% endif%}
+                    </div>
+                </div>
+            </td>
+            </tr>
+        </tbody>
+    {% endfor %}
+    </table>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js" integrity="sha256-uVEHWRIr846/vAdLJeybWxjPNStREzOlqLMXjW/Saeo=" crossorigin="anonymous"></script>
+    
     <script>
     function getRemoteData(chart, url)
     {
@@ -244,112 +262,6 @@
         request.open("GET", url, true);
         request.send();
     };
-
-    document.addEventListener('DOMContentLoaded', function() {
-
-        var chartEl = document.getElementById('weeklySummaryChart');
-        var ctx = chartEl.getContext('2d');
-        var config = { type: 'line',
-            options: {
-                responsive: true,
-                onClick: (evt, item) => {
-                    let week_of = evt.chart.data.datasets[0].data[item[0].index].x;
-                    window.location.href = ("/?week-of=" + week_of);
-                },
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        }
-                    },
-                    "y1": {
-                        display: "auto",
-                        position: 'left',
-                        type: 'linear',
-                        title: {
-                            display: true,
-                            text: "Distance",
-                        },
-                    },
-                    "y2": {
-                        display: "auto",
-                        position: 'right',
-                        type: 'linear',
-                        title: {
-                            display: true,
-                            text: "Elevation",
-                        },
-                        grid: {
-                            drawOnChartArea: false,
-                        },
-                    }
-                }
-            }
-        };
-        var weeklySummaryChart = new Chart(ctx, config);
-        getRemoteData(weeklySummaryChart, "/weekly-summary-chart-data");
-        
-
-        
-    });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js" integrity="sha256-ekrJn2FeZaiUFq99QswpQCUTME/HxaDfX7R8INzKJGE=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.css" integrity="sha256-ejA/z0dc7D+StbJL/0HAnRG/Xae3yS2gzg0OAnIURC4=" crossorigin="anonymous">
-    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
-    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'listWeek',
-            eventDisplay: "block",
-            height: "75vh",
-            initialDate: "{{ week_of|date('Y-m-d') }}",
-            stickyHeaderDates: true,
-            firstDay: 1,
-            stickyFooterScrollbar: true,
-            showNonCurrentDates: true,
-            fixedWeekCount: false,
-            navLinks: true,
-            weekNumbers: true,
-            eventSources: [
-                {
-                  url: '/activities-calendar-feed/'
-                },
-                {
-                  url: '/notes-calendar-feed/'
-                },
-                {
-                  url: '/weekly-summary-feed/'
-                },
-                {
-                  url: '/plans-calendar-feed/'
-                },
-            ],
-            eventDidMount: function(info) {
-                var tooltip = tippy(info.el, {
-                    content: info.event.extendedProps.description,
-                    allowHTML: true,
-                });
-            },
-            eventContent: function(arg) {
-                return {
-                    html: arg.event.title.replace(/\n/g, '<br>')
-                }
-            },
-            headerToolbar: {
-                left: 'prev, next, today',
-                center: 'title',
-                right: 'dayGridWeek, dayGridMonth, listWeek'  
-            },
-        });
-        calendar.render();
-    });
-    </script>
 {% endblock %}

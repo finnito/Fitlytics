@@ -12,6 +12,11 @@ class ActivityModel extends EntryModel implements ActivityInterface
         "start_date" => "datetime",
     ];
 
+    public function name()
+    {
+        return utf8_decode($this->name);
+    }
+
     public function localStartDate()
     {
         return \Carbon\Carbon::parse($this->start_date)->timezone(env("APP_TIMEZONE"));
@@ -58,12 +63,22 @@ class ActivityModel extends EntryModel implements ActivityInterface
         //     return "";
         // }
 
-        return sprintf(
-            '%2d:%02d:%02d',
-            ($seconds/3600),
-            ($seconds/60%60),
-            ($seconds%60)
-        );
+        if ($seconds > 3600) {
+            return sprintf(
+                '%2d:%02d:%02d',
+                ($seconds/3600),
+                ($seconds/60%60),
+                ($seconds%60)
+            );
+        } else {
+            return sprintf(
+                '%2d:%02d',
+                ($seconds/60%60),
+                ($seconds%60)
+            );
+        }
+
+        
     }
 
     public function metersPerSecondToKilometersPerHour($ms)
@@ -119,7 +134,7 @@ class ActivityModel extends EntryModel implements ActivityInterface
             "Stair Stepper" => "🪜",
             "Stand Up Paddle" => "",
             "Surf" => "🏄",
-            "Virtual Ride" => "🚲",
+            "VirtualRide" => "💻",
             "Virtual Run" => "🏃",
             "Weight Training" => "🏋️",
             "Windsurf Session" => "🌊",

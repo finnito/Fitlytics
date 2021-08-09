@@ -3,17 +3,27 @@
 use Anomaly\Streams\Platform\Http\Controller\PublicController;
 use Finnito\FitlyticsModule\Activity\ActivityModel;
 use Finnito\FitlyticsModule\Activity\Contract\ActivityRepositoryInterface;
-use Finnito\FitlyticsModule\Plan\PlanModel;
-use Finnito\FitlyticsModule\Note\NoteModel;
+use Finnito\FitlyticsModule\Plan\Contract\PlanRepositoryInterface;
+use Finnito\FitlyticsModule\Note\Contract\NoteRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Anomaly\Streams\Platform\View\ViewTemplate;
+use \Anomaly\Streams\Platform\Message\MessageBag;
 
 class FitlyticsController extends PublicController
 {
-    public function __construct(Request $request, ActivityRepositoryInterface $activities, PlanModel $planModel, NoteModel $noteModel)
-    {
+    public function __construct(
+        Request $request,
+        ActivityRepositoryInterface $activities,
+        PlanRepositoryInterface $planModel,
+        NoteRepositoryInterface $noteModel,
+        ViewTemplate $template,
+        MessageBag $messages
+    ) {
         $this->request = $request;
+        $this->template = $template;
+        $this->messages = $messages;
 
         if ($request->has("week-of")) {
             if (str_starts_with($request->query("week-of"), "a")) {
@@ -22,12 +32,12 @@ class FitlyticsController extends PublicController
             }
 
             elseif (str_starts_with($request->query("week-of"), "p")) {
-                $plan = $planModel->query()->select("date")->where("id", substr($request->query("week-of"), 1))->first();
+                $plan = $planModel->newQuery()->select("date")->where("id", substr($request->query("week-of"), 1))->first();
                 $this->week_of = \Carbon\Carbon::parse($plan->date)->format("Y-m-d");
             }
 
             elseif (str_starts_with($request->query("week-of"), "n")) {
-                $note = $noteModel->query()->select("date")->where("id", substr($request->query("week-of"), 1))->first();
+                $note = $noteModel->newQuery()->select("date")->where("id", substr($request->query("week-of"), 1))->first();
                 $this->week_of = \Carbon\Carbon::parse($note->date)->format("Y-m-d");
             }
 
@@ -39,90 +49,141 @@ class FitlyticsController extends PublicController
         }
     }
 
-    public function home(ActivityRepositoryInterface $activitiesRepository, NoteModel $notes, PlanModel $plans)
+    public function home(ActivityRepositoryInterface $activitiesRepository, NoteRepositoryInterface $notesRepository, PlanRepositoryInterface $plansRepository)
     {
-        // dd(\Carbon\Carbon::parse("now"));
+        // $this->messages->success("This is a success!");
+        // $this->messages->warning("This is a warning!");
+        // $this->messages->info("This is a info!");
+        // $this->messages->error("This is an error!");
         $now = \Carbon\CarbonImmutable::parse($this->week_of)->timezone("Pacific/Auckland");
         // dd($now);
-        $week = [
-            [
-                "date" => $now->startOfWeek(),
-                "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->toDateString())->first(),
-                "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->toDateString())->first(),
-                "activities" => $activitiesRepository->newQuery()
-                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->toDateString())
-                    ->orderBy("activity_json->start_date_local", "asc")
-                    ->get(),
-            ],
-            [
-                "date" => $now->startOfWeek()->add(1, "day"),
-                "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(1, "day")->toDateString())->first(),
-                "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(1, "day")->toDateString())->first(),
-                "activities" => $activitiesRepository->newQuery()
-                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
-                    ->orderBy("activity_json->start_date_local", "asc")
-                    ->get(),
-            ],
-            [
-                "date" => $now->startOfWeek()->add(2, "day"),
-                "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(2, "day")->toDateString())->first(),
-                "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(2, "day")->toDateString())->first(),
-                "activities" => $activitiesRepository->newQuery()
-                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
-                    ->orderBy("activity_json->start_date_local", "asc")
-                    ->get(),
-            ],
-            [
-                "date" => $now->startOfWeek()->add(3, "day"),
-                "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(3, "day")->toDateString())->first(),
-                "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(3, "day")->toDateString())->first(),
-                "activities" => $activitiesRepository->newQuery()
-                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
-                    ->orderBy("activity_json->start_date_local", "asc")
-                    ->get(),
-            ],
-            [
-                "date" => $now->startOfWeek()->add(4, "day"),
-                "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(4, "day")->toDateString())->first(),
-                "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(4, "day")->toDateString())->first(),
-                "activities" => $activitiesRepository->newQuery()
-                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
-                    ->orderBy("activity_json->start_date_local", "asc")
-                    ->get(),
-            ],
-            [
-                "date" => $now->startOfWeek()->add(5, "day"),
-                "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(5, "day")->toDateString())->first(),
-                "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(5, "day")->toDateString())->first(),
-                "activities" => $activitiesRepository->newQuery()
-                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
-                    ->orderBy("activity_json->start_date_local", "asc")
-                    ->get(),
-            ],
-            [
-                "date" => $now->startOfWeek()->add(6, "day"),
-                "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(6, "day")->toDateString())->first(),
-                "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(6, "day")->toDateString())->first(),
-                "activities" => $activitiesRepository->newQuery()
-                    ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
-                    ->get(),
-            ],
-        ];
+
+        $this->template->set("meta_title", $now->format("d-m-Y"));
+        
+        $activities = $activitiesRepository->newQuery()
+            ->whereBetween("activity_json->start_date_local", [$now->startOfWeek()->format("Y-m-d\TH:i:s"), $now->endOfWeek()->format("Y-m-d\TH:i:s")])
+            ->get();
+            
+        // dd($now, $now->startOfWeek()->format("Y-m-d\TH:i:s"), $now->endOfWeek()->format("Y-m-d\TH:i:s"), $activities);
+        // dd($activities);
+        $activities = $activities->groupBy(function($activity) {
+            return \Carbon\Carbon::parse(json_decode($activity->activity_json)->start_date_local)->dayOfWeekIso;
+        });
+        
+        $notes = $notesRepository->newQuery()
+            ->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")
+            ->whereBetween("date", [$now->startOfWeek()->toDateString(), $now->endOfWeek()->toDateString()])
+            ->get();
+        $notes = $notes->groupBy(function($note) {
+            return \Carbon\Carbon::parse($note->date)->dayOfWeekIso;
+        });
+        // dd($notes);
+
+        $plans = $plansRepository->newQuery()
+            ->select()
+            ->whereBetween("date", [$now->startOfWeek()->toDateString(), $now->endOfWeek()->toDateString()])
+            ->get();
+        $plans = $plans->groupBy(function($plan) {
+            // dd(\Carbon\Carbon::parse($plan->date)->dayOfWeekIso);
+            return \Carbon\Carbon::parse($plan->date)->dayOfWeekIso;
+        });
+        // dd($plans);
+
+
+        $period = new \Carbon\CarbonPeriod(
+            \Carbon\Carbon::parse($now)->startOfWeek()->toDateString(),
+            \Carbon\Carbon::parse($now)->startOfWeek()->add(6, "day")->toDateString()
+        );
+        // dd($period);
+        // dd($activities);
+        // dd(\Carbon\Carbon::parse("now"));
+        // config(['DEBUG_BAR' => "true"]);
+        // $now = \Carbon\CarbonImmutable::parse($this->week_of)->timezone("Pacific/Auckland");
+        // dd($now);
+        // $week = [
+        //     [
+        //         "date" => $now->startOfWeek(),
+        //         "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->toDateString())->first(),
+        //         "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->toDateString())->first(),
+        //         "activities" => $activitiesRepository->newQuery()
+        //             ->whereDate("activity_json->start_date_local", $now->startOfWeek()->toDateString())
+        //             ->orderBy("activity_json->start_date_local", "asc")
+        //             ->get(),
+        //     ],
+        //     [
+        //         "date" => $now->startOfWeek()->add(1, "day"),
+        //         "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(1, "day")->toDateString())->first(),
+        //         "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(1, "day")->toDateString())->first(),
+        //         "activities" => $activitiesRepository->newQuery()
+        //             ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(1, "day")->toDateString())
+        //             ->orderBy("activity_json->start_date_local", "asc")
+        //             ->get(),
+        //     ],
+        //     [
+        //         "date" => $now->startOfWeek()->add(2, "day"),
+        //         "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(2, "day")->toDateString())->first(),
+        //         "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(2, "day")->toDateString())->first(),
+        //         "activities" => $activitiesRepository->newQuery()
+        //             ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(2, "day")->toDateString())
+        //             ->orderBy("activity_json->start_date_local", "asc")
+        //             ->get(),
+        //     ],
+        //     [
+        //         "date" => $now->startOfWeek()->add(3, "day"),
+        //         "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(3, "day")->toDateString())->first(),
+        //         "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(3, "day")->toDateString())->first(),
+        //         "activities" => $activitiesRepository->newQuery()
+        //             ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(3, "day")->toDateString())
+        //             ->orderBy("activity_json->start_date_local", "asc")
+        //             ->get(),
+        //     ],
+        //     [
+        //         "date" => $now->startOfWeek()->add(4, "day"),
+        //         "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(4, "day")->toDateString())->first(),
+        //         "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(4, "day")->toDateString())->first(),
+        //         "activities" => $activitiesRepository->newQuery()
+        //             ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(4, "day")->toDateString())
+        //             ->orderBy("activity_json->start_date_local", "asc")
+        //             ->get(),
+        //     ],
+        //     [
+        //         "date" => $now->startOfWeek()->add(5, "day"),
+        //         "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(5, "day")->toDateString())->first(),
+        //         "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(5, "day")->toDateString())->first(),
+        //         "activities" => $activitiesRepository->newQuery()
+        //             ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(5, "day")->toDateString())
+        //             ->orderBy("activity_json->start_date_local", "asc")
+        //             ->get(),
+        //     ],
+        //     [
+        //         "date" => $now->startOfWeek()->add(6, "day"),
+        //         "note" => $notes->query()->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")->whereDate("date", $now->startOfWeek()->add(6, "day")->toDateString())->first(),
+        //         "plan" => $plans->query()->select()->whereDate("date", $now->startOfWeek()->add(6, "day")->toDateString())->first(),
+        //         "activities" => $activitiesRepository->newQuery()
+        //             ->whereDate("activity_json->start_date_local", $now->startOfWeek()->add(6, "day")->toDateString())
+        //             ->get(),
+        //     ],
+        // ];
 
         // dd($week);
 
         // $this->template->set("meta_title", "Home");
+        // dd($activitiesRepository->currentWeekStatisticsByType($this->week_of));
 
         return view(
             'finnito.module.fitlytics::pages/home',
             [
-                'activities' => $activitiesRepository->thisWeek(),
+                "activities" => $activities,
+                "plans" => $plans,
+                "notes" => $notes,
+                "period" => $period,
+                //'activities' => $activitiesRepository->thisWeek(),
                 "currentWeekStatisticsByType" => $activitiesRepository->currentWeekStatisticsByType($this->week_of),
-                "currentWeekStatistics" => $activitiesRepository->currentWeekStatistics($this->week_of),
-                "weekBoundaries" => $activitiesRepository->weekBoundaries(),
-                "week" => $week,
-                "weeklyRunStats" => $activitiesRepository->weeklyRunStats(),
-                "week_of" => $this->week_of,
+                //"currentWeekStatistics" => $activitiesRepository->currentWeekStatistics($this->week_of),
+                //"weekBoundaries" => $activitiesRepository->weekBoundaries(),
+                // "week" => $week,
+                //"weeklyRunStats" => $activitiesRepository->weeklyRunStats(),
+                "week_of" => $now,
                 "weeks" => $activitiesRepository->getSelectWeeks(),
             ]
         );
@@ -139,7 +200,7 @@ class FitlyticsController extends PublicController
 
         foreach ($activities as $activity)
         {
-            $activity->title = $activity->activityTypeEmoji() . ": " . $activity->name;
+            $activity->title = $activity->activityTypeEmoji() . ": " . $activity->name();
             $activity->start = $activity->start_date;
             $activity_end = new \DateTime($activity->start_date);
             $activity_end = $activity_end->add(\DateInterval::createFromDateString($activity->elapsed_time . " seconds"));
@@ -374,11 +435,11 @@ class FitlyticsController extends PublicController
         return json_encode($out);
     }
 
-    public function notesCalendarFeed(Request $request, NoteModel $notes)
+    public function notesCalendarFeed(Request $request, NoteRepositoryInterface $notes)
     {
         $start = explode("T", $request->input("start"))[0];
         $end = explode("T", $request->input("end"))[0];
-        $notes = $notes->query()
+        $notes = $notes->newQuery()
             ->whereDate("date", ">=", $start)
             ->whereDate("date", "<", $end)
             ->get();
@@ -395,11 +456,11 @@ class FitlyticsController extends PublicController
         return $notes;
     }
 
-    public function plansCalendarFeed(Request $request, PlanModel $plans)
+    public function plansCalendarFeed(Request $request, PlanRepositoryInterface $plans)
     {
         $start = explode("T", $request->input("start"))[0];
         $end = explode("T", $request->input("end"))[0];
-        $plans = $plans->query()
+        $plans = $plans->newQuery()
             ->whereDate("date", ">=", $start)
             ->whereDate("date", "<", $end)
             ->get();
@@ -491,11 +552,11 @@ class FitlyticsController extends PublicController
         return $out;
     }
 
-    public function plansICS(PlanModel $plans)
+    public function plansICS(PlanRepositoryInterface $plans)
     {
         define('ICAL_FORMAT', 'Ymd\THis\Z');
 
-        $plans = $plans->all();
+        $plans = $plans->newQuery()->all();
 
         $icalObject = "BEGIN:VCALENDAR\n"
             . "VERSION:2.0\n"
@@ -650,7 +711,7 @@ class FitlyticsController extends PublicController
                 . "DTSTART:" . $start_time->format(ICAL_FORMAT) . "\n"
                 . "DTEND:" . $activity_end->format(ICAL_FORMAT) . "\n"
                 . "DTSTAMP:" . date(ICAL_FORMAT, strtotime($activity->updated_at)) . "\n"
-                . "SUMMARY:" . $activity->activityTypeEmoji() . " " . $activity->name . "\n"
+                . "SUMMARY:" . $activity->activityTypeEmoji() . " " . $activity->name() . "\n"
                 . "DESCRIPTION:" . $description . "\n"
                 . "UID:fitlytics-activity-" . $activity->strava_id . "\n"
                 . "STATUS:CONFIRMED\n"
