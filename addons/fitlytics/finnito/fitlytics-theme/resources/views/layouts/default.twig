@@ -16,15 +16,7 @@
     <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        {#<link rel="preload" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" as="script">
-        <link rel="preload" href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js" as="script">
-        <link rel="preload" href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css" as="style">
-        <link rel="preload" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" as="style">
-        <link rel="dns-prefetch" href="//unpkg.com">
-        <link rel="dns-prefetch" href="//api.mapbox.com">
-        <link rel="dns-prefetch" href="//tiles-a.data-cdn.linz.govt.nz">
-        <link rel="dns-prefetch" href="//github.com">
-        <link rel="dns-prefetch" href="//github.githubassets.com"> #}
+        <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
 
         <!-- Locale -->
         <meta http-equiv="Content-Language" content="{{ config('app.locale') }}">
@@ -40,17 +32,12 @@
         <meta name="generator" content="{{ config_get('streams::distribution.name') }}"/>
 
         <meta property="og:site_name" content="{{ setting_value('streams::name', config_get('streams::distribution.name')) }}">
-        <meta property="og:title" content="{{ trans(template.meta_title) }} > {{ setting_value('streams::name', config_get('streams::distribution.name')) }}" />
-        <meta name="twitter:title" content="{{ trans(template.meta_title) }} > {{ setting_value('streams::name', config_get('streams::distribution.name')) }}" />
+        <meta property="og:title" content="{{ trans(template.meta_title) }} | {{ setting_value('streams::name', config_get('streams::distribution.name')) }}" />
+        <meta name="twitter:title" content="{{ trans(template.meta_title) }} | {{ setting_value('streams::name', config_get('streams::distribution.name')) }}" />
 
         <meta property="og:description" content="{{ trans(template.meta_description) }}" />
         <meta name="twitter:description" content="{{ trans(template.meta_description) }}" />
         <meta name="description" content="{{ trans(template.meta_description) }}"/>
-
-        {# <meta property="og:image" content="{{ img('theme::img/og-image.png').url }}" />
-        <meta property="twitter:image" content="{{ img('theme::img/og-image.png').url }}" />
-        <meta name="twitter:image:alt" content="{{ setting_value('streams::description', config_get('streams::distribution.description')) }}">
-        <meta name="og:image:alt" content="{{ setting_value('streams::description', config_get('streams::distribution.description')) }}"> #}
 
         <meta property="og:url" content="{{ app.request.uri }}">
         <meta property="twitter:url" content="{{ app.request.uri }}" />
@@ -59,7 +46,7 @@
         {{ template.includes.render('meta')|raw }}
 
         <title>
-            {{ trans(template.meta_title) }} > {{ setting_value('streams::name', config_get('streams::distribution.name')) }}
+            {{ trans(template.meta_title) }} | {{ setting_value('streams::name', config_get('streams::distribution.name')) }}
         </title>
 
     <!-- Favicon -->
