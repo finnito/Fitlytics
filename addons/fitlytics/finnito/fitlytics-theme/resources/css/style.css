@@ -106,10 +106,26 @@ h3 {
     display: inline-block;
 }
 
-.alert.alert-success {
-    background-color: rgba(186, 220, 88, 0.4);
-    border: 1px solid rgba(186, 220, 88, 1.0);
-    border-left: 4px solid rgba(186, 220, 88, 1.0);
+.alert.success {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: rgba(46, 204, 113);
+}
+
+.alert.info {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: rgba(52, 152, 219);
+}
+
+.alert.warning {
+    background-color: rgba(241, 196, 15, 0.1);
+    color: rgba(241, 196, 15);
+}
+
+.alert.error {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: rgba(231, 76, 60, 1);
+}
+
 }
 
 .alert.alert-success::before {

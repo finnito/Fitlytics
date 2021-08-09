@@ -77,7 +77,7 @@
 
             <!-- Success Messages -->
             {% if message_exists('success') %}
-                <div class="alert alert-success">
+                <div class="alert success">
                     {% for message in message_pull('success') %}
                         {{ trans(message)|markdown }}
                     {% endfor %}
@@ -86,7 +86,7 @@
 
             <!-- Informational Messages -->
             {% if message_exists('info') %}
-                <div class="alert alert-info">
+                <div class="alert info">
                     {% for message in message_pull('info') %}
                         {{ trans(message)|markdown }}
                     {% endfor %}
@@ -96,7 +96,7 @@
 
             <!-- Warning Messages -->
             {% if message_exists('warning') %}
-                <div class="alert alert-warning">
+                <div class="alert warning">
                     {% for message in message_pull('warning') %}
                         {{ trans(message)|markdown }}
                     {% endfor %}
@@ -106,7 +106,7 @@
 
             <!-- Error Messages -->
             {% if message_exists('error') %}
-                <div class="alert alert-danger">
+                <div class="alert error">
                     {% for message in message_pull('error') %}
                         {{ trans(message)|markdown }}
                     {% endfor %}
