@@ -65,10 +65,9 @@
 
 <body>
 
-<header id="header">
-
-    <h1 class="heading ~neutral !low">{{ setting_value('streams::name', config_get('streams::distribution.name')) }}</h1>
-
+<header class="column-to-row">
+    <div><h1>{{ setting_value('streams::name', config_get('streams::distribution.name')) }}</h1></div>
+    {% block week %}{% endblock %}
 </header>
 
 <main id="main">
