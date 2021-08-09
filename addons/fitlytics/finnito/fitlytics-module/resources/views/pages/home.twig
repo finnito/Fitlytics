@@ -10,7 +10,6 @@
             <div class="select !normal">
                 <select name="week-selector" id="week-selector" autocomplete="off">
                 {% for item in weeks %}
-                    {{ item|date('Y-m-d', "Pacific/Auckland") }}, {{ week_of|date_modify('monday this week')|date("Y-m-d", "Pacific/Auckland") }}
                     <option value="{{ item|date('Y-m-d', "Pacific/Auckland") }}" {% if week_of|date_modify('monday this week')|date("Y-m-d", "Pacific/Auckland") == item|date("Y-m-d", "Pacific/Auckland") %} selected {% endif %}>Week of {{ item|date("D jS M, Y", "Pacific/Auckland") }}</option>
                 {% endfor %}
                 </select>
