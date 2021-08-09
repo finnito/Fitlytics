@@ -156,4 +156,6 @@ return [
 
     'route_prefix' => '_debugbar',
 
+    "except" => ["api*"],
+
 ];
