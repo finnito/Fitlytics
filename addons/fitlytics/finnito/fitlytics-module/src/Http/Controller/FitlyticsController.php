@@ -71,7 +71,7 @@ class FitlyticsController extends PublicController
         });
         
         $notes = $notesRepository->newQuery()
-            ->select("id", "injured", "sick", "sleep_quality", "stress_level", "note")
+            ->select("id", "date", "injured", "sick", "sleep_quality", "stress_level", "note")
             ->whereBetween("date", [$now->startOfWeek()->toDateString(), $now->endOfWeek()->toDateString()])
             ->get();
         $notes = $notes->groupBy(function($note) {
@@ -80,7 +80,6 @@ class FitlyticsController extends PublicController
         // dd($notes);
 
         $plans = $plansRepository->newQuery()
-            ->select()
             ->whereBetween("date", [$now->startOfWeek()->toDateString(), $now->endOfWeek()->toDateString()])
             ->get();
         $plans = $plans->groupBy(function($plan) {
