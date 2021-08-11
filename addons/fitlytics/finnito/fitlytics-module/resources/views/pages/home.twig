@@ -151,7 +151,7 @@
                         <tr>
                             <td><small>{{ activity.start_date|date("g:ia", "Pacific/Auckland") }} {{ activity.activityTypeEmoji() }}</small><br><a href="/activity/{{ activity.id }}">{{ activity.name() }}</a></td>
                             <td>{{ activity.secondsToHours(activity.moving_time) }}<br>{{ activity.metersToKilometers(activity.distance, 2) }}km</td>
-                            <td>{{ activity.total_elevation_gain }}m ⬆️</td>
+                            <td>{{ activity.total_elevation_gain }}m ⬆️{% if activity.activity_json().kilojoules %}<br>{{ activity.activity_json().kilojoules|round }}kJ{% endif %}</td>
 
                             {% if activity.activity_json().has_heartrate %}
                             <td>{{ activity.activity_json().average_heartrate|round }}bpm<br>({{ activity.activity_json().max_heartrate|round }})</td>
@@ -159,15 +159,16 @@
                             
                             <td>
                             {% if activity.activity_json().average_cadence %}
-                            {{ (activity.activity_json().average_cadence * 2)|round }}spm<br>
+                                {% if activity.type == "Run" %}
+                                    {{ (activity.activity_json().average_cadence * 2)|round }}spm<br>
+                                {% else %}
+                                    {{ activity.activity_json().average_cadence|round }}spm<br>
+                                {% endif %}
                             {% endif %}
                             {% if activity.activity_json().average_watts %}
                                 {{ activity.activity_json().average_watts|round }}W
                             {% endif %}
-                            </td>
-                            
-                            {% if activity.activity_json().kilojoules %}<td>{{ activity.activity_json().kilojoules|round }}kJ</td>{% endif %}
-                            
+                            </td>                            
                             
                             <td><a class="button orange button-xsmall" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
                         </tr>
