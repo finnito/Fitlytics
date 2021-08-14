@@ -62,6 +62,7 @@ class FitlyticsController extends PublicController
         
         $activities = $activitiesRepository->newQuery()
             ->whereBetween("activity_json->start_date_local", [$now->startOfWeek()->format("Y-m-d\TH:i:s"), $now->endOfWeek()->format("Y-m-d\TH:i:s")])
+            ->orderBy("start_date")
             ->get();
             
         // dd($now, $now->startOfWeek()->format("Y-m-d\TH:i:s"), $now->endOfWeek()->format("Y-m-d\TH:i:s"), $activities);
