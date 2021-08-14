@@ -27,6 +27,11 @@ class ActivityModel extends EntryModel implements ActivityInterface
         return $this->start_date->toDateTimeString();
     }
 
+    public function ymdDate()
+    {
+        return \Carbon\Carbon::parse($this->activity_json()->start_date_local)->format("Y-m-d");
+    }
+
     public function activity_json()
     {
         // dd(json_decode($this->activity_json, JSON_FORCE_OBJECT));

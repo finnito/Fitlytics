@@ -5,6 +5,11 @@ use Anomaly\Streams\Platform\Ui\Form\FormBuilder;
 class ActivityFormBuilder extends FormBuilder
 {
 
+    public function onSaved()
+    {
+        $this->setFormResponse(redirect('/#' . $this->getFormEntry()->ymdDate()));
+    }
+
     /**
      * The form fields.
      *
@@ -45,9 +50,9 @@ class ActivityFormBuilder extends FormBuilder
      * @var array|string
      */
     protected $actions = [
-        'save' => [
-            'redirect' => '/?week-of=a{entry.id}'
-        ],
+        // 'save' => [
+        //     'redirect' => '/#{entry.id}'
+        // ],
     ];
 
     /**
