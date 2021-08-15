@@ -26,36 +26,21 @@ class FitlyticsController extends PublicController
         $this->messages = $messages;
 
         if ($request->has("week-of")) {
-            if (str_starts_with($request->query("week-of"), "a")) {
-                $activity = $activities->newQuery()->select("activity_json->start_date_local")->where("id", substr($request->query("week-of"), 1))->first();
-                $this->week_of = \Carbon\Carbon::parse($activity->start_date_local)->format("Y-m-d");
-            }
-
-            elseif (str_starts_with($request->query("week-of"), "p")) {
-                $plan = $planModel->newQuery()->select("date")->where("id", substr($request->query("week-of"), 1))->first();
-                $this->week_of = \Carbon\Carbon::parse($plan->date)->format("Y-m-d");
-            }
-
-            elseif (str_starts_with($request->query("week-of"), "n")) {
-                $note = $noteModel->newQuery()->select("date")->where("id", substr($request->query("week-of"), 1))->first();
-                $this->week_of = \Carbon\Carbon::parse($note->date)->format("Y-m-d");
-            }
-
-            else {
-                $this->week_of = \Carbon\Carbon::parse($request->query("week-of"))->format("Y-m-d");
-            }
+            $this->week_of = \Carbon\Carbon::parse($request->query("week-of"))->timezone("Pacific/Auckland");
         } else {
-            $this->week_of = "now";
+            $this->week_of = \Carbon\Carbon::parse("now")->timezone("Pacific/Auckland");
         }
     }
 
     public function home(ActivityRepositoryInterface $activitiesRepository, NoteRepositoryInterface $notesRepository, PlanRepositoryInterface $plansRepository)
     {
+        $now = $this->week_of;
         // $this->messages->success("This is a success!");
         // $this->messages->warning("This is a warning!");
         // $this->messages->info("This is a info!");
         // $this->messages->error("This is an error!");
-        $now = \Carbon\CarbonImmutable::parse($this->week_of)->timezone("Pacific/Auckland");
+        // dd($this->week_of);
+        // $now = \Carbon\CarbonImmutable::parse($this->week_of)->timezone("Pacific/Auckland");
         // dd($now);
 
         $this->template->set("meta_title", $now->format("d-m-Y"));
