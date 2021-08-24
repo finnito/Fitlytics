@@ -34,14 +34,22 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      *
      * @type array|null
      */
-    protected $commands = [];
+    protected $commands = [
+        "strava:get" => \Finnito\FitlyticsModule\Console\GetNewActivities::class,
+        "strava:gpx" => \Finnito\FitlyticsModule\Console\DownloadGPXFiles::class,
+    ];
 
     /**
      * The addon's scheduled commands.
      *
      * @type array|null
      */
-    protected $schedules = [];
+    protected $schedules = [
+        "* * * * *" => [
+            \Finnito\FitlyticsModule\Console\GetNewActivities::class,
+            // \Finnito\FitlyticsModule\Console\DownloadGPXFiles::class,
+        ],
+    ];
 
     /**
      * The addon API routes.
