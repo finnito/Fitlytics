@@ -541,7 +541,7 @@ class FitlyticsController extends PublicController
     {
         define('ICAL_FORMAT', 'Ymd\THis\Z');
 
-        $plans = $plans->newQuery()->all();
+        $plans = $plans->all();
 
         $icalObject = "BEGIN:VCALENDAR\n"
             . "VERSION:2.0\n"
@@ -578,7 +578,7 @@ class FitlyticsController extends PublicController
         return $icalObject;
     }
 
-    public function notesICS(NoteModel $notes)
+    public function notesICS(NoteRepositoryInterface $notes)
     {
         define('ICAL_FORMAT', 'Ymd\THis\Z');
 
@@ -636,7 +636,7 @@ class FitlyticsController extends PublicController
         return $icalObject;
     }
 
-    public function activitiesICS(ActivityModel $activities)
+    public function activitiesICS(ActivityRepositoryInterface $activities)
     {
         $activities = $activities->all();
 
