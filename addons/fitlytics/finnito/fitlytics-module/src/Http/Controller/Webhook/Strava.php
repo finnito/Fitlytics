@@ -19,7 +19,7 @@ class Strava extends PublicController
          * Handle a regular request
          **/
         else {
-            $model->create(["content" => $request->all()]);
+            $model->create(["content" => $request->getContent()]);
             return response(null, 200);
         }
     }
