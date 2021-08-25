@@ -7,7 +7,7 @@ class ActivityFormBuilder extends FormBuilder
 
     public function onSaved()
     {
-        $this->setFormResponse(redirect('/#' . $this->getFormEntry()->ymdDate()));
+        $this->setFormResponse(redirect('/' . $this->getFormEntry()->ymdDate() . "#" . $this->getFormEntry()->ymdDate()));
     }
 
     /**

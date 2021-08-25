@@ -24,16 +24,18 @@ class FitlyticsController extends PublicController
         $this->request = $request;
         $this->template = $template;
         $this->messages = $messages;
-
-        if ($request->has("week-of")) {
-            $this->week_of = \Carbon\Carbon::parse($request->query("week-of"))->timezone("Pacific/Auckland");
-        } else {
+        // dd($request->path());
+        if ($request->path() == "/") {
             $this->week_of = \Carbon\Carbon::parse("now")->timezone("Pacific/Auckland");
+        } else {
+            $this->week_of = \Carbon\Carbon::parse($request->path())->timezone("Pacific/Auckland");
         }
+        // dd($this->week_of);
     }
 
-    public function home(ActivityRepositoryInterface $activitiesRepository, NoteRepositoryInterface $notesRepository, PlanRepositoryInterface $plansRepository)
+    public function home(ActivityRepositoryInterface $activitiesRepository, NoteRepositoryInterface $notesRepository, PlanRepositoryInterface $plansRepository, $week = null)
     {
+        // dd($week);
         $now = $this->week_of;
         // $this->messages->success("This is a success!");
         // $this->messages->warning("This is a warning!");

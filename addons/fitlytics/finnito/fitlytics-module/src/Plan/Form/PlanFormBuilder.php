@@ -33,7 +33,7 @@ class PlanFormBuilder extends FormBuilder
      */
     protected $actions = [
         'save' => [
-            'redirect' => '/#{entry.date}'
+            'redirect' => '/{entry.date}#{entry.date}'
         ],
     ];
 
