@@ -21,4 +21,9 @@ return [
         'write',
         'delete',
     ],
+    'webhook_strava' => [
+        'read',
+        'write',
+        'delete',
+    ],
 ];

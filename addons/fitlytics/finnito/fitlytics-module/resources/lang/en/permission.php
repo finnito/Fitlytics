@@ -33,4 +33,12 @@ return [
             'delete' => 'Can delete strava credentials?',
         ],
     ],
+    'webhook_strava' => [
+        'name'   => 'Webhook strava',
+        'option' => [
+            'read'   => 'Can read webhook strava?',
+            'write'  => 'Can create/edit webhook strava?',
+            'delete' => 'Can delete webhook strava?',
+        ],
+    ],
 ];

@@ -13,4 +13,7 @@ return [
     'strava_credentials' => [
         'name' => 'Strava credentials',
     ],
+    'webhook_strava' => [
+        'name' => 'Webhook strava',
+    ],
 ];

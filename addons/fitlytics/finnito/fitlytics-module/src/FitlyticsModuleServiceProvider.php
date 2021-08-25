@@ -1,6 +1,10 @@
 <?php namespace Finnito\FitlyticsModule;
 
 use Anomaly\Streams\Platform\Addon\AddonServiceProvider;
+use Finnito\FitlyticsModule\WebhookStrava\Contract\WebhookStravaRepositoryInterface;
+use Finnito\FitlyticsModule\WebhookStrava\WebhookStravaRepository;
+use Anomaly\Streams\Platform\Model\Fitlytics\FitlyticsWebhookStravaEntryModel;
+use Finnito\FitlyticsModule\WebhookStrava\WebhookStravaModel;
 use Finnito\FitlyticsModule\StravaCredential\Contract\StravaCredentialRepositoryInterface;
 use Finnito\FitlyticsModule\StravaCredential\StravaCredentialRepository;
 use Anomaly\Streams\Platform\Model\Fitlytics\FitlyticsStravaCredentialsEntryModel;
@@ -64,6 +68,9 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      * @type array|null
      */
     protected $routes = [
+        'admin/fitlytics/webhook_strava'           => 'Finnito\FitlyticsModule\Http\Controller\Admin\WebhookStravaController@index',
+        'admin/fitlytics/webhook_strava/create'    => 'Finnito\FitlyticsModule\Http\Controller\Admin\WebhookStravaController@create',
+        'admin/fitlytics/webhook_strava/edit/{id}' => 'Finnito\FitlyticsModule\Http\Controller\Admin\WebhookStravaController@edit',
         'admin/fitlytics/strava_credentials'           => 'Finnito\FitlyticsModule\Http\Controller\Admin\StravaCredentialsController@index',
         'admin/fitlytics/strava_credentials/create'    => 'Finnito\FitlyticsModule\Http\Controller\Admin\StravaCredentialsController@create',
         'admin/fitlytics/strava_credentials/edit/{id}' => 'Finnito\FitlyticsModule\Http\Controller\Admin\StravaCredentialsController@edit',
@@ -186,6 +193,8 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             ],
         ],
 
+        "/api/webhook/strava" => \Finnito\FitlyticsModule\Http\Controller\Webhook\Strava::class,
+
         "{week?}" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@home",
             "streams::addon" => "finnito.module.fitlytics",
@@ -248,6 +257,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      * @type array|null
      */
     protected $bindings = [
+        FitlyticsWebhookStravaEntryModel::class => WebhookStravaModel::class,
         FitlyticsStravaCredentialsEntryModel::class => StravaCredentialModel::class,
         FitlyticsNotesEntryModel::class => NoteModel::class,
         FitlyticsPlansEntryModel::class => PlanModel::class,
@@ -263,6 +273,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      * @type array|null
      */
     protected $singletons = [
+        WebhookStravaRepositoryInterface::class => WebhookStravaRepository::class,
         StravaCredentialRepositoryInterface::class => StravaCredentialRepository::class,
         NoteRepositoryInterface::class => NoteRepository::class,
         PlanRepositoryInterface::class => PlanRepository::class,

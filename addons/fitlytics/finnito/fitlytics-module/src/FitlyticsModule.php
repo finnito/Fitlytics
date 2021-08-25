@@ -41,6 +41,11 @@ class FitlyticsModule extends Module
                 'new_strava_credential',
             ],
         ],
+        'webhook_strava' => [
+            'buttons' => [
+                'new_webhook_strava',
+            ],
+        ],
     ];
 
 }
