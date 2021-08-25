@@ -76,8 +76,6 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
         'admin/fitlytics'           => 'Finnito\FitlyticsModule\Http\Controller\Admin\ActivitiesController@index',
         'admin/fitlytics/create'    => 'Finnito\FitlyticsModule\Http\Controller\Admin\ActivitiesController@create',
         'admin/fitlytics/edit/{id}' => 'Finnito\FitlyticsModule\Http\Controller\Admin\ActivitiesController@edit',
-        "" => [
-            "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@home",
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "home",
@@ -185,7 +183,17 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             "middleware" => [
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
             ],
-        ]
+        ],
+
+        "{week?}" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@home",
+            "streams::addon" => "finnito.module.fitlytics",
+            "verb" => "get",
+            "as" => "home",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
+        ],
     ];
 
     /**
