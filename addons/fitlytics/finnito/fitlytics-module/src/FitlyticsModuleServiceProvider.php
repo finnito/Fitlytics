@@ -186,7 +186,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             ],
         ],
 
-        "/api/currentWeekChart" => [
+        "/api/currentWeekChart/{week?}" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\APIController@currentWeekChart",
             "middleware" => [
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class

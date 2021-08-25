@@ -13,14 +13,17 @@ class APIController extends PublicController
         $this->auth = $auth;
         $this->request = $request;
 
-        if ($request->has("week-of")) {
-            $this->week_of = $request->query("week-of");
-        } else {
-            $this->week_of = "now";
-        }
+        $splitPath = explode("/", $request->path());
+        $this->week_of = end($splitPath);
+
+        // if ($request->has("week-of")) {
+            // $this->week_of = $request->query("week-of");
+        // } else {
+            // $this->week_of = "now";
+        // }
     }
 
-    public function currentWeekChart(ActivityRepository $activities)
+    public function currentWeekChart(ActivityRepository $activities, $week)
     {
         $out = [];
         $out["datasets"] = [];

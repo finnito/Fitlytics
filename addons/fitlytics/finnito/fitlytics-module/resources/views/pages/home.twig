@@ -115,7 +115,7 @@
                         }
                     }
                 });
-                getRemoteData(currentWeekChart, '/api/currentWeekChart?week-of={{ week_of|date("Y-m-d", "Pacific/Auckland") }}');
+                getRemoteData(currentWeekChart, '/api/currentWeekChart/{{ week_of|date("Y-m-d", "Pacific/Auckland") }}');
             });
             </script>
         </div>
