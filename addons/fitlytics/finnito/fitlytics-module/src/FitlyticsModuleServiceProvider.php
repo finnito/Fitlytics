@@ -193,8 +193,6 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             ],
         ],
 
-        "/api/webhook/strava" => \Finnito\FitlyticsModule\Http\Controller\Webhook\Strava::class,
-
         "{week?}" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@home",
             "streams::addon" => "finnito.module.fitlytics",
@@ -334,6 +332,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      */
     public function map(Router $router)
     {
+        $router->post("api/webhook/strava", "\Finnito\FitlyticsModule\Http\Controller\Webhook\Strava@index");
         // Register dynamic routes here for example.
         // Use method injection or commands to bring in services.
     }
