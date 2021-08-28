@@ -1,9 +1,9 @@
 <?php namespace Finnito\FitlyticsModule\Http\Controller\Webhook;
 
 use Illuminate\Http\Request;
-// use Anomaly\Streams\Platform\Http\Controller\PublicController;
 use Anomaly\Streams\Platform\Http\Controller\ResourceController;
 use Finnito\FitlyticsModule\WebhookStrava\WebhookStravaModel;
+use Finnito\FitlyticsModule\WebhookStrava\Job\ProcessWebhook;
 
 class Strava extends ResourceController
 {
@@ -22,7 +22,8 @@ class Strava extends ResourceController
          * Handle a regular request
          **/
         else {
-            $model->create(["content" => json_encode($request->all())]);
+            $event = $model->create(["content" => json_encode($request->all())]);
+            ProcessWebhook::dispatch($event);
             return response(null, 200);
         }
     }

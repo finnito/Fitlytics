@@ -40,7 +40,7 @@ class Strava
         return $credentials;
     }
 
-    public function call($route, $parameters)
+    public function call($route, $parameters = [])
     {
         $credentials = $this->getCredentials();
 

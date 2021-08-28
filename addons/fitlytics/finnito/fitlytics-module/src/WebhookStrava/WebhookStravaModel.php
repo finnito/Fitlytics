@@ -15,4 +15,9 @@ class WebhookStravaModel extends FitlyticsWebhookStravaEntryModel implements Web
     {
         return WebhookStravaFactory::new();
     }
+
+    public function content()
+    {
+        return json_decode($this->content, false);
+    }
 }
