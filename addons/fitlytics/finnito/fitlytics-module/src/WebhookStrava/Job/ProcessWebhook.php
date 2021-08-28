@@ -80,7 +80,7 @@ class ProcessWebhook implements ShouldQueue
                 }
 
                 if (property_exists($this->event->content()->updates, "title")) {
-                    Log::debug("Updating title: {$activity->name} --> {$this->event->content()->updates->name}");
+                    Log::debug("Updating title: {$activity->name} --> {$this->event->content()->updates->title}");
                     $activity->name = $this->event->content()->updates->title;
 
                     // Update the activity_json column too.
