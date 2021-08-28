@@ -48,7 +48,6 @@ class ProcessWebhook implements ShouldQueue
                     "total_elevation_gain" => $activity->total_elevation_gain,
                     "type" => $activity->type,
                     "start_date" => $activity->start_date,
-                    "polyline" => $activity->map->summary_polyline,
                     "activity_json" => json_encode($activity),
                 ]);
                 $this->event->processed = true;
@@ -74,7 +73,6 @@ class ProcessWebhook implements ShouldQueue
                         "total_elevation_gain" => $response->total_elevation_gain,
                         "type" => $response->type,
                         "start_date" => $response->start_date,
-                        "polyline" => $response->map->summary_polyline,
                         "activity_json" => json_encode($response),
                     ]);
                 }
