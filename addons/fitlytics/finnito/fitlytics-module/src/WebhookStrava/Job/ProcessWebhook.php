@@ -85,7 +85,7 @@ class ProcessWebhook implements ShouldQueue
 
                     // Update the activity_json column too.
                     $activity_json = $activity->activity_json();
-                    $activity_json->name = $this->event->content()->updates->name;
+                    $activity_json->name = $this->event->content()->updates->title;
                     $activity->activity_json = json_encode($activity_json);
                 }
 
