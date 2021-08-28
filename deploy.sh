@@ -14,3 +14,4 @@ sudo -u www-data php artisan httpcache:clear
 sudo chown -R www-data:www-data ./
 sudo chmod -R ug+rwx storage bootstrap/cache;
 sudo -u www-data composer dump-autoload --profile
+sudo supervisorctl restart fitlytics-queue
