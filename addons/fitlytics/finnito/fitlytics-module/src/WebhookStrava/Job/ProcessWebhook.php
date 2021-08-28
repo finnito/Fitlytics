@@ -62,6 +62,7 @@ class ProcessWebhook implements ShouldQueue
 
                 if (!$activity) {
                     Log::debug("?Activity did not exist");
+                    $strava = new Strava();
                     $response = $strava->call("/activities/{$this->event->content()->object_id}");
                     ActivityModel::create([
                         "strava_id" => $response->id,
