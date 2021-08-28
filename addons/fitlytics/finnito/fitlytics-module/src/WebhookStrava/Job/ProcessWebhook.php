@@ -59,7 +59,6 @@ class ProcessWebhook implements ShouldQueue
                 $activity = ActivityModel::where("strava_id", $this->event->content()->object_id)
                     ->where("activity_json->athlete->id", $this->event->content()->owner_id)
                     ->first();
-                Log::debug("Updating activity: {$activity->name}");
 
                 if (!$activity) {
                     Log::debug("?Activity did not exist");
@@ -76,6 +75,8 @@ class ProcessWebhook implements ShouldQueue
                         "activity_json" => json_encode($response),
                     ]);
                 }
+
+                Log::debug("Updating activity: {$activity->name}");
 
                 if (property_exists($this->event->content()->updates, "title")) {
                     Log::debug("Updating title: {$activity->name} --> {$this->event->content()->updates->title}");
