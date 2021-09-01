@@ -97,19 +97,19 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
             ],
         ],
         "activities.ics" => [
-            "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@activitiesICS",
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\CalendarController@activitiesICS",
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "activitiesICS",
         ],
         "plans.ics" => [
-            "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@plansICS",
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\CalendarController@plansICS",
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "plansICS",
         ],
         "notes.ics" => [
-            "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@notesICS",
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\CalendarController@notesICS",
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",
             "as" => "notesICS",
