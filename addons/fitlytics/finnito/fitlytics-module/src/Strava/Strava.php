@@ -5,7 +5,7 @@ use \Finnito\FitlyticsModule\StravaCredential\Contract\StravaCredentialRepositor
 
 class Strava
 {
-    private function getCredentials()
+    public function getCredentials()
     {
         $credentialsRepository = App::make(StravaCredentialRepositoryInterface::class);
         $credentials = $credentialsRepository->first();
