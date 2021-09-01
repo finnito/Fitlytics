@@ -52,11 +52,11 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      */
     protected $schedules = [
         "* * * * *" => [
-            \Finnito\FitlyticsModule\Console\GetNewActivities::class,
+            //\Finnito\FitlyticsModule\Console\GetNewActivities::class,
             // \Finnito\FitlyticsModule\Console\DownloadGPXFiles::class,
         ],
         "*/16 * * * *" => [
-            \Finnito\FitlyticsModule\Console\GetDataStreams::class,
+            //\Finnito\FitlyticsModule\Console\GetDataStreams::class,
         ]
     ];
 
