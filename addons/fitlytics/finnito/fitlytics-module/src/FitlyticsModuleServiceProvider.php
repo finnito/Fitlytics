@@ -41,6 +41,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
     protected $commands = [
         "strava:get" => \Finnito\FitlyticsModule\Console\GetNewActivities::class,
         "strava:gpx" => \Finnito\FitlyticsModule\Console\DownloadGPXFiles::class,
+        "strava:token" => \Finnito\FitlyticsModule\Console\GetAccessToken::class,
     ];
 
     /**
