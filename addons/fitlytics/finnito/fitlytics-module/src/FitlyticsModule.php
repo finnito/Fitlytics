@@ -17,7 +17,7 @@ class FitlyticsModule extends Module
      *
      * @var string
      */
-    protected $icon = 'fa fa-puzzle-piece';
+    protected $icon = 'glyphicons glyphicons-calendar';
 
     /**
      * The module sections.

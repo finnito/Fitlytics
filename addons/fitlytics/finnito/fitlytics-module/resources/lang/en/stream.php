@@ -11,9 +11,9 @@ return [
         'name' => 'Notes',
     ],
     'strava_credentials' => [
-        'name' => 'Strava credentials',
+        'name' => 'Strava Credentials',
     ],
     'webhook_strava' => [
-        'name' => 'Webhook strava',
+        'name' => 'Webhook Strava',
     ],
 ];

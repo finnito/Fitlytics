@@ -26,7 +26,7 @@ return [
         ],
     ],
     'strava_credentials' => [
-        'name'   => 'Strava credentials',
+        'name'   => 'Strava Credentials',
         'option' => [
             'read'   => 'Can read strava credentials?',
             'write'  => 'Can create/edit strava credentials?',
@@ -34,7 +34,7 @@ return [
         ],
     ],
     'webhook_strava' => [
-        'name'   => 'Webhook strava',
+        'name'   => 'Webhook Strava',
         'option' => [
             'read'   => 'Can read webhook strava?',
             'write'  => 'Can create/edit webhook strava?',
