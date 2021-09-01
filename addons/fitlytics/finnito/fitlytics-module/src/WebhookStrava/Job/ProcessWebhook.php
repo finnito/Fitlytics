@@ -38,18 +38,29 @@ class ProcessWebhook implements ShouldQueue
             if ($this->event->content()->aspect_type == "create") {
                 Log::debug("Parsing webhook CREATE event");
                 $strava = new Strava();
-                $activity = $strava->call("/activities/{$this->event->content()->object_id}");
-                ActivityModel::create([
-                    "strava_id" => $activity->id,
-                    "name" => utf8_encode($activity->name),
-                    "distance" => $activity->distance,
-                    "elapsed_time" => $activity->elapsed_time,
-                    "moving_time" => $activity->moving_time,
-                    "total_elevation_gain" => $activity->total_elevation_gain,
-                    "type" => $activity->type,
-                    "start_date" => $activity->start_date,
-                    "activity_json" => json_encode($activity),
+                $activityData = $strava->call("/activities/{$this->event->content()->object_id}");
+                $activity = ActivityModel::create([
+                    "strava_id" => $activityData->id,
+                    "name" => utf8_encode($activityData->name),
+                    "distance" => $activityData->distance,
+                    "elapsed_time" => $activityData->elapsed_time,
+                    "moving_time" => $activityData->moving_time,
+                    "total_elevation_gain" => $activityData->total_elevation_gain,
+                    "type" => $activityData->type,
+                    "start_date" => $activityData->start_date,
+                    "activity_json" => json_encode($activityData),
                 ]);
+
+                $response = $strava->call(
+                    "/activities/{$activity->strava_id}/streams",
+                    [
+                        "key_by_type" => "true",
+                        "keys" => "altitude,cadence,heartrate",
+                    ]
+                );
+                $activity->data_streams = json_encode($response);
+                $activity->save();
+                
                 $this->event->processed = true;
                 $this->event->save();
             }
