@@ -51,7 +51,9 @@
         "laravel/framework": "v8.36.2",
         "laravel/tinker": "^2.6",
         "pyrocms/accelerant-theme": "~1.2.0",
-        "pyrocms/starter-theme": "~1.0.0"
+        "pyrocms/starter-theme": "~1.0.0",
+        "anomaly/relationship-field_type": "^2.2",
+        "anomaly/polymorphic-field_type": "^2.1"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
