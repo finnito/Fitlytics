@@ -88,12 +88,22 @@
                             title: {
                                 display: true,
                                 text: 'Week Breakdown'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem, data) {
+                                        return tooltipItem.dataset.data[tooltipItem.dataIndex].y + tooltipItem.dataset.unit;
+                                    }
+                                }
                             }
                         },
                         responsive: true,
                         scales: {
                             "x": {
                                 stacked: true,
+                                grid: {
+                                    display: false
+                                }
                             },
                             "y": {
                                 display: "auto",
@@ -289,9 +299,6 @@
                             mode: "index",
                             intersect: false
                         },
-                        tooltip: {
-                            position: "nearest"
-                        },
                         animation: {
                             duration: 300
                         },
@@ -309,11 +316,18 @@
                         plugins: {
                             legend: {
                                 onClick: customHandler
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem, data) {
+                                        return tooltipItem.dataset.data[tooltipItem.dataIndex].y + tooltipItem.dataset.unit;
+                                    }
+                                }
                             }
                         },
                         scales: {
                             x: {
-                                gridlines: {
+                                grid: {
                                     display: false
                                 },
                                 type: "time",
@@ -328,10 +342,24 @@
                                 }
                             },
                             y: {
-                                display: "auto"
+                                grid: {
+                                    display: false
+                                },
+                                display: "auto",
+                                title: {
+                                    text: "Distance (km)",
+                                    display: true
+                                }
                             },
                             y2: {
-                                display: "auto"
+                                grid: {
+                                    display: false
+                                },
+                                display: "auto",
+                                title: {
+                                    text: "Duration (min)",
+                                    display: true
+                                }
                             }
                         }
                     },
@@ -352,6 +380,13 @@
                     maintainAspectRatio: true,
                     aspectRatio: 1,
                     options: {
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                        },
                         interaction: {
                             mode: "index",
                             intersect: false
@@ -367,6 +402,13 @@
                                     display: true,
                                     text: "Minutes",
                                 },
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem, data) {
+                                        return tooltipItem.dataset.data[tooltipItem.dataIndex].y + tooltipItem.dataset.unit;
+                                    }
+                                }
                             }
                         },
                         responsive: true

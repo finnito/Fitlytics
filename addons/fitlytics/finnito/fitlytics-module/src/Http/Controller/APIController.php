@@ -103,7 +103,15 @@ class APIController extends PublicController
                 ],
             ];
 
-            if ($type == "Yoga") {
+            // if (in_array($type, ["Yoga", "RockClimbing", "Workout", "WeightTraining"])) {
+            //     $yaxis = "y2";
+            //     $unit = "min";
+            // } else {
+            //     $yaxis = "y";
+            //     $unit = "km";
+            // }
+
+            if (in_array($type, ["Yoga", "RockClimbing", "Workout", "WeightTraining"])) {
                 foreach ($week as $i => $day) {
                     $week[$i]["y"] = round(floatval($day["y"])/60, 2);
                 }
@@ -112,6 +120,7 @@ class APIController extends PublicController
                     "backgroundColor" => $colours[$num],
                     "label" => $type,
                     "yAxisID" => "y2",
+                    "unit" => "min",
                 ]);
             } else {
                 foreach ($week as $i => $day) {
@@ -122,6 +131,7 @@ class APIController extends PublicController
                     "backgroundColor" => $colours[$num],
                     "label" => $type,
                     "yAxisID" => "y",
+                    "unit" => "km",
                 ]);
             }
         }
@@ -183,6 +193,7 @@ class APIController extends PublicController
                 "data" => $zones,
                 "backgroundColor" => ["#3498db", "#2ecc71", "#f1c40f", "#e67e22", "#e74c3c"],
                 "label" => "HR",
+                "unit" => "min",
             ]);
         }
 
@@ -193,14 +204,16 @@ class APIController extends PublicController
 
     public function historicalWeeks($week)
     {
-        $date = \Carbon\CarbonImmutable::parse($week)->timezone("Pacific/Auckland");
+        $date = \Carbon\CarbonImmutable::parse($week);
         $period = \Carbon\CarbonPeriod::create($date->startOfWeek()->subWeeks(12), "1 week", $date->startOfWeek());
+        $startDate = $date->startOfWeek()->subWeeks(12);
 
         $out = [];
         $out["datasets"] = [];
 
         $types = ActivityModel::select()
-            ->where("activity_json->start_date_local", ">=", $date->startOfWeek()->subWeeks(12))
+            ->where("activity_json->start_date_local", ">=", $startDate)
+            ->where("activity_json->start_date_local", "<=", $date->endOfWeek())
             ->groupBy("type")
             ->orderBy("type", "DESC")
             ->get()
@@ -212,7 +225,8 @@ class APIController extends PublicController
                     DB::raw("SUM(distance) as distance"),
                     DB::raw("SUM(moving_time) as duration")
                 )->where("type", $type)
-                ->where("activity_json->start_date_local", ">=", $date->startOfWeek()->subWeeks(12))
+                ->where("activity_json->start_date_local", ">=", $startDate)
+                ->where("activity_json->start_date_local", "<=", $date->endOfWeek())
                 ->groupBy("week")
                 ->orderBy("week", "ASC")
                 ->limit(12)
@@ -232,45 +246,41 @@ class APIController extends PublicController
                     list($year, $weekNum) = explode("W", $week->week);
                     $d = \Carbon\Carbon::now();
                     $d->setISODate($year, $weekNum);
-                    $d->setTime(0, 0, 0);
+                    $d->setTime(12, 0, 0);
                     if (intval($d->isoFormat("x")) == $data[$i]["x"]) {
-                        if (in_array($type, ["Yoga", "RockClimbing"])) {
+                        if (in_array($type, ["Yoga", "RockClimbing", "Workout", "WeightTraining"])) {
                             $data[$i]["y"] = round($week->duration / 60, 2);
                         } else {
                             $data[$i]["y"] = round($week->distance / 1000, 2);
                         }
-
-                        
                         break;
                     }
                 }
             }
 
             if ($type == "Run") {
-                // $backgroundColor = "#2ecc71";
                 $borderColor = "#27ae60";
             } else {
-                // $backgroundColor = "#ecf0f1";
                 $borderColor = "#bdc3c7";
             }
 
-            if (in_array($type, ["Yoga", "RockClimbing"])) {
+            if (in_array($type, ["Yoga", "RockClimbing", "Workout", "WeightTraining"])) {
                 $yaxis = "y2";
+                $unit = "min";
             } else {
                 $yaxis = "y";
+                $unit = "km";
             }
 
             array_push($out["datasets"], [
                 "data" => $data,
                 "label" => $type,
                 "hidden" => ($type != "Run"),
-                // "backgroundColor" => $backgroundColor,
                 "borderColor" => $borderColor,
                 "yAxisID" => $yaxis,
+                "unit" => $unit,
             ]);
         }
-
-
 
         return json_encode($out);
     }
