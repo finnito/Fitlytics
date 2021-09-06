@@ -17,6 +17,11 @@ class ActivityModel extends EntryModel implements ActivityInterface
         return utf8_decode($this->name);
     }
 
+    public function dataStreams()
+    {
+        return json_decode($this->data_streams, false);
+    }
+
     public function localStartDate()
     {
         return \Carbon\Carbon::parse($this->start_date)->timezone(env("APP_TIMEZONE"));
@@ -257,5 +262,79 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
         return $out;
         // Cadence: $avg_cadence";
+    }
+
+    public function hrZones()
+    {
+        $user = auth()->user();
+        return [
+            [
+                "text" => "Z1 - Recovery",
+                "min" => 0,
+                "max" => explode("-", $user->z1)[1],
+            ],
+            [
+                "text" => "Z2 - Aerobic Base",
+                "min" => explode("-", $user->z2)[0],
+                "max" => explode("-", $user->z2)[1],
+            ],
+            [
+                "text" => "Z3 - Tempo",
+                "min" => explode("-", $user->z3)[0],
+                "max" => explode("-", $user->z3)[1],
+            ],
+            [
+                "text" => "Z4 - Lactate Threshold",
+                "min" => explode("-", $user->z4)[0],
+                "max" => explode("-", $user->z4)[1],
+            ],
+            [
+                "text" => "Z5 - VO2 Max",
+                "min" => explode("-", $user->z5)[0],
+                "max" => explode("-", $user->z5)[1],
+            ],
+        ];
+    }
+
+    public function computeHrBuckets()
+    {
+        $zones = $this->hrZones();
+
+        $numZones = sizeof($zones) - 1;
+        for ($i = 0; $i <= $numZones; $i++) {
+            $zones[$i]["count"] = 0;
+        }
+
+        foreach ($this->dataStreams()->heartrate->data as $point) {
+            for ($j = $numZones; $j >= 0; $j--) {
+                if ($point >= $zones[$j]["min"]) {
+                    $zones[$j]["count"] += 1;
+                    break;
+                }
+            }
+        }
+
+        // dd(sizeof($this->dataStreams()->heartrate->data), $zones);
+        
+        for ($i = 0; $i <= $numZones; $i++) {
+            $zones[$i]["count"] = ($zones[$i]["count"]/sizeof($this->dataStreams()->heartrate->data));
+        }
+
+        $this->hr_buckets = $zones;
+        $this->save();
+    }
+
+    public function hrBuckets()
+    {
+        // if ($this->hr_buckets !== null) {
+            // return json_decode($this->hr_buckets, false);
+        // } else {
+            // if ((isset($this->dataStreams()->heartrate)) && (auth()->user()->z1 !== null)) {
+                $this->computeHrBuckets();
+                return $this->hr_buckets;
+            // } else {
+                // return [];
+            // }
+        // }
     }
 }

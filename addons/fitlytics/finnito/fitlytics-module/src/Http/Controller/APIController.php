@@ -4,6 +4,8 @@ use Anomaly\Streams\Platform\Http\Controller\PublicController;
 use Finnito\FitlyticsModule\Activity\ActivityRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Finnito\FitlyticsModule\Activity\ActivityModel;
+use Illuminate\Support\Facades\DB;
 
 class APIController extends PublicController
 {
@@ -13,8 +15,8 @@ class APIController extends PublicController
         $this->auth = $auth;
         $this->request = $request;
 
-        $splitPath = explode("/", $request->path());
-        $this->week_of = end($splitPath);
+        // $splitPath = explode("/", $request->path());
+        // $this->week_of = end($splitPath);
 
         // if ($request->has("week-of")) {
             // $this->week_of = $request->query("week-of");
@@ -25,6 +27,8 @@ class APIController extends PublicController
 
     public function currentWeekChart(ActivityRepository $activities, $week)
     {
+        $this->week_of = $week;
+
         $out = [];
         $out["datasets"] = [];
         $date = \Carbon\CarbonImmutable::parse($this->week_of)->timezone("Pacific/Auckland");
@@ -120,10 +124,72 @@ class APIController extends PublicController
                     "yAxisID" => "y",
                 ]);
             }
-            
         }
 
         return json_encode($out);
+    }
+
+    public function hrChart($week)
+    {
+        $this->week_of = $week;
+        $out = [];
+        $out["datasets"] = [];
+        $date = \Carbon\CarbonImmutable::parse($this->week_of)->timezone("Pacific/Auckland");
+
+        $activities = ActivityModel::select()
+            ->whereBetween("activity_json->start_date_local", [$date->startOfWeek()->toDateString(), $date->endOfWeek()->toDateString()])
+            ->get()
+            ->values();
+
+        if ($activities->isNotEmpty()) {
+            $moving_time = $activities->pluck("moving_time")->sum();
+
+            $zones = [
+                [
+                    "x" => "Z1 - Recovery",
+                    "y" => 0,
+                ],
+                [
+                    "x" => "Z2 - Aerobic Base",
+                    "y" => 0,
+                ],
+                [
+                    "x" => "Z3 - Tempo",
+                    "y" => 0,
+                ],
+                [
+                    "x" => "Z4 - Lactate Threshold",
+                    "y" => 0,
+                ],
+                [
+                    "x" => "Z5 - VO2 Max",
+                    "y" => 0,
+                ],
+            ];
+
+            foreach ($activities as $activity) {
+                $zones[0]["y"] += floatval($activity->hrBuckets()[0]["count"]);
+                $zones[1]["y"] += floatval($activity->hrBuckets()[1]["count"]);
+                $zones[2]["y"] += floatval($activity->hrBuckets()[2]["count"]);
+                $zones[3]["y"] += floatval($activity->hrBuckets()[3]["count"]);
+                $zones[4]["y"] += floatval($activity->hrBuckets()[4]["count"]);
+            }
+
+            for ($i = 0; $i < sizeof($zones); $i++) {
+                $zones[$i]["y"] = round((($zones[$i]["y"] / sizeof($activities)) * $moving_time) / 60);
+            }
+
+            array_push($out["datasets"], [
+                "data" => $zones,
+                "backgroundColor" => ["#3498db", "#2ecc71", "#f1c40f", "#e67e22", "#e74c3c"],
+                "label" => "HR",
+            ]);
+        }
+
+        
+        
+        return json_encode($out);
+    }
 
     }
 }

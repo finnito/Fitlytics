@@ -1,0 +1,40 @@
+{% extends "finnito.theme.fitlytics::layouts.default" %}
+
+{% block subtitle %}
+    Settings
+{% endblock %}
+
+{% block week %}
+
+{% endblock %}
+
+{% block content %}
+    <p>You may enter your Resting Heart Rate and Maximum Heart Rate and click <button id="calculate">Calculate</button> to get an automatic calculation.</p>
+    
+    <p><code>Target HR = [(Max HR - Resting HR) x %Intensity] + Resting HR</code></p>
+    {# https://www.calculatorsoup.com/calculators/health/target-heart-rate-zone-calculator.php #}
+    
+    {% set form = form("hr_form").entry(auth_user().id).get() %}
+    {{ form|raw }}
+
+    <script>
+    function getTargetHR(resting, max, intensity) {
+        var HRR = max - resting;
+        var percentHRR = HRR * intensity;
+        var targetHR = Number(percentHRR) + Number(resting);
+        return Math.round(targetHR);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("calculate").addEventListener("click", function(event) {
+            var minHR = document.getElementById("resting_heart_rate").value;
+            var maxHR = document.getElementById("maximum_heart_rate").value;
+            document.getElementById("z1").value = getTargetHR(minHR, maxHR, 0.5) + "-" + getTargetHR(minHR, maxHR, 0.6);
+            document.getElementById("z2").value = getTargetHR(minHR, maxHR, 0.6) + "-" + getTargetHR(minHR, maxHR, 0.7);
+            document.getElementById("z3").value = getTargetHR(minHR, maxHR, 0.7) + "-" + getTargetHR(minHR, maxHR, 0.8);
+            document.getElementById("z4").value = getTargetHR(minHR, maxHR, 0.8) + "-" + getTargetHR(minHR, maxHR, 0.9);
+            document.getElementById("z5").value = getTargetHR(minHR, maxHR, 0.9) + "-" + getTargetHR(minHR, maxHR, 1);
+        });
+    });
+    </script>
+{% endblock %}

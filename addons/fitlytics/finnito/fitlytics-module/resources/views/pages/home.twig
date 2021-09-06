@@ -246,6 +246,41 @@
         </tbody>
     {% endfor %}
     </table>
+        <div class="chartContainer">
+            <canvas id="hrSummaryChart"></canvas>
+            <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var hrSummaryChartEl = document.getElementById('hrSummaryChart').getContext('2d');
+                var hrSummaryChart = new Chart(hrSummaryChartEl, { 
+                    type: 'bar',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1,
+                    options: {
+                        interaction: {
+                            mode: "index",
+                            intersect: false
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'HR Summary'
+                            },
+                            legend: null,
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "Minutes",
+                                },
+                            }
+                        },
+                        responsive: true
+                    }
+                });
+                getRemoteData(hrSummaryChart, '/api/hr-chart/{{ week_of|date("Y-m-d", "Pacific/Auckland") }}');
+            });
+            </script>
+        </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js" integrity="sha256-uVEHWRIr846/vAdLJeybWxjPNStREzOlqLMXjW/Saeo=" crossorigin="anonymous"></script>
     

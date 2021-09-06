@@ -96,6 +96,14 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
             ],
         ],
+        "settings/hr-zones" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\SettingsController@hrZones",
+            "streams::addon" => "finnito.module.fitlytics",
+            "verb" => "get",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
+        ],
         "activities.ics" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\CalendarController@activitiesICS",
             "streams::addon" => "finnito.module.fitlytics",
@@ -197,6 +205,12 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
             ],
         ],
+        "/api/hr-chart/{week?}" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\APIController@hrChart",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
+        ],
 
         "{week?}" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@home",
@@ -267,7 +281,8 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
         FitlyticsActivitiesEntryModel::class => ActivityModel::class,
         "note_form" => \Finnito\FitlyticsModule\Note\Form\NoteFormBuilder::class,
         "plan_form" => \Finnito\FitlyticsModule\Plan\Form\PlanFormBuilder::class,
-        "user_form" => \Finnito\FitlyticsModule\User\Form\FitlyticsUserFormBuilder::class,
+        "hr_form" => \Finnito\FitlyticsModule\User\Form\UserHRZonesFormBuilder::class,
+        
     ];
 
     /**
