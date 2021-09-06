@@ -21,6 +21,7 @@ class FitlyticsController extends PublicController
         $this->request = $request;
         $this->template = $template;
         $this->messages = $messages;
+
         if ($request->path() == "/") {
             $this->week_of = \Carbon\Carbon::parse("now")->timezone("Pacific/Auckland");
         } else {
@@ -34,34 +35,45 @@ class FitlyticsController extends PublicController
 
         $this->template->set("meta_title", $now->format("d-m-Y"));
         
+        /**
+         * Get current week activities,
+         * grouped by day of week.
+         **/
         $activities = $activitiesRepository->newQuery()
-            ->whereBetween("activity_json->start_date_local", [$now->startOfWeek()->format("Y-m-d\TH:i:s"), $now->endOfWeek()->format("Y-m-d\TH:i:s")])
+            ->whereBetween("activity_json->start_date_local", [$this->week_of->startOfWeek()->format("Y-m-d\TH:i:s"), $this->week_of->endOfWeek()->format("Y-m-d\TH:i:s")])
             ->orderBy("start_date")
             ->get();
-        $activities = $activities->groupBy(function($activity) {
+        $activities = $activities->groupBy(function ($activity) {
             return \Carbon\Carbon::parse(json_decode($activity->activity_json)->start_date_local)->dayOfWeekIso;
         });
         
+        /**
+         * Get current week notes,
+         * grouped by day of week.
+         **/
         $notes = $notesRepository->newQuery()
             ->select("id", "date", "injured", "sick", "sleep_quality", "stress_level", "note")
-            ->whereBetween("date", [$now->startOfWeek()->toDateString(), $now->endOfWeek()->toDateString()])
+            ->whereBetween("date", [$this->week_of->startOfWeek()->toDateString(), $this->week_of->endOfWeek()->toDateString()])
             ->get();
-        $notes = $notes->groupBy(function($note) {
+        $notes = $notes->groupBy(function ($note) {
             return \Carbon\Carbon::parse($note->date)->dayOfWeekIso;
         });
 
+        /**
+         * Get current week plans,
+         * grouped by day of week.
+         **/
         $plans = $plansRepository->newQuery()
-            ->whereBetween("date", [$now->startOfWeek()->toDateString(), $now->endOfWeek()->toDateString()])
+            ->whereBetween("date", [$this->week_of->startOfWeek()->toDateString(), $this->week_of->endOfWeek()->toDateString()])
             ->get();
-        $plans = $plans->groupBy(function($plan) {
-            // dd(\Carbon\Carbon::parse($plan->date)->dayOfWeekIso);
+        $plans = $plans->groupBy(function ($plan) {
             return \Carbon\Carbon::parse($plan->date)->dayOfWeekIso;
         });
 
 
         $period = new \Carbon\CarbonPeriod(
-            \Carbon\Carbon::parse($now)->startOfWeek()->toDateString(),
-            \Carbon\Carbon::parse($now)->startOfWeek()->add(6, "day")->toDateString()
+            \Carbon\Carbon::parse($this->week_of)->startOfWeek()->toDateString(),
+            \Carbon\Carbon::parse($this->week_of)->endOfWeek()->toDateString()
         );
 
         $firstActivity = ActivityModel::select("start_date")
