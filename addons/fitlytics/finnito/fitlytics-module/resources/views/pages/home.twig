@@ -121,8 +121,9 @@
         </div>
     </div>
 
-    <table class="outer-table">
+    
     {% for num, day in period %}
+    <table class="outer-table">
         <thead id="{{ day|date("Y-m-d") }}">
             <th colspan="3">{{ day|date("D jS F") }}</th>
         </thead>
@@ -135,13 +136,13 @@
                         </div>
                         <div>
                         {% if plans[num+1] %}
-                            <span><a class="button yellow button-xsmall" href="/admin/fitlytics/plans/edit/{{ plans[num+1][0].id }}">Edit Plan</a></span>
+                            <span><a class="button small yellow" href="/admin/fitlytics/plans/edit/{{ plans[num+1][0].id }}">Edit</a></span>
                         {% else %}
-                            <span><a class="button green button-xsmall" href="/admin/fitlytics/plans/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add Plan</a></span>
+                            <span><a class="button small green" href="/admin/fitlytics/plans/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add</a></span>
                         {% endif %}
                         </div>
                     </div>
-                    {% if plans[num+1] %}<p>{{ plans[num+1][0].htmlPlan()|raw }}</p>{% endif %}
+                    {% if plans[num+1] %}<p><em>{{ plans[num+1][0].htmlPlan()|raw }}</em></p>{% endif %}
                 </td>
 
                 <td rowspan="2" class="activities">
@@ -170,8 +171,13 @@
                             {% endif %}
                             </td>                            
                             
-                            <td><a class="button orange button-xsmall" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
+                            <td><a class="button small yellow" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
                         </tr>
+                        {# <tr colspan="6">
+                            {% for bucket in activity.hrBuckets() %}
+                            <td>{{ bucket.text }}: {{ (bucket.count * 100)|round(4) }}%</td>
+                            {% endfor %}
+                        </tr> #}
                     {% endfor %}
                     </table>
                 {% endif %}
@@ -186,9 +192,9 @@
                     </div>
                     <div>
                         {% if notes[num+1][0].note %}
-                            <span><a class="button yellow button-xsmall" href="/admin/fitlytics/notes/edit/{{ notes[num+1][0].id }}">Edit Note</a></span>
+                            <span><a class="button small yellow" href="/admin/fitlytics/notes/edit/{{ notes[num+1][0].id }}">Edit</a></span>
                         {% else %}
-                            <span><a class="button green button-xsmall" href="/admin/fitlytics/notes/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add Note</a></span>
+                            <span><a class="button small green" href="/admin/fitlytics/notes/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add</a></span>
                         {% endif %}
                     </div>
                 </div>
@@ -244,8 +250,9 @@
             </td>
             </tr>
         </tbody>
-    {% endfor %}
     </table>
+    {% endfor %}
+
     <div class="column-to-row">
         <div class="chartContainer">
             <canvas id="weeklyHistory"></canvas>
@@ -327,6 +334,7 @@
             });
             </script>
         </div>    
+
         <div class="chartContainer">
             <canvas id="hrSummaryChart"></canvas>
             <script>
