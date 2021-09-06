@@ -251,7 +251,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
      * @type array|null
      */
     protected $aliases = [
-        //'Example' => Finnito\FitlyticsModule\Example::class
+        
     ];
 
     /**

@@ -125,11 +125,5 @@ class APIController extends PublicController
 
         return json_encode($out);
 
-        // return view(
-        //     'finnito.module.fitlytics::asyncHtml/currentWeekChart',
-        //     [
-        //         "data" => $out,
-        //     ]
-        // );
     }
 }
