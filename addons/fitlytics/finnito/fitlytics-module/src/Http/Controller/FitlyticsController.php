@@ -84,6 +84,7 @@ class FitlyticsController extends PublicController
 
         $weeks = new \Carbon\CarbonPeriod(
             $firstActivity->startOfWeek()->toDateString(),
+            "7 days",
             \Carbon\Carbon::parse("now")->startOfWeek()->toDateString()
         );
 
