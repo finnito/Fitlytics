@@ -64,7 +64,16 @@ class FitlyticsController extends PublicController
             \Carbon\Carbon::parse($now)->startOfWeek()->add(6, "day")->toDateString()
         );
 
+        $firstActivity = ActivityModel::select("start_date")
+            ->orderBy("start_date", "ASC")
+            ->limit(1)
+            ->get()
+            ->pluck("start_date")[0];
 
+        $weeks = new \Carbon\CarbonPeriod(
+            $firstActivity->startOfWeek()->toDateString(),
+            \Carbon\Carbon::parse("now")->startOfWeek()->toDateString()
+        );
 
         return view(
             'finnito.module.fitlytics::pages/home',
@@ -75,7 +84,7 @@ class FitlyticsController extends PublicController
                 "period" => $period,
                 "currentWeekStatisticsByType" => $activitiesRepository->currentWeekStatisticsByType($this->week_of),
                 "week_of" => $now,
-                "weeks" => $activitiesRepository->getSelectWeeks(),
+                "weeks" => $weeks,
             ]
         );
     }
