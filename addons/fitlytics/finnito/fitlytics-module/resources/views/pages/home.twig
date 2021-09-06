@@ -19,7 +19,7 @@
             <a class="button light-blue" href="/{{ week_of|date_modify('monday this week')|date_modify('+1 week')|date('Y-m-d', 'Pacific/Auckland') }}">➡️ Week</a>
             <script>
             document.querySelector("select#week-selector").addEventListener("change", function(event) {
-                window.location.href = ("/?week-of=" + event.target.selectedOptions[0].value);
+                window.location.href = ("/" + event.target.selectedOptions[0].value);
             });
             </script>
         </div>
