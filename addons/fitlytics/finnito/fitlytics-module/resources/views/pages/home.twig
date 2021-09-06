@@ -78,7 +78,8 @@
                     aspectRatio: 1,
                     options: {
                         interaction: {
-                            
+                            mode: 'index',
+                            intersect: false
                         },
                         plugins: {
                             legend: {
@@ -91,6 +92,9 @@
                         },
                         responsive: true,
                         scales: {
+                            "x": {
+                                stacked: true,
+                            },
                             "y": {
                                 display: "auto",
                                 position: 'left',
@@ -99,6 +103,7 @@
                                     display: true,
                                     text: "Distance (km)",
                                 },
+                                stacked: true,
                             },
                             "y2": {
                                 display: "auto",
@@ -111,6 +116,7 @@
                                 grid: {
                                     drawOnChartArea: false,
                                 },
+                                stacked: true,
                             }
                         }
                     }
