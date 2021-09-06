@@ -246,6 +246,87 @@
         </tbody>
     {% endfor %}
     </table>
+    <div class="column-to-row">
+        <div class="chartContainer">
+            <canvas id="weeklyHistory"></canvas>
+            <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                function customHandler(e, legendItem, legend) {
+                    e.chart.data.datasets.forEach(function(ds) {
+                        if (legendItem.text.includes(ds.label) || ds.label.includes(legendItem.text)) {
+                            console.log(ds);
+                            ds.hidden = false;
+                            ds.borderColor = "#27ae60";
+                        } else {
+                            ds.hidden = true;
+                            ds.borderColor = "#bdc3c7";
+                        }
+                    });
+                    e.chart.update();
+                }
+
+                var weeklyHistoryChartEl = document.getElementById('weeklyHistory').getContext('2d');
+                var weeklyHistoryChart = new Chart(weeklyHistoryChartEl, { 
+                    type: 'line',
+                    options: {
+                        legendCallback: function(chart) {
+                            console.log(chart);
+                        },
+                        interaction: {
+                            mode: "index",
+                            intersect: false
+                        },
+                        tooltip: {
+                            position: "nearest"
+                        },
+                        animation: {
+                            duration: 300
+                        },
+                        elements: {
+                            point: {
+                                backgroundColor: "white",
+                                borderWidth: 2,
+                                radius: 5
+                            },
+                            line: {
+                                backgroundColor: "#2ecc71",
+                                borderColor: "#27ae60"
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                onClick: customHandler
+                            }
+                        },
+                        scales: {
+                            x: {
+                                gridlines: {
+                                    display: false
+                                },
+                                type: "time",
+                                spanGaps: true,
+                                stack: true,
+                                time: {
+                                    unit: 'week',
+                                    tooltipFormat: "dd MMMM",
+                                    displayFormats: {
+                                        week: 'dd MMM'
+                                    }
+                                }
+                            },
+                            y: {
+                                display: "auto"
+                            },
+                            y2: {
+                                display: "auto"
+                            }
+                        }
+                    },
+                });
+                getRemoteData(weeklyHistoryChart, '/api/historical-weeks/{{ week_of|date("Y-m-d", "Pacific/Auckland") }}');
+            });
+            </script>
+        </div>    
         <div class="chartContainer">
             <canvas id="hrSummaryChart"></canvas>
             <script>
@@ -281,9 +362,12 @@
             });
             </script>
         </div>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js" integrity="sha256-uVEHWRIr846/vAdLJeybWxjPNStREzOlqLMXjW/Saeo=" crossorigin="anonymous"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.30.1/date_fns.min.js"></script>
+
     <script>
     function getRemoteData(chart, url)
     {

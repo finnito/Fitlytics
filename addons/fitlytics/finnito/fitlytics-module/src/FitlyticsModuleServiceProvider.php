@@ -211,6 +211,12 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
             ],
         ],
+        "/api/historical-weeks/{week}" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\APIController@historicalWeeks",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
+        ],
 
         "{week?}" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@home",

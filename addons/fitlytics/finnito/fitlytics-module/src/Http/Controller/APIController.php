@@ -191,5 +191,87 @@ class APIController extends PublicController
         return json_encode($out);
     }
 
+    public function historicalWeeks($week)
+    {
+        $date = \Carbon\CarbonImmutable::parse($week)->timezone("Pacific/Auckland");
+        $period = \Carbon\CarbonPeriod::create($date->startOfWeek()->subWeeks(12), "1 week", $date->startOfWeek());
+
+        $out = [];
+        $out["datasets"] = [];
+
+        $types = ActivityModel::select()
+            ->where("activity_json->start_date_local", ">=", $date->startOfWeek()->subWeeks(12))
+            ->groupBy("type")
+            ->orderBy("type", "DESC")
+            ->get()
+            ->pluck("type");
+
+        foreach ($types as $type) {
+            $summary = ActivityModel::select(
+                    DB::raw("STRFTIME('%YW%W', JSON_EXTRACT(activity_json, '$.start_date_local')) AS week"),
+                    DB::raw("SUM(distance) as distance"),
+                    DB::raw("SUM(moving_time) as duration")
+                )->where("type", $type)
+                ->where("activity_json->start_date_local", ">=", $date->startOfWeek()->subWeeks(12))
+                ->groupBy("week")
+                ->orderBy("week", "ASC")
+                ->limit(12)
+                ->get();
+
+            $data = [];
+            
+            foreach ($period as $key => $date) {
+                array_push($data, [
+                    "x" => intval($date->setTime(12, 0, 0)->isoFormat("x")),
+                    "y" => 0,
+                ]);
+            }
+
+            for ($i = 0; $i < sizeof($data); $i++) {
+                foreach ($summary as $week) {
+                    list($year, $weekNum) = explode("W", $week->week);
+                    $d = \Carbon\Carbon::now();
+                    $d->setISODate($year, $weekNum);
+                    $d->setTime(0, 0, 0);
+                    if (intval($d->isoFormat("x")) == $data[$i]["x"]) {
+                        if (in_array($type, ["Yoga", "RockClimbing"])) {
+                            $data[$i]["y"] = round($week->duration / 60, 2);
+                        } else {
+                            $data[$i]["y"] = round($week->distance / 1000, 2);
+                        }
+
+                        
+                        break;
+                    }
+                }
+            }
+
+            if ($type == "Run") {
+                // $backgroundColor = "#2ecc71";
+                $borderColor = "#27ae60";
+            } else {
+                // $backgroundColor = "#ecf0f1";
+                $borderColor = "#bdc3c7";
+            }
+
+            if (in_array($type, ["Yoga", "RockClimbing"])) {
+                $yaxis = "y2";
+            } else {
+                $yaxis = "y";
+            }
+
+            array_push($out["datasets"], [
+                "data" => $data,
+                "label" => $type,
+                "hidden" => ($type != "Run"),
+                // "backgroundColor" => $backgroundColor,
+                "borderColor" => $borderColor,
+                "yAxisID" => $yaxis,
+            ]);
+        }
+
+
+
+        return json_encode($out);
     }
 }
