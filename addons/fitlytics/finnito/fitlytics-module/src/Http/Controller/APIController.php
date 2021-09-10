@@ -14,15 +14,6 @@ class APIController extends PublicController
     {
         $this->auth = $auth;
         $this->request = $request;
-
-        // $splitPath = explode("/", $request->path());
-        // $this->week_of = end($splitPath);
-
-        // if ($request->has("week-of")) {
-            // $this->week_of = $request->query("week-of");
-        // } else {
-            // $this->week_of = "now";
-        // }
     }
 
     public function currentWeekChart(ActivityRepository $activities, $week)
@@ -204,16 +195,16 @@ class APIController extends PublicController
 
     public function historicalWeeks($week)
     {
-        $date = \Carbon\CarbonImmutable::parse($week);
-        $period = \Carbon\CarbonPeriod::create($date->startOfWeek()->subWeeks(12), "1 week", $date->startOfWeek());
-        $startDate = $date->startOfWeek()->subWeeks(12);
+        $endDate = \Carbon\CarbonImmutable::parse($week)->endOfWeek();
+        $startDate = $endDate->startOfWeek()->subWeeks(12);
+        $period = \Carbon\CarbonPeriod::create($startDate, "1 week", $endDate);
 
         $out = [];
         $out["datasets"] = [];
 
         $types = ActivityModel::select()
             ->where("activity_json->start_date_local", ">=", $startDate)
-            ->where("activity_json->start_date_local", "<=", $date->endOfWeek())
+            ->where("activity_json->start_date_local", "<=", $endDate)
             ->groupBy("type")
             ->orderBy("type", "DESC")
             ->get()
@@ -226,14 +217,12 @@ class APIController extends PublicController
                     DB::raw("SUM(moving_time) as duration")
                 )->where("type", $type)
                 ->where("activity_json->start_date_local", ">=", $startDate)
-                ->where("activity_json->start_date_local", "<=", $date->endOfWeek())
+                ->where("activity_json->start_date_local", "<=", $endDate)
                 ->groupBy("week")
                 ->orderBy("week", "ASC")
-                ->limit(12)
                 ->get();
 
             $data = [];
-            
             foreach ($period as $key => $date) {
                 array_push($data, [
                     "x" => intval($date->setTime(12, 0, 0)->isoFormat("x")),
@@ -247,6 +236,7 @@ class APIController extends PublicController
                     $d = \Carbon\Carbon::now();
                     $d->setISODate($year, $weekNum);
                     $d->setTime(12, 0, 0);
+
                     if (intval($d->isoFormat("x")) == $data[$i]["x"]) {
                         if (in_array($type, ["Yoga", "RockClimbing", "Workout", "WeightTraining"])) {
                             $data[$i]["y"] = round($week->duration / 60, 2);
