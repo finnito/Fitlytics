@@ -56,13 +56,12 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
 
     public function currentWeekStatisticsByType($week_of)
     {
-        $now = \Carbon\Carbon::parse($week_of, "Pacific/Auckland");
-        $offset = \Carbon\Carbon::createFromTimestamp(0, "Pacific/Auckland")->getTimezone()->toOffsetName();
-        // dd($offset, $now->startOfWeek()->format("Y-m-d H:i:s"), $now->endOfWeek()->format("Y-m-d H:i:s"));
+        $now = \Carbon\Carbon::parse($week_of);
+        // $offset = \Carbon\Carbon::createFromTimestamp(0)->getTimezone()->toOffsetName();
         return $this->model->query()
-            ->selectRaw("type, SUM(distance) AS distance, SUM(total_elevation_gain) as elevation, SUM(moving_time) as moving_time")
+            ->selectRaw("type, SUM(distance) AS distance, SUM(total_elevation_gain) as elevation, SUM(moving_time) as moving_time ")
             ->whereRaw(
-                "datetime(strftime('%Y-%m-%dT%H:%M:%SZ', start_date), '+00:00') BETWEEN '"
+                "datetime(strftime('%Y-%m-%dT%H:%M:%SZ', JSON_EXTRACT(activity_json, '$.start_date_local')), '+00:00') BETWEEN '"
                 . $now->startOfWeek()->format("Y-m-d H:i:s")
                 . "' AND '"
                 . $now->endOfWeek()->format("Y-m-d H:i:s")
