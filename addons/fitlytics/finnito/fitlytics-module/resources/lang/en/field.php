@@ -30,7 +30,7 @@ return [
         "instructions" => "",
     ],
     "plan" => [
-        "name" => "Name",
+        "name" => "Plan",
         "instructions" => "",
     ],
     "name" => [
