@@ -40,15 +40,35 @@ class Strava
         return $credentials;
     }
 
-    public function call($route, $parameters = [])
+    public function call($route, $parameters = [], $method = "GET", $body = [])
     {
+        dd($route, $parameters, $method, $body);
         $credentials = $this->getCredentials();
 
-        $ch = curl_init("https://www.strava.com/api/v3" . $route . "?" . http_build_query($parameters));
+        if ($method == "GET") {
+            $ch = curl_init("https://www.strava.com/api/v3" . $route . "?" . http_build_query($parameters));
+        } else {
+            $ch = curl_init("https://www.strava.com/api/v3" . $route);
+        }
+        
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             "Authorization: Bearer {$credentials->access_token}"
         ));
-        return json_decode(curl_exec($ch));
+
+        if ($method == "PUT") {
+            curl_setopt($ch, CURLOPT_PUT, 1);
+        } elseif ($method == "POST") {
+            curl_setopt($ch, CURLOPT_POST, 1);
+        }
+
+        if (in_array($method, ["POST", "PUT"])) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+        }
+
+        $resp = json_decode(curl_exec($ch));
+        dd($resp);
+        return $resp;
     }
 }

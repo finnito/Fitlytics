@@ -1,0 +1,22 @@
+{% extends "finnito.theme.fitlytics::layouts.default" %}
+
+{% block content %}
+    <h2>Strava Connection</h2>
+    {# {% if not credentials %} #}
+        {# <p>Not Logged In</p> #}
+        <a href="{{ authURL }}">Authorise Strava</a>
+    {# {% else %} #}
+        {# <p>Logged In</p> #}
+    {# {% endif %} #}
+    
+
+    {% if subscriptions|length == 0 %}
+        <a href="">Create Subscription</a>
+    {% else %}
+        <ul>
+        {% for sub in subscriptions %}
+            <li>{{ dd(sub) }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
