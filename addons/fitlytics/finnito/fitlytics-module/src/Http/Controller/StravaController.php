@@ -35,7 +35,7 @@ class StravaController extends PublicController
         $code = $request->input("code");
         $scope = $request->input("scope");
 
-        if (!str_contains("activity:write", $scope)) {
+        if (!str_contains($scope, "activity:write")) {
             return redirect($model->authURL());
         }
 
