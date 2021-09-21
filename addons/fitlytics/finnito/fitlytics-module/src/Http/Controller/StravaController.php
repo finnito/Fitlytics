@@ -40,6 +40,7 @@ class StravaController extends PublicController
         }
 
         $user->strava_scopes = $scope;
+        $user->save();
 
         $response = Http::post("https://www.strava.com/oauth/token", [
             "client_id" => env("STRAVA_CLIENT_ID"),
