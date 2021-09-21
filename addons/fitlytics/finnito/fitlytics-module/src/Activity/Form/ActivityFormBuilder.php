@@ -1,12 +1,29 @@
 <?php namespace Finnito\FitlyticsModule\Activity\Form;
 
 use Anomaly\Streams\Platform\Ui\Form\FormBuilder;
+use Finnito\FitlyticsModule\Strava\Strava;
+use Finnito\FitlyticsModule\Activity\ActivityModel;
 
 class ActivityFormBuilder extends FormBuilder
 {
 
     public function onSaved()
     {
+        $changed = [];
+        $model = ActivityModel::where("strava_id", $this->getFormEntry()->strava_id)->get()->first();
+        if ($this->getFormEntry()->wasChanged("name")) {
+            $changed["name"]        = $this->getFormEntry()->name;
+        }
+        if ($this->getFormEntry()->wasChanged("description")) {
+            $changed["description"]        = $this->getFormEntry()->name;
+        }
+
+        $strava = new Strava();
+        $resp = $strava->put(
+            "/activities/{$model->strava_id}",
+            $changed
+        );
+
         $this->setFormResponse(redirect('/' . $this->getFormEntry()->ymdDate() . "#" . $this->getFormEntry()->ymdDate()));
     }
 
@@ -20,14 +37,10 @@ class ActivityFormBuilder extends FormBuilder
             "type" => "anomaly.field_type.text",
             "label" => "Name",
         ],
-        "type" => [
+        "activity_json->description" => [
             "type" => "anomaly.field_type.text",
-            "label" => "Type",
-        ],
-        "distance" => [
-            "type" => "anomaly.field_type.text",
-            "label" => "Distance",
-        ],
+            "label" => "Description",
+        ]
     ];
 
     /**
@@ -49,11 +62,7 @@ class ActivityFormBuilder extends FormBuilder
      *
      * @var array|string
      */
-    protected $actions = [
-        // 'save' => [
-        //     'redirect' => '/#{entry.id}'
-        // ],
-    ];
+    protected $actions = [];
 
     /**
      * The form buttons.
@@ -69,9 +78,7 @@ class ActivityFormBuilder extends FormBuilder
      *
      * @var array
      */
-    protected $options = [
-        // "redirect" => "/?week-of={entry.activity_json.start_date_local|date('Y-m-d')",
-    ];
+    protected $options = [];
 
     /**
      * The form sections.

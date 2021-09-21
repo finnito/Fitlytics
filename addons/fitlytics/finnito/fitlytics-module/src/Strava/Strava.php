@@ -42,33 +42,35 @@ class Strava
 
     public function call($route, $parameters = [], $method = "GET", $body = [])
     {
-        dd($route, $parameters, $method, $body);
         $credentials = $this->getCredentials();
-
-        if ($method == "GET") {
-            $ch = curl_init("https://www.strava.com/api/v3" . $route . "?" . http_build_query($parameters));
-        } else {
-            $ch = curl_init("https://www.strava.com/api/v3" . $route);
-        }
-        
+        $ch = curl_init("https://www.strava.com/api/v3" . $route . "?" . http_build_query($parameters));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             "Authorization: Bearer {$credentials->access_token}"
         ));
-
-        if ($method == "PUT") {
-            curl_setopt($ch, CURLOPT_PUT, 1);
-        } elseif ($method == "POST") {
-            curl_setopt($ch, CURLOPT_POST, 1);
-        }
-
-        if (in_array($method, ["POST", "PUT"])) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
-        }
-
         $resp = json_decode(curl_exec($ch));
-        dd($resp);
+        curl_close($ch);
         return $resp;
+    }
+
+    public function put($route, $body)
+    {
+        $credentials = $this->getCredentials();
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://www.strava.com/api/v3/' . $route,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'PUT',
+          CURLOPT_POSTFIELDS => $body,
+          CURLOPT_HTTPHEADER => array("Authorization: Bearer {$credentials->access_token}"),
+        ));
+        $response = json_decode(curl_exec($curl));
+        curl_close($curl);
+        return $response;
     }
 }
