@@ -43,6 +43,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
         "strava:gpx" => \Finnito\FitlyticsModule\Console\DownloadGPXFiles::class,
         "strava:token" => \Finnito\FitlyticsModule\Console\GetAccessToken::class,
         "strava:data_streams" => \Finnito\FitlyticsModule\Console\GetDataStreams::class,
+        "strava:getAll" => \Finnito\FitlyticsModule\Console\GetActivitiesArchive::class,
     ];
 
     /**
