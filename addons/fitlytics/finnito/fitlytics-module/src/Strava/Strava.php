@@ -2,13 +2,15 @@
 
 use Illuminate\Support\Facades\App;
 use \Finnito\FitlyticsModule\StravaCredential\Contract\StravaCredentialRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class Strava
 {
     public function getCredentials()
     {
+        $user = Auth::user();
         $credentialsRepository = App::make(StravaCredentialRepositoryInterface::class);
-        $credentials = $credentialsRepository->first();
+        $credentials = $credentialsRepository->where("user_id", $user->id)->orderBy("updated_at", "desc")->first();
 
         if (time() >= $credentials->expires_at) {
             // echo "Token expired..\n";
