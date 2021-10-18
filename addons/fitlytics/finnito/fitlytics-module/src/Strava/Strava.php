@@ -26,6 +26,7 @@ class Strava
 
             if (!isset($response->access_token)) {
                 echo "Error fetching access token.\n";
+                var_dump($credentials);
                 var_dump($response);
                 exit(2);
             }
