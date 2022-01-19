@@ -8,9 +8,11 @@ class Strava
 {
     public function getCredentials()
     {
-        $user = Auth::user();
         $credentialsRepository = App::make(StravaCredentialRepositoryInterface::class);
-        $credentials = $credentialsRepository->where("user_id", $user->id)->orderBy("updated_at", "desc")->first();
+        $credentials = $credentialsRepository
+            ->newQuery()
+            ->orderBy("updated_at", "desc")
+            ->first();
 
         if (time() >= $credentials->expires_at) {
             // echo "Token expired..\n";
