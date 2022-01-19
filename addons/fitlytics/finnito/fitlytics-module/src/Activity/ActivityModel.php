@@ -14,7 +14,8 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
     public function name()
     {
-        return utf8_decode($this->name);
+        // return utf8_decode($this->name);
+        return $this->name;
     }
 
     public function dataStreams()
