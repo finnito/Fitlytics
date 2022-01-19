@@ -99,6 +99,9 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
     public function metersPerSecondToMinPerKilometer($ms)
     {
+        if ($ms === 0) {
+            return 0;
+        }
         $decimalMins = (1000 / $ms) / 60;
         $min = floor($decimalMins);
         $secRemaining = $decimalMins - $min;
