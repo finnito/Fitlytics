@@ -25,7 +25,12 @@ class FitlyticsController extends PublicController
         if ($request->path() == "/") {
             $this->week_of = \Carbon\Carbon::parse("now")->timezone("Pacific/Auckland");
         } else {
-            $this->week_of = \Carbon\Carbon::parse($request->path())->timezone("Pacific/Auckland");
+            try {
+                $this->week_of = \Carbon\Carbon::parse($request->path())->timezone("Pacific/Auckland");    
+            } catch (\Exception $err) {
+                abort(404);
+            }
+            
         }
     }
 
