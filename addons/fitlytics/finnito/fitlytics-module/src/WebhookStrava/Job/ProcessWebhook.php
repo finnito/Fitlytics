@@ -9,12 +9,23 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 
 class ProcessWebhook implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $event;
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array
+     */
+    public function middleware()
+    {
+        return [new WithoutOverlapping($this->event->id)];
+    }
 
     public function __construct($event)
     {
@@ -38,6 +49,15 @@ class ProcessWebhook implements ShouldQueue
             if ($this->event->content()->aspect_type == "create") {
                 Log::debug("Parsing webhook CREATE event");
                 $strava = new Strava();
+
+                $exists = ActivityModel::where("strava_id", $this->event->content()->object_id)
+                    ->where("activity_json->athlete->id", $this->event->content()->owner_id)
+                    ->exists();
+
+                if ($exists) {
+                    return true;
+                }
+
                 $activityData = $strava->call("/activities/{$this->event->content()->object_id}");
                 $activity = ActivityModel::create([
                     "strava_id" => $activityData->id,
