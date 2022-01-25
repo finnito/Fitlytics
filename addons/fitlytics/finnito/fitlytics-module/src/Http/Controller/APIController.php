@@ -100,7 +100,7 @@ class APIController extends PublicController
         $query->whereBetween("activity_json->start_date_local", [$start, $end]);
         // END: PERIOD
 
-        return $query->get();
+        return $query->first();
     }
 
     public function currentWeekChart(ActivityRepository $activities, $week)
