@@ -16,6 +16,93 @@ class APIController extends PublicController
         $this->request = $request;
     }
 
+    /**
+     * A flexible API route for getting
+     * statistics about activities in
+     * bulk.
+     * 
+     * VERB:
+     * - count
+     * - sum
+     * 
+     * FILTER:
+     * - all (special)
+     * - Run (or any other activity type)
+     * - Run,Ride
+     * 
+     * PERIOD:
+     * - day
+     * - week
+     * - month
+     * - year
+     * - rolling-year
+     * 
+     * METRICS:
+     * - distance,elevation (for example)
+     **/
+    public function activities(
+        ActivityRepository $acitivites,
+        $verb,
+        $filter,
+        $period,
+        $metrics
+    ) {
+        // dd($verb, $filter, $period, $metrics);
+        // dd(explode(",", $metrics));
+        $query = $acitivites->newQuery();
+
+        // BEGIN VERB and METRICS
+        if ($verb == "COUNT") {
+            $query->selectRaw("COUNT(id) AS count");
+        } elseif ($verb == "SUM") {
+            $raw = [];
+            // $metricsArray = explode(",", $metrics);
+            // if (sizeof($metricsArray) > 1) {
+            foreach (explode(",", $metrics) as $metric) {
+                array_push($raw, "SUM(".$metric.") AS ".$metric);
+            }
+            // }
+            
+            $query->selectRaw(implode(",", $raw));
+        } else {
+            exit("Option '" . $verb . "' does not exist for the verb parameter.");
+        }
+        // END VERB and METRICS
+
+        // BEGIN: FILTER
+        if ($filter !== "all") {
+            $query->whereIn("type", explode(",", $filter));
+        }
+        // END: FILTER
+
+        // BEGIN: PERIOD
+        $end = \Carbon\CarbonImmutable::now()->timezone("Pacific/Auckland");
+        switch ($period) {
+            case "day":
+                $start = $end;
+                break;
+            case "week":
+                $start = $end->startOfWeek()->toDateString();
+                break;
+            case "month":
+                $start = $end->startOfMonth()->toDateString();
+                break;
+            case "year":
+                $start = $end->startOfYear()->toDateString();
+                break;
+            case "rolling-year":
+                $start = $end->subYear()->toDateString();
+                break;
+            default:
+                exit("Option '" . $period . "' does not exist for the period parameter.");
+        }
+
+        $query->whereBetween("activity_json->start_date_local", [$start, $end]);
+        // END: PERIOD
+
+        return $query->get();
+    }
+
     public function currentWeekChart(ActivityRepository $activities, $week)
     {
         $this->week_of = $week;

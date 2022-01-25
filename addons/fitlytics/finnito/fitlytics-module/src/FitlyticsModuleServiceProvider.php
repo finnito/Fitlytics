@@ -218,6 +218,9 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
             ],
         ],
+        "/api/activities/{verb}/{filter}/{period}/{metrics}/" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\ApiController@activities"
+        ],
 
         "{week?}" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\FitlyticsController@home",
