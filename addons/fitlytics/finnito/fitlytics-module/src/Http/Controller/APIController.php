@@ -47,23 +47,18 @@ class APIController extends PublicController
         $period,
         $metrics
     ) {
-        // dd($verb, $filter, $period, $metrics);
-        // dd(explode(",", $metrics));
         $query = $acitivites->newQuery();
+        $query->addSelect("type");
 
         // BEGIN VERB and METRICS
         if ($verb == "COUNT") {
             $query->selectRaw("COUNT(id) AS count");
         } elseif ($verb == "SUM") {
             $raw = [];
-            // $metricsArray = explode(",", $metrics);
-            // if (sizeof($metricsArray) > 1) {
             foreach (explode(",", $metrics) as $metric) {
                 array_push($raw, "SUM(".$metric.") AS ".$metric);
-            }
-            // }
-            
-            $query->selectRaw(implode(",", $raw));
+            }            
+            $query->selectRaw(implode(", ", $raw));
         } else {
             exit("Option '" . $verb . "' does not exist for the verb parameter.");
         }
@@ -73,6 +68,7 @@ class APIController extends PublicController
         if ($filter !== "all") {
             $query->whereIn("type", explode(",", $filter));
         }
+        $query->groupBy("type");
         // END: FILTER
 
         // BEGIN: PERIOD
@@ -100,7 +96,8 @@ class APIController extends PublicController
         $query->whereBetween("activity_json->start_date_local", [$start, $end]);
         // END: PERIOD
 
-        return $query->first();
+        // return $query->toSql();
+        return $query->get();
     }
 
     public function currentWeekChart(ActivityRepository $activities, $week)
