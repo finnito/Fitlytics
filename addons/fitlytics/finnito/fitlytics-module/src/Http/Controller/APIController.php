@@ -16,6 +16,35 @@ class APIController extends PublicController
         $this->request = $request;
     }
 
+
+    public function weeklyLoad(
+        ActivityRepository $acitivites,
+        $metrics
+    ) {
+        $query = $acitivites->newQuery();
+        $query->addSelect(DB::raw("STRFTIME('%YW%W', JSON_EXTRACT(activity_json, '$.start_date_local')) AS week"));
+
+        $raw = [];
+        foreach (explode(",", $metrics) as $metric) {
+            array_push($raw, "SUM(".$metric.") AS ".$metric);
+        }            
+        $query->selectRaw(implode(", ", $raw));
+        $query->groupBy("week");
+        $query->orderBy("week", "DESC");
+        $query->limit(52);
+
+        $out = $query->get();
+        for ($i = 0; $i < sizeof($out); $i++) {
+            list($year, $weekNum) = explode("W", $out[$i]->week);
+            $d = \Carbon\Carbon::now();
+            $d->setISODate($year, $weekNum);
+            $d->setTime(12, 0, 0);
+            $out[$i]->week = $d->format("Y-m-d");
+        }
+
+        return $out;
+    }
+
     /**
      * A flexible API route for getting
      * statistics about activities in
