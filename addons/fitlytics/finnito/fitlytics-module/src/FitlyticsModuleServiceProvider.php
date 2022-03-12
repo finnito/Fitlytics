@@ -44,6 +44,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
         "strava:token" => \Finnito\FitlyticsModule\Console\GetAccessToken::class,
         "strava:data_streams" => \Finnito\FitlyticsModule\Console\GetDataStreams::class,
         "strava:getAll" => \Finnito\FitlyticsModule\Console\GetActivitiesArchive::class,
+        "strava:calculate_hr_buckets" => \Finnito\FitlyticsModule\Console\CalculateHRBuckets::class,
     ];
 
     /**
