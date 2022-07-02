@@ -317,8 +317,6 @@ class ActivityModel extends EntryModel implements ActivityInterface
                 }
             }
         }
-
-        // dd(sizeof($this->dataStreams()->heartrate->data), $zones);
         
         for ($i = 0; $i <= $numZones; $i++) {
             $zones[$i]["count"] = ($zones[$i]["count"]/sizeof($this->dataStreams()->heartrate->data));
