@@ -101,7 +101,7 @@ class APIController extends PublicController
         // END: FILTER
 
         // BEGIN: PERIOD
-        $end = \Carbon\CarbonImmutable::now()->timezone("Pacific/Auckland");
+        $end = \Carbon\CarbonImmutable::now();
         switch ($period) {
             case "day":
                 $start = $end;
@@ -122,10 +122,9 @@ class APIController extends PublicController
                 exit("Option '" . $period . "' does not exist for the period parameter.");
         }
 
-        $query->whereBetween("activity_json->start_date_local", [$start, $end]);
+        $query->whereBetween("start_date", [$start, $end->endOfWeek()->toDateTimeString()]);
         // END: PERIOD
 
-        // return $query->toSql();
         return $query->get();
     }
 
