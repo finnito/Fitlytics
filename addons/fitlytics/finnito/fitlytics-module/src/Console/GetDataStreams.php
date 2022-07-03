@@ -12,12 +12,13 @@ class GetDataStreams extends Command
     public function handle()
     {
         $activities = ActivityModel::where("data_streams", null)
-            ->limit(300)
             ->get();
+        echo $activities->count() . "activities without their data streams.\n";
 
         $strava = new Strava();
 
         foreach ($activities as $activity) {
+            echo "Processing " . $activity->name . " now.\n";
             $response = $strava->call(
                 "/activities/{$activity->strava_id}/streams",
                 [
