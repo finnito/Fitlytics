@@ -328,15 +328,15 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
     public function hrBuckets()
     {
-        // if ($this->hr_buckets !== null) {
-            // return json_decode($this->hr_buckets, false);
-        // } else {
-            // if ((isset($this->dataStreams()->heartrate)) && (auth()->user()->z1 !== null)) {
-                $this->computeHrBuckets();
-                return $this->hr_buckets;
-            // } else {
-                // return [];
-            // }
-        // }
+        if (
+            is_null($this->hr_buckets)
+            and
+            !is_null($this->data_streams)
+            and
+            !is_null($this->dataStreams()->heartrate)
+        ) {
+            $this->computeHrBuckets();
+        }
+        return $this->hr_buckets;
     }
 }

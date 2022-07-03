@@ -35,6 +35,15 @@ class ActivityRepository extends EntryRepository implements ActivityRepositoryIn
         ];
     }
 
+    public function maxHRThisYear()
+    {
+        $end = \Carbon\Carbon::now("UTC");
+        $start = \Carbon\Carbon::now("UTC")->subYear();
+        return $this->model->newQuery()
+            ->whereBetween("start_date", ["$start", "$end"])
+            ->max("activity_json->max_heartrate");
+    }
+
     public function currentWeekStatistics($week_of)
     {
         // $now = \Carbon\Carbon::now("Pacific/Auckland");
