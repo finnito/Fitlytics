@@ -2,7 +2,7 @@
 
 cd /srv/fitlytics.lesueur.nz/
 
-sudo git pull origin main
+sudo -u www-data git pull origin main
 
 # Do install things and make sure
 # the cache doesn't get in the way.
