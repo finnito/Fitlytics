@@ -6,6 +6,7 @@ use Anomaly\Streams\Platform\Entry\EntryModel;
 class ActivityModel extends EntryModel implements ActivityInterface
 {
 
+    protected $sortable = true;
     protected $table = "fitlytics_activities";
 
     protected $casts = [

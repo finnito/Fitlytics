@@ -45,8 +45,8 @@ return [
         "name" => "Distance",
         "instructions" => "",
     ],
-    "moving_time" => [
-        "name" => "Moving Time",
+    "duration" => [
+        "name" => "Duration",
         "instructions" => "",
     ],
     "elevation" => [

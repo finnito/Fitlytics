@@ -4,6 +4,7 @@ use Anomaly\Streams\Platform\Ui\Table\TableBuilder;
 
 class ActivityTableBuilder extends TableBuilder
 {
+    protected $sortable = true;
 
     /**
      * The table views.
@@ -17,7 +18,9 @@ class ActivityTableBuilder extends TableBuilder
      *
      * @var array|string
      */
-    protected $filters = [];
+    protected $filters = [
+        "distance",
+    ];
 
     /**
      * The table columns.
@@ -43,10 +46,11 @@ class ActivityTableBuilder extends TableBuilder
                 "distance" => "entry.metersToKilometers(entry.distance,2)",
             ],
         ],
-        "moving_time" => [
-            "wrapper" => "{value.moving_time}m",
+        "duration" => [
+            "wrapper" => "{value.moving_time}<br/>{value.elapsed_time}",
             "value" => [
                 "moving_time" => "entry.secondsToHours(entry.moving_time)",
+                "elapsed_time" => "entry.secondsToHours(entry.elapsed_time)"
             ],
         ],
         "elevation" => [

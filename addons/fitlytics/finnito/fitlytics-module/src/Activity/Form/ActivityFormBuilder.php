@@ -40,7 +40,9 @@ class ActivityFormBuilder extends FormBuilder
         "activity_json->description" => [
             "type" => "anomaly.field_type.text",
             "label" => "Description",
-        ]
+        ],
+        "moving_time",
+        "elapsed_time",
     ];
 
     /**
