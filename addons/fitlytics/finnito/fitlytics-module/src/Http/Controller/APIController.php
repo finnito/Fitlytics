@@ -281,11 +281,12 @@ class APIController extends PublicController
             ];
 
             foreach ($activities as $activity) {
-                $zones[0]["y"] += floatval($activity->hrBuckets()[0]["count"]);
-                $zones[1]["y"] += floatval($activity->hrBuckets()[1]["count"]);
-                $zones[2]["y"] += floatval($activity->hrBuckets()[2]["count"]);
-                $zones[3]["y"] += floatval($activity->hrBuckets()[3]["count"]);
-                $zones[4]["y"] += floatval($activity->hrBuckets()[4]["count"]);
+                $buckets = json_decode($activity->hrBuckets(), true);
+                foreach ([0, 1, 2, 3, 4] as $zone) {
+                    if (isset($buckets[$zone]["count"])) {
+                        $zones[$zone]["y"] += floatval($buckets[$zone]["count"]);
+                    }
+                }
             }
 
             for ($i = 0; $i < sizeof($zones); $i++) {
