@@ -104,25 +104,26 @@ class APIController extends PublicController
         $end = \Carbon\CarbonImmutable::now();
         switch ($period) {
             case "day":
-                $start = $end;
+                $start = $end->startOfDay()->toDateTimeString();
                 break;
             case "week":
-                $start = $end->startOfWeek()->toDateString();
+                $start = $end->startOfWeek()->startOfDay()->toDateTimeString();
                 break;
             case "month":
-                $start = $end->startOfMonth()->toDateString();
+                $start = $end->startOfMonth()->startOfDay()->toDateTimeString();
                 break;
             case "year":
-                $start = $end->startOfYear()->toDateString();
+                $start = $end->startOfYear()->startOfDay()->toDateTimeString();
                 break;
             case "rolling-year":
-                $start = $end->subYear()->toDateString();
+                $start = $end->subYear()->startOfDay()->toDateTimeString();
                 break;
             default:
                 exit("Option '" . $period . "' does not exist for the period parameter.");
         }
 
-        $query->whereBetween("start_date", [$start, $end->endOfWeek()->toDateTimeString()]);
+        // dd($start, $end->endOfWeek()->toDateTimeString());
+        $query->whereBetween("activity_json->start_date_local", [$start, $end->endOfWeek()->toDateTimeString()]);
         // END: PERIOD
 
         return $query->get();
