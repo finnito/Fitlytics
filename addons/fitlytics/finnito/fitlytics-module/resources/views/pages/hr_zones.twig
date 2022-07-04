@@ -10,15 +10,20 @@
 
 {% block content %}
 
-    <p>You may enter your Resting Heart Rate and Maximum Heart Rate and click <button id="calculate">Calculate</button> to get an automatic calculation.</p>
+    {# <p>You may enter your Resting Heart Rate and Maximum Heart Rate and click <button id="calculate">Calculate</button> to get an automatic calculation.</p>
 
     <p>In the last year your maximum heartrate was: {{ maxHR }}bpm.</p>
     
-    <p><code>Target HR = [(Max HR - Resting HR) x %Intensity] + Resting HR</code></p>
+    <p><code>Target HR = [(Max HR - Resting HR) x %Intensity] + Resting HR</code></p> #}
     {# https://www.calculatorsoup.com/calculators/health/target-heart-rate-zone-calculator.php #}
     
     {% set form = form("hr_form").entry(auth_user().id).get() %}
-    {{ form|raw }}
+    {{ form.open()|raw }}
+    {% for field in form.fields %}
+        <label for="{{ field.field }}">{{ field.label }} ({{ field.instructions }})</label>
+        {{ field.input|raw }}
+    {% endfor %}
+    {{ form.close()|raw }}
 
     <script>
     function getTargetHR(resting, max, intensity) {
