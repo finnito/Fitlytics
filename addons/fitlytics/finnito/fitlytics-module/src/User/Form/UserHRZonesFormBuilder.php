@@ -12,8 +12,8 @@ class UserHRZonesFormBuilder extends FormBuilder
      * @var array|string
      */
     protected $fields = [
-        "resting_heart_rate",
-        "maximum_heart_rate",
+        // "resting_heart_rate",
+        // "maximum_heart_rate",
         "z1","z2","z3","z4","z5",
     ];
 
