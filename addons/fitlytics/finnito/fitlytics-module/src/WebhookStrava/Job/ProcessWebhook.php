@@ -79,7 +79,7 @@ class ProcessWebhook implements ShouldQueue
                     ]
                 );
                 $activity->data_streams = json_encode($response);
-                $activity->computeHrBuckets();
+                $activity->hrBuckets();
                 $activity->save();
                 
                 $this->event->processed = true;

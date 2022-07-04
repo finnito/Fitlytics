@@ -35,13 +35,13 @@ class CalculateHRBuckets extends Command
                 $activity->save();
             }
 
-            if (!is_null($activity->data_streams)) {
+            // if (!is_null($activity->data_streams)) {
                 $activity->hrBuckets();
-                echo " - Buckets calculated.";
-                $activity->save();
-            } else {
-                echo " - No data_streams available for this activity. Skipping.\n";
-            }
+                // echo " Buckets calculated.\n";
+                // $activity->save();
+            // } else {
+                // echo " No data_streams available for this activity. Skipping.\n";
+            // }    
         }
     }
 }

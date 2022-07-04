@@ -271,7 +271,7 @@ class ActivityModel extends EntryModel implements ActivityInterface
 
     public function hrZones()
     {
-        $user = auth()->user();
+        $user = auth()->loginUsingId(1);
         return [
             [
                 "text" => "Z1 - Recovery",
@@ -332,9 +332,9 @@ class ActivityModel extends EntryModel implements ActivityInterface
         if (
             is_null($this->hr_buckets)
             and
-            !is_null($this->data_streams)
+            isset($this->data_streams)
             and
-            !is_null($this->dataStreams()->heartrate)
+            isset($this->dataStreams()->heartrate)
         ) {
             $this->computeHrBuckets();
         }
