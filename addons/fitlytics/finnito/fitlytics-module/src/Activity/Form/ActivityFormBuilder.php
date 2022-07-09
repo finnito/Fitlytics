@@ -41,8 +41,8 @@ class ActivityFormBuilder extends FormBuilder
             "type" => "anomaly.field_type.text",
             "label" => "Description",
         ],
-        "moving_time",
-        "elapsed_time",
+        // "moving_time",
+        // "elapsed_time",
     ];
 
     /**
