@@ -93,9 +93,33 @@ class ActivityModel extends EntryModel implements ActivityInterface
         
     }
 
+    public function cadence($activity, $cadence)
+    {
+        if ($activity->type == "Run") {
+            return round($cadence * 2) . "spm";
+        }
+        return $cadence . "rpm";
+    }
+
     public function metersPerSecondToKilometersPerHour($ms)
     {
         return round(($ms * 60 * 60) / 1000, 2);
+    }
+
+    public function distanceAndSecondsToPace($distance, $duration)
+    {
+        // dd($distance, $duration);
+        $timeScale = 1000 / $distance;
+        $scaledDuration = $duration * $timeScale;
+        $min = floor($scaledDuration / 60);
+        $sec = $scaledDuration % 60;
+        return sprintf(
+            '%2d:%02d/km',
+            $min,
+            $sec
+        );
+        // return "$min:$sec/km";
+
     }
 
     public function metersPerSecondToMinPerKilometer($ms)

@@ -90,6 +90,16 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
         'admin/fitlytics'           => 'Finnito\FitlyticsModule\Http\Controller\Admin\ActivitiesController@index',
         'admin/fitlytics/create'    => 'Finnito\FitlyticsModule\Http\Controller\Admin\ActivitiesController@create',
         'admin/fitlytics/edit/{id}' => 'Finnito\FitlyticsModule\Http\Controller\Admin\ActivitiesController@edit',
+        
+        // The route to view an individual activity.
+        "activity/{id}" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\ActivityController@index",
+            "verb" => "GET",
+            "middleware" => [
+                \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
+            ],
+        ],
+
         "settings" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\SettingsController@index",
             "streams::addon" => "finnito.module.fitlytics",

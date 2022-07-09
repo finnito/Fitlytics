@@ -3,7 +3,21 @@ html, body {
 }
 
 h1 {
-    margin-bottom: 0;
+    margin: 0;
+}
+
+#Map {
+    height: 400px;
+    width: 100%;
+}
+
+header {
+    background-color: rgba(236, 240, 241,1.0);
+    padding: 0.5rem;
+}
+
+main {
+    margin-top: 1rem;
 }
 
 table {
@@ -17,6 +31,13 @@ thead {
     display: block;
     color: white;
     /*border-radius: 0.25rem;*/
+}
+
+.overflow-y {
+    position: relative;
+    overflow-y: auto;
+    max-height: 400px;
+    width: calc(100% + 7rem);
 }
 
 .table-wrapper {
@@ -72,11 +93,58 @@ footer {
     justify-content: space-between;
 }
 
+.flex-apart.center {
+    align-items: center;
+}
+
 .column-to-row {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     align-items: center;
+}
+
+.row-to-column {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.hr-bar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    text-align: center;
+    font-weight: 700;
+    color: white;
+}
+
+.hr-bar div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hr-bar .Z1 {
+    background-color: rgba(52, 152, 219, 1);
+}
+
+.hr-bar .Z2 {
+    background-color: rgba(46, 204, 113, 1);
+}
+
+.hr-bar .Z3 {
+    background-color: rgba(251, 197, 49, 1);
+}
+
+.hr-bar .Z4 {
+    background-color: rgba(230, 126, 34, 1);
+}
+
+.hr-bar .Z5 {
+    background-color: rgba(231, 76, 60, 1);
 }
 
 /*td:first-of-type { padding-right: 0.5rem; }*/
@@ -171,10 +239,6 @@ td > .flex-apart:not(:first-of-type) {
     margin-top: 1rem;
 }
 
-select {
-    margin-top: 1rem;
-}
-
 .navigation-controls {
     text-align: center;
 }
@@ -214,10 +278,6 @@ body {
 h3 {
     margin-top: 0;
     margin-bottom: 0;
-}
-
-.navigation-controls {
-    margin-bottom: 1.5rem;
 }
 
 .alert {
@@ -302,7 +362,7 @@ h3 {
 }
 
 .button:hover {
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    box-shadow: 0 2px 2px rgba(0,0,0,0.19), 0 2px 2px rgba(0,0,0,0.23);
 }
 
 .button.small {
@@ -419,7 +479,7 @@ html body {
 @media (min-width: 800px) {
     .outer-table > tbody { display: table-row-group; }
     .outer-table > tbody > tr { display: table-row; }
-    .column-to-row { flex-direction: row; align-items: flex-start; }
+    .column-to-row { flex-direction: row; align-items: center; }
     .outer-table > tbody > tr > td {
         display: table-cell;
         vertical-align: top;

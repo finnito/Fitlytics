@@ -1,0 +1,103 @@
+{% extends "finnito.theme.fitlytics::layouts.default" %}
+
+{% block content %}
+
+<div class="flex-apart center">
+    <div>
+        <h2>{{ activity.activityTypeEmoji() }} {{ activity.name() }}</h2>
+        <small><time>{{ activity.activity_json().start_date|date("D M jS, Y, g:ia", env("APP_TIMEZONE")) }}</time></small>
+    </div>
+    <div>
+        <a class="button yellow" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit Activity</a>
+    </div>
+</div>
+
+<div class="row-to-column">
+    <p><small>Duration</small><br/>
+    {{ activity.secondsToHours(activity.moving_time) }}</p>
+
+    <p><small>Distance</small><br/>
+    {{ activity.metersToKilometers(activity.distance, 2) }}km</p>
+
+    <p><small>Pace</small><br/>
+    {{ activity.distanceAndSecondsToPace(activity.distance, activity.elapsed_time) }}</p>
+
+    <p><small>Elevation</small><br/>
+    {{ activity.total_elevation_gain }}m</p>
+
+    {% if activity.activity_json().has_heartrate %}
+    <p><small>Heartrate</small><br/>
+    {{ activity.activity_json().average_heartrate|round }}bpm ({{ activity.activity_json().max_heartrate|round }})
+    </p>
+    {% endif %}
+
+    {% if activity.activity_json().average_cadence %}
+        <p><small>Cadence</small><br/>
+        {{ activity.cadence(activity, activity.activity_json().average_cadence) }}</p>
+    {% endif %}
+
+    {% if activity.activity_json().average_watts %}
+        <p><small>Power</small><br/>
+        {{ activity.activity_json().average_watts|round }}W</p>
+    {% endif %}
+</div>
+
+{% if activity.hrBuckets() %}
+<small>Heart Rate Zones</small>
+<div class="hr-bar">
+{% for zone in activity.hrBuckets() %}
+    {% if zone.count > 0 %}
+        <div class="{{ zone.text|split(" - ")[0] }}" style="width: {{ (zone.count * 100)|round }}%">{{ zone.text|split(" - ")[0] }}: {{ (zone.count * 100)|round }}%</div>
+    {% endif %}
+{% endfor %}
+</div>
+{% endif %}
+
+<hr/>
+
+<div class="flex-apart">
+{% if activity.activity_json().laps %}
+<div class="overflow-y">
+<table class="table">
+    <thead>
+        <tr>
+            <th>Lap</th>
+            <th>Distance</th>
+            <th>HR</th>
+            <th>Elevation</th>
+            <th>Pace</th>
+            {% if activity.activity_json().average_cadence %}<th>Cadence</th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for lap in activity.activity_json().laps %}
+            <tr>
+                <td>{{ lap.lap_index }}</td>
+                <td>{{ lap.distance }}m</td>
+                <td>{{ round(lap.average_heartrate) }}bpm</td>
+                <td>{{ lap.total_elevation_gain }}m</td>
+                <td>{{ activity.distanceAndSecondsToPace(lap.distance, lap.elapsed_time) }}</td>
+                {% if activity.activity_json().average_cadence %}<td>{{ activity.cadence(activity, lap.average_cadence) }}</td>{% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endif %}
+<div id="Map"></div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+    <script>
+    var activityPolyline = "{{ activity.activity_json().map.polyline|escape('js') }}";
+    console.log(activityPolyline);
+    </script>
+    {{ asset_style("finnito.module.fitlytics::css/leaflet-fullscreen.min.css") }}
+    {{ asset_style("finnito.module.fitlytics::css/leaflet.min.css") }}
+    {{ asset_script("finnito.module.fitlytics::js/leaflet.min.js", ["version", "live"]) }}
+    {{ asset_script("finnito.module.fitlytics::js/Polyline.encoded.js", ["version", "live"]) }}
+    {{ asset_script("finnito.module.fitlytics::js/activity.js", ["version", "live"]) }}
+    {{ asset_script("finnito.module.fitlytics::js/Leaflet.fullscreen.min.js", ["version", "live"]) }}
+{% endblock %}
