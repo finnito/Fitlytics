@@ -354,8 +354,8 @@ class ActivityModel extends EntryModel implements ActivityInterface
     public function hrBuckets()
     {
         if (
-            is_null($this->hr_buckets)
-            and
+            // is_null($this->hr_buckets)
+            // and
             isset($this->data_streams)
             and
             isset($this->dataStreams()->heartrate)

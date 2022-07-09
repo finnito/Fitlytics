@@ -255,34 +255,38 @@ class APIController extends PublicController
             ->get()
             ->values();
 
+        $user = auth()->user();
+        // dd($user->z1);
+
         if ($activities->isNotEmpty()) {
             $moving_time = $activities->pluck("moving_time")->sum();
 
             $zones = [
                 [
-                    "x" => "Z1 - Recovery",
+                    "x" => "Recovery (" . $user->z1 . ")",
                     "y" => 0,
                 ],
                 [
-                    "x" => "Z2 - Aerobic Base",
+                    "x" => "Z1 (" . $user->z2 . ")",
                     "y" => 0,
                 ],
                 [
-                    "x" => "Z3 - Tempo",
+                    "x" => "Z2 (" . $user->z3 . ")",
                     "y" => 0,
                 ],
                 [
-                    "x" => "Z4 - Lactate Threshold",
+                    "x" => "Z3 (" . $user->z4 . ")",
                     "y" => 0,
                 ],
                 [
-                    "x" => "Z5 - VO2 Max",
+                    "x" => "Z4 (" . $user->z5 . ")",
                     "y" => 0,
                 ],
             ];
 
             foreach ($activities as $activity) {
-                $buckets = json_decode($activity->hrBuckets(), true);
+                $buckets = $activity->hrBuckets();
+                // $buckets = json_decode($activity->hrBuckets(), true);
                 foreach ([0, 1, 2, 3, 4] as $zone) {
                     if (isset($buckets[$zone]["count"])) {
                         $zones[$zone]["y"] += floatval($buckets[$zone]["count"]);
@@ -291,7 +295,9 @@ class APIController extends PublicController
             }
 
             for ($i = 0; $i < sizeof($zones); $i++) {
-                $zones[$i]["y"] = round((($zones[$i]["y"] / sizeof($activities)) * $moving_time) / 60);
+                // $percent = $zones[$i]["y"]
+                $minutes = round((($zones[$i]["y"] / sizeof($activities)) * $moving_time) / 60);
+                $zones[$i]["y"] = $minutes;
             }
 
             array_push($out["datasets"], [
