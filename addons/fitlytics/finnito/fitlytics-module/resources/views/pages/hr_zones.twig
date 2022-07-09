@@ -23,6 +23,7 @@
         <label for="{{ field.field }}">{{ field.label }} ({{ field.instructions }})</label>
         {{ field.input|raw }}
     {% endfor %}
+    {{ form.actions|raw }}
     {{ form.close()|raw }}
 
     <script>

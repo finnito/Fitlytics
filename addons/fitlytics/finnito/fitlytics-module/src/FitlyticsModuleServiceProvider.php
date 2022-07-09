@@ -108,7 +108,7 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
                 \Finnito\FitlyticsModule\Http\Middleware\AuthMiddleware::class
             ],
         ],
-        "settings/hr-zones" => [
+        "settings/heartrate-zones" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\SettingsController@hrZones",
             "streams::addon" => "finnito.module.fitlytics",
             "verb" => "get",

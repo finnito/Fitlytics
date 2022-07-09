@@ -66,9 +66,9 @@
 <body>
 
 <header class="column-to-row">
-    <div><h1>{{ setting_value('streams::name', config_get('streams::distribution.name')) }}</h1></div>
-    <a href="/settings">Settings</a>
+    <div><h1><a href="/">{{ setting_value('streams::name', config_get('streams::distribution.name')) }}</a></h1></div>
     {% block week %}{% endblock %}
+    <a href="/settings">Settings</a>
 </header>
 
 <main id="main">
