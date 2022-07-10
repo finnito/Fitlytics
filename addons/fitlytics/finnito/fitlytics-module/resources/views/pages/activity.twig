@@ -12,27 +12,27 @@
     </div>
 </div>
 
-<div class="row-to-column">
-    <p><small>Duration</small><br/>
+<div class="flex-apart">
+    <p><small>Dur.</small><br/>
     {{ activity.secondsToHours(activity.moving_time) }}</p>
 
-    <p><small>Distance</small><br/>
+    <p><small>Dist.</small><br/>
     {{ activity.metersToKilometers(activity.distance, 2) }}km</p>
 
     <p><small>Pace</small><br/>
     {{ activity.distanceAndSecondsToPace(activity.distance, activity.elapsed_time) }}</p>
 
-    <p><small>Elevation</small><br/>
+    <p><small>Elev.</small><br/>
     {{ activity.total_elevation_gain }}m</p>
 
     {% if activity.activity_json().has_heartrate %}
-    <p><small>Heartrate</small><br/>
+    <p><small>HR</small><br/>
     {{ activity.activity_json().average_heartrate|round }}bpm ({{ activity.activity_json().max_heartrate|round }})
     </p>
     {% endif %}
 
     {% if activity.activity_json().average_cadence %}
-        <p><small>Cadence</small><br/>
+        <p><small>RPM</small><br/>
         {{ activity.cadence(activity, activity.activity_json().average_cadence) }}</p>
     {% endif %}
 
@@ -55,18 +55,18 @@
 
 <hr/>
 
-<div class="flex-apart">
+<div class="laps-and-map">
 {% if activity.activity_json().laps %}
-<div class="overflow-y">
+<div class="laps-container">
 <table class="table">
     <thead>
         <tr>
             <th>Lap</th>
-            <th>Distance</th>
+            <th>Dist.</th>
             <th>HR</th>
-            <th>Elevation</th>
+            <th>Elev.</th>
             <th>Pace</th>
-            {% if activity.activity_json().average_cadence %}<th>Cadence</th>{% endif %}
+            {% if activity.activity_json().average_cadence %}<th>RPM</th>{% endif %}
         </tr>
     </thead>
     <tbody>
@@ -94,10 +94,10 @@
     var activityPolyline = "{{ activity.activity_json().map.polyline|escape('js') }}";
     console.log(activityPolyline);
     </script>
-    {{ asset_style("finnito.module.fitlytics::css/leaflet-fullscreen.min.css") }}
     {{ asset_style("finnito.module.fitlytics::css/leaflet.min.css") }}
     {{ asset_script("finnito.module.fitlytics::js/leaflet.min.js", ["version", "live"]) }}
     {{ asset_script("finnito.module.fitlytics::js/Polyline.encoded.js", ["version", "live"]) }}
     {{ asset_script("finnito.module.fitlytics::js/activity.js", ["version", "live"]) }}
-    {{ asset_script("finnito.module.fitlytics::js/Leaflet.fullscreen.min.js", ["version", "live"]) }}
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
 {% endblock %}

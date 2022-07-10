@@ -137,135 +137,127 @@
         </div>
     </div>
 
-    
     {% for num, day in period %}
-    <table class="outer-table">
-        <thead id="{{ day|date("Y-m-d") }}">
-            <th colspan="3">{{ day|date("D jS F") }}</th>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="v-top plan">
-                    <div class="flex-apart static">
-                        <div>
-                            <strong>Plan</strong>
-                        </div>
-                        <div>
-                        {% if plans[num+1] %}
-                            <span><a class="button small yellow" href="/admin/fitlytics/plans/edit/{{ plans[num+1][0].id }}">Edit</a></span>
-                        {% else %}
-                            <span><a class="button small green" href="/admin/fitlytics/plans/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add</a></span>
-                        {% endif %}
-                        </div>
-                    </div>
-                    {% if plans[num+1] %}<p><em>{{ plans[num+1][0].htmlPlan()|raw }}</em></p>{% endif %}
-                </td>
-
-                <td rowspan="2" class="activities">
-                {% if activities[num+1] %}
-                    <table>
-                    {% for activity in activities[num+1] %}
-                        <tr>
-                            <td><small>{{ activity.start_date|date("g:ia", "Pacific/Auckland") }} {{ activity.activityTypeEmoji() }}</small><br><a href="/activity/{{ activity.id }}">{{ activity.name() }}</a></td>
-                            <td>{{ activity.secondsToHours(activity.moving_time) }}<br>{{ activity.metersToKilometers(activity.distance, 2) }}km</td>
-                            <td>{{ activity.total_elevation_gain }}m ⬆️{% if activity.activity_json().kilojoules %}<br>{{ activity.activity_json().kilojoules|round }}kJ{% endif %}</td>
-
-                            {% if activity.activity_json().has_heartrate %}
-                            <td>{{ activity.activity_json().average_heartrate|round }}bpm<br>({{ activity.activity_json().max_heartrate|round }})</td>
-                            {% endif %}
-                            
-                            <td>
-                            {% if activity.activity_json().average_cadence %}
-                                {% if activity.type == "Run" %}
-                                    {{ (activity.activity_json().average_cadence * 2)|round }}spm<br>
-                                {% else %}
-                                    {{ activity.activity_json().average_cadence|round }}spm<br>
-                                {% endif %}
-                            {% endif %}
-                            {% if activity.activity_json().average_watts %}
-                                {{ activity.activity_json().average_watts|round }}W
-                            {% endif %}
-                            </td>                            
-                            
-                            <td><a class="button small yellow" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a></td>
-                        </tr>
-                        {# <tr colspan="6">
-                            {% for bucket in activity.hrBuckets() %}
-                            <td>{{ bucket.text }}: {{ (bucket.count * 100)|round(4) }}%</td>
-                            {% endfor %}
-                        </tr> #}
-                    {% endfor %}
-                    </table>
+    <div class="DayGrid" id="{{ day|date("Y-m-d") }}">
+        <div class="Date">{{ day|date("D jS F") }}</div>
+        <div class="Plan">
+            <div class="flex-apart static">
+                <div>
+                    <strong>Plan</strong>
+                </div>
+                <div>
+                {% if plans[num+1] %}
+                    <span><a class="button yellow" href="/admin/fitlytics/plans/edit/{{ plans[num+1][0].id }}">Edit</a></span>
+                {% else %}
+                    <span><a class="button green" href="/admin/fitlytics/plans/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add</a></span>
                 {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td class="v-top note">
+                </div>
+            </div>
+            {% if plans[num+1] %}<p><em>{{ plans[num+1][0].htmlPlan()|raw }}</em></p>{% endif %}
+        </div>
+        <div class="Note">
+            <div class="flex-apart">
+                <div>
+                    <strong>Note</strong>
+                </div>
+                <div>
+                    {% if notes[num+1][0].note %}
+                        <span><a class="button yellow" href="/admin/fitlytics/notes/edit/{{ notes[num+1][0].id }}">Edit</a></span>
+                    {% else %}
+                        <span><a class="button green" href="/admin/fitlytics/notes/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add</a></span>
+                    {% endif %}
+                </div>
+            </div>
+            {% if notes[num+1] %}
+                <p>
+                {% if notes[num+1][0].injured.isTrue() %}
+                    <span class="tag t5">Injured</span>
+                {% endif %}
+
+                {% if notes[num+1][0].sick.isTrue() %}
+                    <span class="tag t5">Sick</span>
+                {% endif %}
+
+                {% if notes[num+1][0].sleep_quality is not empty %}
+                    {% if notes[num+1][0].sleep_quality == "5" %}
+                        {% set sleepType = "t1" %}
+                    {% elseif notes[num+1][0].sleep_quality == "4" %}
+                        {% set sleepType = "t2" %}
+                    {% elseif notes[num+1][0].sleep_quality == "3" %}
+                        {% set sleepType = "t3" %}
+                    {% elseif notes[num+1][0].sleep_quality == "2" %}
+                        {% set sleepType = "t4" %}
+                    {% elseif notes[num+1][0].sleep_quality == "1" %}
+                        {% set sleepType = "t5" %}
+                    {% else %}
+                        {% set sleepType = "t3" %}
+                    {% endif %}
+                    <span class="tag {{ sleepType }}">Sleep {{ notes[num+1][0].sleep_quality }}/5</span>
+                {% endif %}
+
+                {% if notes[num+1][0].stress_level is not empty %}
+                    {% if notes[num+1][0].stress_level == "1" %}
+                        {% set stressType = "t1" %}
+                    {% elseif notes[num+1][0].stress_level == "2" %}
+                        {% set stressType = "t2" %}
+                    {% elseif notes[num+1][0].stress_level == "3" %}
+                        {% set stressType = "t3" %}
+                    {% elseif notes[num+1][0].stress_level == "4" %}
+                        {% set stressType = "t4" %}
+                    {% elseif notes[num+1][0].stress_level == "5" %}
+                        {% set stressType = "t5" %}
+                    {% else %}
+                        {% set stressType= "t3" %}
+                    {% endif %}
+                    <span class="tag {{ stressType }}">Stress {{ notes[num+1][0].stress_level}}/5</span>
+                {% endif %}
+
+                <br>{{ notes[num+1][0].htmlNote()|raw }}</p>
+            {% endif%}
+        </div>
+        <div class="Activities">
+        {% if activities[num+1] %}
+            {% for activity in activities[num+1] %}
+                <div class="ActivityGrid">
+                <div class="Name">
+                    <small>{{ activity.start_date|date("g:ia", "Pacific/Auckland") }} {{ activity.activityTypeEmoji() }}</small><br><a href="/activity/{{ activity.id }}">{{ activity.name() }}</a>
+                </div>
+                <div class="Stat1">
+                    {{ activity.secondsToHours(activity.moving_time) }}</div>
+                <div class="Stat2">
+                    {{ activity.metersToKilometers(activity.distance, 2) }}km</div>
+                <div class="Stat3">{{ activity.total_elevation_gain }}m</div>
+
+                <div class="Stat4">{{ activity.distanceAndSecondsToPace(activity.distance, activity.elapsed_time) }}</div>
                 
-                <div class="flex-apart">
-                    <div>
-                        <strong>Note</strong>
-                    </div>
-                    <div>
-                        {% if notes[num+1][0].note %}
-                            <span><a class="button small yellow" href="/admin/fitlytics/notes/edit/{{ notes[num+1][0].id }}">Edit</a></span>
-                        {% else %}
-                            <span><a class="button small green" href="/admin/fitlytics/notes/create?date={{day|date("Y-m-d", "Pacific/Auckland")}}">Add</a></span>
-                        {% endif %}
-                    </div>
+                {% if activity.activity_json().has_heartrate %}
+                    <div class="Stat5">{{ activity.activity_json().average_heartrate|round }}bpm<br>({{ activity.activity_json().max_heartrate|round }})</div>
+                {% endif %}
+
+                
+                
+                
+                {% if activity.activity_json().average_cadence %}
+                <div class="Stat7">
+                    {% if activity.type == "Run" %}
+                        {{ (activity.activity_json().average_cadence * 2)|round }}spm
+                    {% else %}
+                        {{ activity.activity_json().average_cadence|round }}rpm
+                    {% endif %}
                 </div>
-                        {% if notes[num+1] %}
-                        <p>
-                        {% if notes[num+1][0].injured.isTrue() %}
-                            <span class="tag t5">Injured</span>
-                        {% endif %}
+                {% endif %}
 
-                        {% if notes[num+1][0].sick.isTrue() %}
-                            <span class="tag t5">Sick</span>
-                        {% endif %}
-
-                        {% if notes[num+1][0].sleep_quality is not empty %}
-                            {% if notes[num+1][0].sleep_quality == "5" %}
-                                {% set sleepType = "t1" %}
-                            {% elseif notes[num+1][0].sleep_quality == "4" %}
-                                {% set sleepType = "t2" %}
-                            {% elseif notes[num+1][0].sleep_quality == "3" %}
-                                {% set sleepType = "t3" %}
-                            {% elseif notes[num+1][0].sleep_quality == "2" %}
-                                {% set sleepType = "t4" %}
-                            {% elseif notes[num+1][0].sleep_quality == "1" %}
-                                {% set sleepType = "t5" %}
-                            {% else %}
-                                {% set sleepType = "t3" %}
-                            {% endif %}
-                            <span class="tag {{ sleepType }}">Sleep {{ notes[num+1][0].sleep_quality }}/5</span>
-                        {% endif %}
-
-                        {% if notes[num+1][0].stress_level is not empty %}
-                            {% if notes[num+1][0].stress_level == "1" %}
-                                {% set stressType = "t1" %}
-                            {% elseif notes[num+1][0].stress_level == "2" %}
-                                {% set stressType = "t2" %}
-                            {% elseif notes[num+1][0].stress_level == "3" %}
-                                {% set stressType = "t3" %}
-                            {% elseif notes[num+1][0].stress_level == "4" %}
-                                {% set stressType = "t4" %}
-                            {% elseif notes[num+1][0].stress_level == "5" %}
-                                {% set stressType = "t5" %}
-                            {% else %}
-                                {% set stressType= "t3" %}
-                            {% endif %}
-                            <span class="tag {{ stressType }}">Stress {{ notes[num+1][0].stress_level}}/5</span>
-                        {% endif %}
-
-                        <br>{{ notes[num+1][0].htmlNote()|raw }}</p>
-                    {% endif%}
-                    </div>
+                {% if activity.activity_json().average_watts %}
+                    <div class="Stat8">{{ activity.activity_json().average_watts|round }}W</div>
+                {% endif %}
+                <div class="Actions">
+                    <a class="button yellow" href="/admin/fitlytics/activities/edit/{{ activity.id }}">Edit</a>
                 </div>
-            </td>
-            </tr>
-        </tbody>
-    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+        </div>
+    </div>
     {% endfor %}
 
     <div class="column-to-row">

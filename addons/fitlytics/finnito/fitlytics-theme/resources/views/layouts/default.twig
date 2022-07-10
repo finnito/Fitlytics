@@ -57,9 +57,7 @@
 
     {{ template.includes.render('head')|raw }}
 
-    <style>
-        {{ asset_inline("public::css/style.css", ["version", "live"]) }}
-    </style>
+    <style>{{ asset_inline("public::css/style.css", ["version", "live"]) }}</style>
 
 </head>
 
