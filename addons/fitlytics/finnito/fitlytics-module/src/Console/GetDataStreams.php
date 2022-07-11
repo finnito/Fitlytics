@@ -11,9 +11,11 @@ class GetDataStreams extends Command
 
     public function handle()
     {
-        $activities = ActivityModel::where("data_streams", null)
+        $activities = ActivityModel::where("data_streams->latlng", null)
+            ->limit(300)
             ->get();
-        echo $activities->count() . "activities without their data streams.\n";
+
+        echo $activities->count() . " activities without their data streams.\n";
 
         $strava = new Strava();
 
@@ -23,7 +25,7 @@ class GetDataStreams extends Command
                 "/activities/{$activity->strava_id}/streams",
                 [
                     "key_by_type" => "true",
-                    "keys" => "altitude,cadence,heartrate",
+                    "keys" => "altitude,cadence,heartrate,time,latlng,velocity_smooth,watts,grade_smooth",
                 ]
             );
             $activity->data_streams = json_encode($response);
