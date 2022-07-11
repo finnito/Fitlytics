@@ -12,7 +12,7 @@ class GetDataStreams extends Command
     public function handle()
     {
         $activities = ActivityModel::where("data_streams->latlng", null)
-            ->limit(300)
+            ->limit(550)
             ->get();
 
         echo $activities->count() . " activities without their data streams.\n";
