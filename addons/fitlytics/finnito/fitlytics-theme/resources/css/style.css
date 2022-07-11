@@ -54,6 +54,8 @@ a {
     text-decoration: none;
 }
 
+small { color: #718093; }
+
 /**
  * TABLES
  **/
@@ -93,11 +95,14 @@ td:not(last-of-type) { padding-right: 0.25rem; }
     align-items: center;
 }
 
+.flex-apart p { margin: 0.5rem 0; }
+
 .chartContainer { max-width: 100%; }
 
 @media (min-width: 800px) {
     .column-to-row { flex-direction: row; }
     .row-to-column { flex-direction: column; }
+    .flex-apart p { margin: 1rem; }
 }
 
 
