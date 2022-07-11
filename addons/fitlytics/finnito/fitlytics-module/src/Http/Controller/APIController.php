@@ -143,110 +143,83 @@ class APIController extends PublicController
             abort(404);
         }
 
+        $borderColours = [
+            "altitude" => "rgba(223, 228, 234, 1.0)",
+            "cadence" => "rgba(34, 166, 179, 1.0)",
+            "distance" => "rgba(72, 219, 251, 1.0)",
+            "heartrate" => "rgba(235, 77, 75, 1.0)",
+            "time" => "rgba(251, 197, 49, 1.0)",
+            "latlng" => "rgba(230, 126, 34, 1.0)",
+            "velocity_smooth" => "rgba(106, 176, 76, 1.0)",
+            "watts" => "rgba(156, 136, 255, 1.0)",
+            "grade_smooth" => "rgba(243, 104, 224, 1.0)",
+
+        ];
+
+        $fillColours = [
+            "altitude" => "rgba(223, 228, 234, 0.5)",
+            "cadence" => "rgba(34, 166, 179, 0.5)",
+            "distance" => "rgba(72, 219, 251, 0.5)",
+            "heartrate" => "rgba(235, 77, 75, 0.5)",
+            "time" => "rgba(251, 197, 49, 0.5)",
+            "latlng" => "rgba(230, 126, 34, 0.5)",
+            "velocity_smooth" => "rgba(106, 176, 76, 0.5)",
+            "watts" => "rgba(156, 136, 255, 0.5)",
+            "grade_smooth" => "rgba(243, 104, 224, 0.5)",
+        ];
+
         $dataStream = $activity->dataStreams();
 
         $data = [];
         $data["datasets"] = [];
 
+        foreach ($dataStream as $key => $stream) {
+            $dataset = [];
 
-        // Cadence
-        $cadence = [];
-        $cadence["fill"] = false;
-        $cadence["tension"] = 0.5;
-        $cadence["options"] = [];
-        $cadence["parsing"] = false;
-        $cadence["indexAxis"] = "x";
-        $cadence["borderWidth"] = 1;
-        $cadence["borderColor"] = "rgba(34, 166, 179, 1.0)";
-        $cadence["backgroundColor"] = "rgba(34, 166, 179, 0.5)";
-        $cadence["radius"] = 0;
-        $cadence["label"] = "Cadence";
-        $cadence["data"] = [];
+            if ($key == "altitude") {
+                $dataset["fill"] = true;
+            } else {
+                $dataset["fill"] = false;
+            }
 
-        if ($activity->type == "Run") {
-            $multiplier = 2;
-        } else {
-            $multiplier = 1;
+            $dataset["tension"] = 0.5;
+            $dataset["parsing"] = false;
+            $dataset["indexAxis"] = "x";
+            $dataset["borderWidth"] = 1;
+            $dataset["borderColor"] = $borderColours[$key];
+            $dataset["backgroundColor"] = $fillColours[$key];
+            $dataset["radius"] = 0;
+            $dataset["label"] = ucfirst($key);
+            $dataset["data"] = [];
+
+            if ($activity->type == "Run") {
+                $multiplier = 2;
+            } else {
+                $multiplier = 1;
+            }
+
+            for ($i = 0; $i < sizeof($dataStream->$key->data); $i++) {
+                if ($activity->type == "Run" and $key == "cadence") {
+                    array_push($dataset["data"],[
+                        "x" => $i+1,
+                        "y" => ($dataStream->$key->data[$i] * 2)
+                    ]);
+                } else if ($key == "distance") {
+                    array_push($dataset["data"],[
+                        "x" => $i+1,
+                        "y" => $dataStream->$key->data[$i] / 1000
+                    ]);
+                } else {
+                    array_push($dataset["data"],[
+                        "x" => $i+1,
+                        "y" => $dataStream->$key->data[$i]
+                    ]);
+                }
+                
+            }
+
+            array_push($data["datasets"], $dataset);
         }
-
-        for ($i = 0; $i < sizeof($dataStream->cadence->data); $i++) {
-            array_push($cadence["data"],[
-                    "x" => $i+1,
-                    // "x" => ($dataStream->distance->data[$i]),
-                    "y" => ($dataStream->cadence->data[$i] * $multiplier)
-            ]);
-        }
-
-        array_push($data["datasets"], $cadence);
-
-        // Altitude
-        $altitude = [];
-        $altitude["fill"] = true;
-        $altitude["tension"] = 0.5;
-        $altitude["options"] = [];
-        $altitude["parsing"] = false;
-        $altitude["indexAxis"] = "x";
-        $altitude["borderWidth"] = 1;
-        $altitude["borderColor"] = "rgba(223, 228, 234, 1.0)";
-        $altitude["backgroundColor"] = "rgba(223, 228, 234, 0.5)";
-        $altitude["radius"] = 0;
-        $altitude["label"] = "Altitude";
-        $altitude["data"] = [];
-
-        for ($i = 0; $i < sizeof($dataStream->altitude->data); $i++) {
-            array_push($altitude["data"],[
-                    "x" => $i+1,
-                    "y" => $dataStream->altitude->data[$i]
-            ]);
-        }
-
-        array_push($data["datasets"], $altitude);
-
-        // Heartrate
-        $heartrate = [];
-        $heartrate["fill"] = false;
-        $heartrate["tension"] = 0.5;
-        $heartrate["options"] = [];
-        $heartrate["parsing"] = false;
-        $heartrate["indexAxis"] = "x";
-        $heartrate["borderWidth"] = 1;
-        $heartrate["borderColor"] = "rgba(235, 77, 75, 1.0)";
-        $heartrate["backgroundColor"] = "rgba(235, 77, 75, 0.5)";
-        $heartrate["radius"] = 0;
-        $heartrate["label"] = "Heartrate";
-        $heartrate["data"] = [];
-
-        for ($i = 0; $i < sizeof($dataStream->heartrate->data); $i++) {
-            array_push($heartrate["data"],[
-                    "x" => $i+1,
-                    "y" => $dataStream->heartrate->data[$i]
-            ]);
-        }
-
-        array_push($data["datasets"], $heartrate);
-
-        // Distance
-        $distance = [];
-        $distance["fill"] = false;
-        $distance["tension"] = 0.5;
-        $distance["options"] = [];
-        $distance["parsing"] = false;
-        $distance["indexAxis"] = "x";
-        $distance["borderWidth"] = 0;
-        $distance["borderColor"] = "rgba(106, 176, 76, 1.0)";
-        $distance["backgroundColor"] = "rgba(106, 176, 76, 0.5)";
-        $distance["radius"] = 0;
-        $distance["label"] = "Distance";
-        $distance["data"] = [];
-
-        for ($i = 0; $i < sizeof($dataStream->distance->data); $i++) {
-            array_push($distance["data"],[
-                    "x" => $i+1,
-                    "y" => $dataStream->distance->data[$i] / 1000
-            ]);
-        }
-
-        array_push($data["datasets"], $distance);
 
         return response()->json($data);
     }
