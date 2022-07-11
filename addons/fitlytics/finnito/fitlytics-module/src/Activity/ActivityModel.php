@@ -298,27 +298,27 @@ class ActivityModel extends EntryModel implements ActivityInterface
         $user = auth()->loginUsingId(1);
         return [
             [
-                "text" => "Z1 - Recovery",
+                "text" => "R",
                 "min" => 0,
                 "max" => explode("-", $user->z1)[1],
             ],
             [
-                "text" => "Z2 - Aerobic Base",
+                "text" => "Z1 - Aerobic Conditioning",
                 "min" => explode("-", $user->z2)[0],
                 "max" => explode("-", $user->z2)[1],
             ],
             [
-                "text" => "Z3 - Tempo",
+                "text" => "Z2 - Aerobic Capcity",
                 "min" => explode("-", $user->z3)[0],
                 "max" => explode("-", $user->z3)[1],
             ],
             [
-                "text" => "Z4 - Lactate Threshold",
+                "text" => "Z3 - Endurance",
                 "min" => explode("-", $user->z4)[0],
                 "max" => explode("-", $user->z4)[1],
             ],
             [
-                "text" => "Z5 - VO2 Max",
+                "text" => "Z4 - Aerobic Power",
                 "min" => explode("-", $user->z5)[0],
                 "max" => explode("-", $user->z5)[1],
             ],
