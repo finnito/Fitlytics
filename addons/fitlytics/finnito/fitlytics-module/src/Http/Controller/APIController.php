@@ -174,6 +174,10 @@ class APIController extends PublicController
         $data["datasets"] = [];
 
         foreach ($dataStream as $key => $stream) {
+            if (in_array($key, ["distance", "time", "latlng", "grade_smooth"])) {
+                continue;
+            }
+
             $dataset = [];
 
             if ($key == "altitude") {
@@ -189,33 +193,31 @@ class APIController extends PublicController
             $dataset["borderColor"] = $borderColours[$key];
             $dataset["backgroundColor"] = $fillColours[$key];
             $dataset["radius"] = 0;
-            $dataset["label"] = ucfirst($key);
+            $dataset["label"] = ucfirst(explode("_", $key)[0]);
             $dataset["data"] = [];
-
-            if ($activity->type == "Run") {
-                $multiplier = 2;
-            } else {
-                $multiplier = 1;
-            }
 
             for ($i = 0; $i < sizeof($dataStream->$key->data); $i++) {
                 if ($activity->type == "Run" and $key == "cadence") {
                     array_push($dataset["data"],[
-                        "x" => $i+1,
+                        "x" => $dataStream->distance->data[$i] / 1000,
                         "y" => ($dataStream->$key->data[$i] * 2)
                     ]);
                 } else if ($key == "distance") {
                     array_push($dataset["data"],[
-                        "x" => $i+1,
+                        "x" => $dataStream->distance->data[$i] / 1000,
                         "y" => $dataStream->$key->data[$i] / 1000
+                    ]);
+                } else if ($key == "velocity_smooth") {
+                    array_push($dataset["data"],[
+                        "x" => $dataStream->distance->data[$i] / 1000,
+                        "y" => $dataStream->$key->data[$i]
                     ]);
                 } else {
                     array_push($dataset["data"],[
-                        "x" => $i+1,
+                        "x" => $dataStream->distance->data[$i] / 1000,
                         "y" => $dataStream->$key->data[$i]
                     ]);
                 }
-                
             }
 
             array_push($data["datasets"], $dataset);

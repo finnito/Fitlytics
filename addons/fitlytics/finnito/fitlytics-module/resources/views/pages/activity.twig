@@ -110,10 +110,13 @@
         request.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 var data = JSON.parse(request.responseText);
-                console.log(data);
+                for (var i = 0; i < data.datasets.length; i++) {
+                    if (data.datasets[i].label == "Heartrate") {
+                        chart.options.scales.xA.max = data.datasets[i].data[data.datasets[i].data.length - 1].x;
+                        break;
+                    }
+                }
                 chart.data = data;
-                chart.options.scales.x.max = data.datasets[0].data.length;
-                console.log(chart.data);
                 chart.update();
             }
         };
@@ -130,17 +133,36 @@
                 responsive: true,
                 aspectRatio: 1.5,
                 scales: {
-                    x: {
+                    xA: {
                         type: 'linear',
                         ticks: {
                             source: 'auto',
                             autoSkip: true,
-                        },
-                        display: false
+                        }
+                    },
+                    xB: {
+                        type: 'linear',
+                        position: "top",
+                        ticks: {
+                            source: 'auto',
+                            autoSkip: true,
+                        }
+                    },
+                    yA: {
+                        title: "Other",
+                        type: "linear",
+                        offset: true,
+                        position: "left"
+                    },
+                    yB: {
+                        title: "Velocity",
+                        type: "linear",
+                        offset: true,
+                        position: "right"
                     }
                 },
                 interaction: {
-                    mode: "nearest",
+                    mode: "index",
                     axis: "x",
                     intersect: false
                 },
@@ -150,8 +172,8 @@
                     },
                     decimation: {
                         enabled: true,
-                        algorithm: 'min-max',
-                        samples: 750,
+                        algorithm: 'lttb',
+                        samples: 500,
                         threshold: 1000
                     },
                     legend: {
