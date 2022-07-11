@@ -129,6 +129,128 @@ class APIController extends PublicController
         return $query->get();
     }
 
+
+    /**
+     * A route to get activity
+     * data to display on the
+     * /activity/{id} pages.
+     * Typically: distance, HR
+     * cadence and altitude.
+     **/
+    public function data_streams(ActivityRepository $activities, $id)
+    {
+        if (!$activity = $activities->newQuery()->where("id", $id)->first()) {
+            abort(404);
+        }
+
+        $dataStream = $activity->dataStreams();
+
+        $data = [];
+        $data["datasets"] = [];
+
+
+        // Cadence
+        $cadence = [];
+        $cadence["fill"] = false;
+        $cadence["tension"] = 0.5;
+        $cadence["options"] = [];
+        $cadence["parsing"] = false;
+        $cadence["indexAxis"] = "x";
+        $cadence["borderWidth"] = 1;
+        $cadence["borderColor"] = "rgba(34, 166, 179, 1.0)";
+        $cadence["backgroundColor"] = "rgba(34, 166, 179, 0.5)";
+        $cadence["radius"] = 0;
+        $cadence["label"] = "Cadence";
+        $cadence["data"] = [];
+
+        if ($activity->type == "Run") {
+            $multiplier = 2;
+        } else {
+            $multiplier = 1;
+        }
+
+        for ($i = 0; $i < sizeof($dataStream->cadence->data); $i++) {
+            array_push($cadence["data"],[
+                    "x" => $i+1,
+                    // "x" => ($dataStream->distance->data[$i]),
+                    "y" => ($dataStream->cadence->data[$i] * $multiplier)
+            ]);
+        }
+
+        array_push($data["datasets"], $cadence);
+
+        // Altitude
+        $altitude = [];
+        $altitude["fill"] = true;
+        $altitude["tension"] = 0.5;
+        $altitude["options"] = [];
+        $altitude["parsing"] = false;
+        $altitude["indexAxis"] = "x";
+        $altitude["borderWidth"] = 1;
+        $altitude["borderColor"] = "rgba(223, 228, 234, 1.0)";
+        $altitude["backgroundColor"] = "rgba(223, 228, 234, 0.5)";
+        $altitude["radius"] = 0;
+        $altitude["label"] = "Altitude";
+        $altitude["data"] = [];
+
+        for ($i = 0; $i < sizeof($dataStream->altitude->data); $i++) {
+            array_push($altitude["data"],[
+                    "x" => $i+1,
+                    "y" => $dataStream->altitude->data[$i]
+            ]);
+        }
+
+        array_push($data["datasets"], $altitude);
+
+        // Heartrate
+        $heartrate = [];
+        $heartrate["fill"] = false;
+        $heartrate["tension"] = 0.5;
+        $heartrate["options"] = [];
+        $heartrate["parsing"] = false;
+        $heartrate["indexAxis"] = "x";
+        $heartrate["borderWidth"] = 1;
+        $heartrate["borderColor"] = "rgba(235, 77, 75, 1.0)";
+        $heartrate["backgroundColor"] = "rgba(235, 77, 75, 0.5)";
+        $heartrate["radius"] = 0;
+        $heartrate["label"] = "Heartrate";
+        $heartrate["data"] = [];
+
+        for ($i = 0; $i < sizeof($dataStream->heartrate->data); $i++) {
+            array_push($heartrate["data"],[
+                    "x" => $i+1,
+                    "y" => $dataStream->heartrate->data[$i]
+            ]);
+        }
+
+        array_push($data["datasets"], $heartrate);
+
+        // Distance
+        $distance = [];
+        $distance["fill"] = false;
+        $distance["tension"] = 0.5;
+        $distance["options"] = [];
+        $distance["parsing"] = false;
+        $distance["indexAxis"] = "x";
+        $distance["borderWidth"] = 0;
+        $distance["borderColor"] = "rgba(106, 176, 76, 1.0)";
+        $distance["backgroundColor"] = "rgba(106, 176, 76, 0.5)";
+        $distance["radius"] = 0;
+        $distance["label"] = "Distance";
+        $distance["data"] = [];
+
+        for ($i = 0; $i < sizeof($dataStream->distance->data); $i++) {
+            array_push($distance["data"],[
+                    "x" => $i+1,
+                    "y" => $dataStream->distance->data[$i] / 1000
+            ]);
+        }
+
+        array_push($data["datasets"], $distance);
+
+        return response()->json($data);
+    }
+
     public function currentWeekChart(ActivityRepository $activities, $week)
     {
         $this->week_of = $week;

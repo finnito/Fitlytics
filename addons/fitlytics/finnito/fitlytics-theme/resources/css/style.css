@@ -196,6 +196,8 @@ td:not(last-of-type) { padding-right: 0.25rem; }
     overflow-x: auto;
 }
 
+.activityChartContainer { max-width: 100%; }
+
 #Map {
     height: 400px;
     width: 100%;
@@ -217,23 +219,23 @@ td:not(last-of-type) { padding-right: 0.25rem; }
     justify-content: center;
 }
 
-.hr-bar .Z1 {
+.hr-bar .R {
     background-color: var(--blue);
 }
 
-.hr-bar .Z2 {
+.hr-bar .Z1 {
     background-color: var(--green);
 }
 
-.hr-bar .Z3 {
+.hr-bar .Z2 {
     background-color: var(--yellow);
 }
 
-.hr-bar .Z4 {
+.hr-bar .Z3 {
     background-color: var(--orange);
 }
 
-.hr-bar .Z5 {
+.hr-bar .Z4 {
     background-color: var(--red);
 }
 

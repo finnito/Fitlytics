@@ -229,6 +229,9 @@ class FitlyticsModuleServiceProvider extends AddonServiceProvider
         "/api/activities/{verb}/{filter}/{period}/{metrics}/" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\APIController@activities"
         ],
+        "/api/data-streams/{id}/" => [
+            "uses" => "Finnito\FitlyticsModule\Http\Controller\APIController@data_streams"
+        ],
         "/api/activities/weekly-load/{metrics}/" => [
             "uses" => "Finnito\FitlyticsModule\Http\Controller\APIController@weeklyLoad"
         ],

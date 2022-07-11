@@ -87,17 +87,84 @@
 <div id="Map"></div>
 </div>
 
+<div class="activityChartContainer"><canvas id="activityChart"></canvas></div>
+
 {% endblock %}
 
 {% block footer %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
     <script>
     var activityPolyline = "{{ activity.activity_json().map.polyline|escape('js') }}";
-    console.log(activityPolyline);
     </script>
     {{ asset_style("finnito.module.fitlytics::css/leaflet.min.css") }}
     {{ asset_script("finnito.module.fitlytics::js/leaflet.min.js", ["version", "live"]) }}
     {{ asset_script("finnito.module.fitlytics::js/Polyline.encoded.js", ["version", "live"]) }}
-    {{ asset_script("finnito.module.fitlytics::js/activity.js", ["version", "live"]) }}
     <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+
+    <script>
+    var activitiyChart;
+    function getRemoteData(chart, url)
+    {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var data = JSON.parse(request.responseText);
+                console.log(data);
+                chart.data = data;
+                chart.options.scales.x.max = data.datasets[0].data.length;
+                console.log(chart.data);
+                chart.update();
+            }
+        };
+        request.open("GET", url, true);
+        request.send();
+    };
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var activityChartEl = document.getElementById('activityChart').getContext('2d');
+        activitiyChart = new Chart(activityChartEl, {
+            type: 'line',
+            options: {
+                parsing: false,
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        ticks: {
+                            source: 'auto',
+                            autoSkip: true,
+                        },
+                        display: false
+                    }
+                },
+                interaction: {
+                    mode: "nearest",
+                    axis: "x",
+                    intersect: false
+                },
+                plugins: {
+                    tooltip: {
+                        title: "",
+                    },
+                    decimation: {
+                        enabled: true,
+                        algorithm: 'min-max',
+                        samples: 750,
+                        threshold: 1000
+                    },
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Activity Data'
+                    }
+                }
+            }
+        });
+        getRemoteData(activitiyChart, '/api/data-streams/{{ activity.id }}');
+    });
+    </script>
+    {{ asset_script("finnito.module.fitlytics::js/activity.js", ["version", "live"]) }}
 {% endblock %}
