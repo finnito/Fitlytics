@@ -47,7 +47,11 @@
 <div class="hr-bar">
 {% for zone in activity.hrBuckets() %}
     {% if zone.count > 0 %}
-        <div class="{{ zone.text|split(" - ")[0] }}" style="width: {{ (zone.count * 100)|round }}%">{{ zone.text|split(" - ")[0] }}: {{ (zone.count * 100)|round }}%</div>
+        <div class="{{ zone.text|split(" - ")[0] }}"
+            style="width: {{ (zone.count * 100)|round }}%"
+            title="{{ zone.min }}-{{ zone.max }}bpm">
+            {{ zone.text|split(" - ")[0] }}: {{ (zone.count * 100)|round }}%
+        </div>
     {% endif %}
 {% endfor %}
 </div>
