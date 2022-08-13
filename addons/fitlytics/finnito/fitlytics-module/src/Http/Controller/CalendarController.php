@@ -310,6 +310,7 @@ class CalendarController extends PublicController
                 . "STATUS:CONFIRMED\n"
                 . "CREATED:" . date(ICAL_FORMAT, strtotime($activity->created_at)) . "\n"
                 . "LAST-MODIFIED:" . date(ICAL_FORMAT, strtotime($activity->updated_at)) . "\n"
+                . "URL:" . "https://fitlytics.lesueur.nz/activity/" . $activity->id . "\n"
                 . "LOCATION:\n"
                 . "END:VEVENT\n";
         }
