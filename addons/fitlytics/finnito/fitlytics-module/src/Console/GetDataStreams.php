@@ -7,13 +7,18 @@ use Finnito\FitlyticsModule\Activity\ActivityModel;
 class GetDataStreams extends Command
 {
     protected $name = "strava:data_streams";
+    protected $signature = "strava:data_streams {id?}";
     protected $description = "Downloads missing data streams.";
 
     public function handle()
     {
-        $activities = ActivityModel::where("data_streams->latlng", null)
-            ->limit(550)
-            ->get();
+        if ($this->argument('id')) {
+            $activities = ActivityModel::where("id", $this->argument("id"))->get();
+        } else {
+            $activities = ActivityModel::where("data_streams->latlng", null)
+                ->limit(550)
+                ->get();
+        }
 
         echo $activities->count() . " activities without their data streams.\n";
 

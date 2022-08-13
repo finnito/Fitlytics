@@ -2,6 +2,7 @@
 
 use Finnito\FitlyticsModule\Activity\Contract\ActivityInterface;
 use Anomaly\Streams\Platform\Entry\EntryModel;
+use Illuminate\Support\Facades\Artisan;
 
 class ActivityModel extends EntryModel implements ActivityInterface
 {
@@ -354,12 +355,11 @@ class ActivityModel extends EntryModel implements ActivityInterface
     public function hrBuckets()
     {
         if (
-            // is_null($this->hr_buckets)
-            // and
             isset($this->data_streams)
             and
             isset($this->dataStreams()->heartrate)
-        ) else {
+        ) {
+            Artisan::call('strava:data_streams ' . $this->id);
             $this->computeHrBuckets();
         }
         return $this->hr_buckets;
