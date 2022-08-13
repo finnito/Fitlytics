@@ -359,7 +359,7 @@ class ActivityModel extends EntryModel implements ActivityInterface
             isset($this->data_streams)
             and
             isset($this->dataStreams()->heartrate)
-        ) {
+        ) else {
             $this->computeHrBuckets();
         }
         return $this->hr_buckets;
