@@ -48,7 +48,6 @@
         "anomaly/users-module": "~2.5.0",
         "composer/composer": "^2.1",
         "guzzlehttp/guzzle": "^7.3",
-        "laravel/framework": "v8.36.2",
         "laravel/tinker": "^2.6",
         "pyrocms/accelerant-theme": "~1.2.0",
         "pyrocms/starter-theme": "~1.0.0",
